@@ -4,7 +4,7 @@ const c = theme.colors;
 
 /** A ragged top edge for the paper that tears up into the hero. Fixed points, so it never shifts between renders. */
 const TEAR_TOP =
-  "polygon(0.0% 67.2%, 1.6% 65.5%, 3.1% 67.8%, 4.7% 60.6%, 6.2% 62.0%, 7.8% 65.0%, 9.4% 62.9%, 10.9% 60.4%, 12.5% 66.1%, 14.1% 58.8%, 15.6% 61.8%, 17.2% 58.6%, 18.8% 58.1%, 20.3% 56.5%, 21.9% 53.3%, 23.4% 49.7%, 25.0% 46.4%, 26.6% 49.8%, 28.1% 53.0%, 29.7% 44.9%, 31.2% 45.3%, 32.8% 46.2%, 34.4% 40.7%, 35.9% 44.8%, 37.5% 39.8%, 39.1% 43.6%, 40.6% 42.9%, 42.2% 37.9%, 43.8% 38.1%, 45.3% 40.8%, 46.9% 40.0%, 48.4% 40.1%, 50.0% 30.9%, 51.6% 32.8%, 53.1% 37.4%, 54.7% 30.8%, 56.2% 34.9%, 57.8% 30.1%, 59.4% 25.8%, 60.9% 27.4%, 62.5% 24.9%, 64.1% 25.6%, 65.6% 28.3%, 67.2% 22.1%, 68.8% 21.0%, 70.3% 18.4%, 71.9% 25.9%, 73.4% 21.9%, 75.0% 22.3%, 76.6% 21.9%, 78.1% 16.1%, 79.7% 17.9%, 81.2% 17.0%, 82.8% 18.5%, 84.4% 17.9%, 85.9% 8.6%, 87.5% 16.0%, 89.1% 7.8%, 90.6% 12.0%, 92.2% 4.4%, 93.8% 16.5%, 95.3% 9.5%, 96.9% 9.3%, 98.4% 3.4%, 100.0% 3.7%, 100% 100%, 0% 100%)";
+  "polygon(0.0% 65.8%, 1.4% 66.7%, 2.8% 64.3%, 4.2% 62.3%, 5.6% 63.0%, 6.9% 60.2%, 8.3% 59.4%, 9.7% 65.1%, 11.1% 60.8%, 12.5% 61.2%, 13.9% 60.4%, 15.3% 59.0%, 16.7% 55.5%, 18.1% 54.9%, 19.4% 53.9%, 20.8% 52.9%, 22.2% 54.0%, 23.6% 52.6%, 25.0% 49.8%, 26.4% 52.9%, 27.8% 48.4%, 29.2% 47.5%, 30.6% 51.2%, 31.9% 47.7%, 33.3% 47.1%, 34.7% 42.9%, 36.1% 44.6%, 37.5% 41.3%, 38.9% 43.6%, 40.3% 39.7%, 41.7% 42.8%, 43.1% 38.1%, 44.4% 38.3%, 45.8% 42.2%, 47.2% 35.3%, 48.6% 34.8%, 50.0% 36.7%, 51.4% 33.4%, 52.8% 32.2%, 54.2% 33.7%, 55.6% 30.1%, 56.9% 29.7%, 58.3% 30.8%, 59.7% 30.9%, 61.1% 28.4%, 62.5% 27.6%, 63.9% 26.2%, 65.3% 25.5%, 66.7% 26.0%, 68.1% 22.6%, 69.4% 24.1%, 70.8% 21.0%, 72.2% 22.8%, 73.6% 22.0%, 75.0% 19.9%, 76.4% 21.6%, 77.8% 16.8%, 79.2% 16.0%, 80.6% 16.4%, 81.9% 14.0%, 83.3% 12.8%, 84.7% 13.7%, 86.1% 13.0%, 87.5% 13.3%, 88.9% 9.1%, 90.3% 12.7%, 91.7% 8.7%, 93.1% 7.0%, 94.4% 8.9%, 95.8% 7.1%, 97.2% 8.6%, 98.6% 3.1%, 100.0% 4.7%, 100% 100%, 0% 100%)";
 const TEAR_EDGE =
   "polygon(0.00% 20%, 1.11% 47%, 2.22% 11%, 3.33% 64%, 4.44% 19%, 5.56% 16%, 6.67% 41%, 7.78% 37%, 8.89% 47%, 10.00% 19%, 11.11% 71%, 12.22% 44%, 13.33% 26%, 14.44% 30%, 15.56% 68%, 16.67% 26%, 17.78% 15%, 18.89% 38%, 20.00% 72%, 21.11% 18%, 22.22% 51%, 23.33% 61%, 24.44% 23%, 25.56% 69%, 26.67% 64%, 27.78% 56%, 28.89% 55%, 30.00% 73%, 31.11% 73%, 32.22% 70%, 33.33% 55%, 34.44% 26%, 35.56% 40%, 36.67% 4%, 37.78% 27%, 38.89% 40%, 40.00% 39%, 41.11% 24%, 42.22% 20%, 43.33% 38%, 44.44% 28%, 45.56% 68%, 46.67% 66%, 47.78% 28%, 48.89% 48%, 50.00% 74%, 51.11% 20%, 52.22% 59%, 53.33% 55%, 54.44% 36%, 55.56% 42%, 56.67% 72%, 57.78% 37%, 58.89% 38%, 60.00% 78%, 61.11% 42%, 62.22% 67%, 63.33% 6%, 64.44% 50%, 65.56% 55%, 66.67% 75%, 67.78% 29%, 68.89% 77%, 70.00% 54%, 71.11% 23%, 72.22% 31%, 73.33% 72%, 74.44% 27%, 75.56% 36%, 76.67% 28%, 77.78% 59%, 78.89% 76%, 80.00% 3%, 81.11% 20%, 82.22% 30%, 83.33% 35%, 84.44% 60%, 85.56% 57%, 86.67% 71%, 87.78% 52%, 88.89% 61%, 90.00% 25%, 91.11% 5%, 92.22% 70%, 93.33% 41%, 94.44% 70%, 95.56% 41%, 96.67% 20%, 97.78% 19%, 98.89% 25%, 100.00% 67%, 100% 100%, 0% 100%)";
 const TAPE = "polygon(2% 8%, 0% 30%, 3% 52%, 0% 78%, 3% 100%, 97% 92%, 100% 70%, 97% 48%, 100% 24%, 98% 0%)";
@@ -167,10 +167,13 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
 .jl-env.e3 i { position: absolute; bottom: 10px; left: 14px; font-style: normal; font-family: var(--mono); font-size: 10.5px; color: rgba(243,247,238,.55); letter-spacing: .06em; }
 
 /* phone */
-.jl-phone-sec { margin-top: 128px; padding: 112px 0 120px; background: var(--ink); color: var(--on-ink); border-radius: 44px 44px 0 0; position: relative; }
+.jl-sec#how { padding-bottom: 136px; }
+.jl-phone-sec { padding: 104px 0 120px; background: var(--ink); color: var(--on-ink); position: relative; }
+.jl-phone-sec::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 14px; background: var(--sage); clip-path: ${TEAR_EDGE}; rotate: 180deg; }
+.jl-phone-sec::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 14px; background: var(--sage); clip-path: ${TEAR_EDGE}; scale: -1 1; }
 .jl-phone-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
 .jl-phone-copy { display: grid; gap: 22px; justify-items: start; }
-.jl-phone-copy > p { color: var(--on-ink-mute); font-size: 18px; max-width: 44ch; }
+.jl-phone-copy > p:not(.jl-lbl) { color: var(--on-ink-mute); font-size: 18px; max-width: 44ch; }
 .jl-points { display: grid; width: 100%; max-width: 480px; }
 .jl-points li { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--ink-line); }
 .jl-points li:last-child { border-bottom: 1px solid var(--ink-line); }
@@ -256,8 +259,9 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
   .jl-sec { padding-top: 96px; }
   .jl-head { margin-bottom: 32px; }
   .jl-beat-art { height: 200px; }
-  .jl-phone-sec { margin-top: 96px; padding: 80px 0 88px; border-radius: 32px 32px 0 0; }
-  .jl-phone-copy > p { font-size: 16px; }
+  .jl-sec#how { padding-bottom: 104px; }
+  .jl-phone-sec { padding: 80px 0 88px; }
+  .jl-phone-copy > p:not(.jl-lbl) { font-size: 16px; }
   .jl-points li { grid-template-columns: 1fr; gap: 2px; }
   .st-phone-coin { display: none; }
   .jl-tech { grid-template-columns: 1fr; }
