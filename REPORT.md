@@ -4,7 +4,7 @@
 
 - The factory creates named post-token accounts on a real local NEAR sandbox. Signed transactions exercise the sealed auction, uniform clearing and refunds, weighted bonding curve, fee split, redeemable NEAR floor, graduation escrow, dare voting and bond payout, and NEP-141 transfer callback refund.
 - A player-signed NEP-366 delegated bid was submitted by a separate relayer on the local chain; finalized RPC showed one sealed bid. `pnpm test:meta` prints its real local transaction hashes.
-- The SDK reads the live 1Click `/v0/tokens` endpoint: on 2026-11-09 it returned **216** assets including `nep141:wrap.near`. No quote or swap was claimed.
+- The SDK reads the live [1Click `/v0/tokens` endpoint](https://1click.chaindefuser.com/v0/tokens): on 2026-11-09 it returned **216** assets including `nep141:wrap.near`. No quote or swap was claimed.
 - The Vite/React web app and read-only MCP server build. The web shows explicit setup and empty states until a testnet factory and relayer are configured.
 
 ## Test counts
@@ -18,7 +18,7 @@
 - **Three email players on testnet:** `RELAYER_ACCOUNT`, `RELAYER_KEY_FILE`, `EMAIL_PROVIDER_API_KEY`, `EMAIL_FROM`, `AUTH_SECRET`, and `JUNO_FACTORY_ACCOUNT` are required. Email delivery and public testnet delegated transactions are unverified. The browser-generated signing key stays in memory; the relayer keeps a custodial recovery key in a gitignored file.
 - **1Click buying and BTC floor asset:** `NEAR_MAINNET_ACCOUNT` / `VITE_NEAR_MAINNET_ACCOUNT` are absent. The UI supports only `dry: true` quotes and has sent no swap. The floor vault holds NEAR only, not BTC or USDC.
 - **Rhea pool:** graduation liquidity is locked in the token contract; pool creation on Rhea testnet has not run. The fallback escrow is visible on-chain and has no withdrawal method.
-- **Publication and submission:** this repo has no remote and remains local. Nick supplies the human fields, publishes the repository and demo post, and confirms the exact submission payload. The deadline is 2026-11-14 23:59 UTC.
+- **Publication and submission:** this repo has no remote and remains local. Nick supplies the human fields, publishes the repository and demo post, and confirms the exact submission payload. The [deadline](https://nearhackathon.com/HACKATHON.md) is 2026-11-14 23:59 UTC.
 
 ## Exact demo commands
 
