@@ -87,7 +87,6 @@ export const LANDING_CSS = `
 .jl-marktag svg { width: 58%; height: 58%; }
 .st-camera { width: clamp(96px, 8.4vw, 132px); right: 25%; top: 10%; rotate: 9deg; }
 .st-balloons { width: clamp(150px, 12.4vw, 190px); right: 7%; top: 21%; rotate: 6deg; }
-.st-grad { width: clamp(80px, 6.6vw, 104px); left: 27%; top: 9%; rotate: -10deg; }
 .st-pile { width: clamp(160px, 13.4vw, 206px); right: 15%; bottom: 8%; rotate: -5deg; z-index: 2; }
 .jl-torn { position: absolute; right: -6%; bottom: -70px; width: 52%; height: 330px; z-index: 1;
   background-color: var(--sage); background-image: radial-gradient(rgba(18,21,14,.16) 1.1px, transparent 1.6px); background-size: 7px 7px;
@@ -96,7 +95,7 @@ export const LANDING_CSS = `
 @media (prefers-reduced-motion: no-preference) {
   .jl-st, .jl-torn { animation: jl-settle .8s var(--ease) both; }
   .st-coin { animation-delay: .05s; } .st-cap-wrap { animation-delay: .1s; } .st-camera { animation-delay: .14s; }
-  .st-balloons { animation-delay: .08s; } .st-grad { animation-delay: .18s; } .st-pile { animation-delay: .22s; } .jl-torn { animation-delay: .02s; }
+  .st-balloons { animation-delay: .08s; } .st-pile { animation-delay: .22s; } .jl-torn { animation-delay: .02s; }
   .jl-hero-copy { animation: jl-rise .7s var(--ease) both; }
   .jl-chip, .jl-beats > li, .jl-tech article { transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
 }
@@ -220,7 +219,6 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 1080px) {
   .jl-tape-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .jl-tech { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .st-grad { display: none; }
   .st-camera { right: 30%; top: 9%; }
 }
 @media (max-width: 860px) {
@@ -240,7 +238,7 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
   .st-sprout { width: 112px; left: 4%; top: 92px; rotate: -7deg; }
   .st-coin { width: 70px; left: auto; right: 30%; top: 108px; }
   .st-balloons { width: 104px; right: 4%; top: 104px; }
-  .st-camera, .st-grad { display: none; }
+  .st-camera { display: none; }
   .st-cap-wrap { width: 118px; left: 5%; bottom: 52px; }
   .jl-marktag { right: auto; left: 74%; top: -22%; width: 34%; }
   .jl-date { font-size: 10px; padding: 3px 8px; }

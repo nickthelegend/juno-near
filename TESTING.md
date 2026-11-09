@@ -36,4 +36,6 @@ CI-equivalent command: `pnpm test` after `pnpm run setup`. Contract tests run th
 
 Screenshots: `docs/qa/near-<route>-<width>.png`. `docs/qa/near-compare-feed.png` sets the NEAR feed at 390 beside the original Juno `juno-wif/docs/qa/02-feed.png`. Two earlier QA findings were fixed before the final pass: the reels screen built a video player for photo posts (`NotSupportedError`), and a burst of public-RPC reads occasionally failed a coin page (reads now retry twice).
 
+The web landing (`/`) was rebuilt as a full-width page and re-checked on 2026-11-09 against the production export: `qa.mjs` passed `/` and `/post` at 390 and 1440, and a full-page pass at 375, 390 and 1440 found no sideways scroll, no page errors, and the live strip reading 4 posts, 9 holders (summed across posts) and 0.7132 NEAR in floors from `juno-awkorp.testnet`. The phone on the landing shows `packages/app/public/landing/feed-390.webp`, a screenshot of `/social` taken from the running app that day.
+
 The live sealed-bid state (feed button **Bidding · 0:42**, coin-page auction card with countdown) was captured during the seed run's commit windows; those windows last one minute, so the final pass shows the settled record instead.

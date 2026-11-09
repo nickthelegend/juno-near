@@ -30,9 +30,7 @@ const ART = {
   capToss: "/art/juno-feature-3.webp",
   balloons: "/art/juno-social-square.webp",
   camera: "/art/juno-object-2.webp",
-  gradCard: "/art/juno-object-3.webp",
   coin: "/brand/flame-coin.webp",
-  postCard: "/brand/post-card.webp",
 };
 
 /** A deckled paper edge, the same for a given seed on every render. */
@@ -185,7 +183,6 @@ export default function Landing() {
             </div>
             <DieCut src={ART.camera} className="st-camera" />
             <PhotoCard src={ART.balloons} coin={byArt(posts, ART.balloons)} seed={11} className="st-balloons" />
-            <DieCut src={ART.gradCard} className="st-grad" />
             <div className="jl-torn" aria-hidden="true" />
             <PhotoCard src={ART.pileIn} coin={byArt(posts, ART.pileIn)} seed={17} className="st-pile" tape />
           </div>
