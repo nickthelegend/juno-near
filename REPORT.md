@@ -1,31 +1,31 @@
 # Juno on NEAR — build report (2026-11-09)
 
-## What works live
+## What changed
 
-- The factory creates named post-token accounts on a real local NEAR sandbox. Signed transactions exercise the sealed auction, uniform clearing and refunds, weighted bonding curve, fee split, redeemable NEAR floor, graduation escrow, dare voting and bond payout, and NEP-141 transfer callback refund.
-- A player-signed NEP-366 delegated bid was submitted by a separate relayer on the local chain; finalized RPC showed one sealed bid. `pnpm test:meta` prints its real local transaction hashes.
-- The SDK reads the live [1Click `/v0/tokens` endpoint](https://1click.chaindefuser.com/v0/tokens): on 2026-11-09 it returned **216** assets including `nep141:wrap.near`. No quote or swap was claimed.
-- The Vite/React web app and read-only MCP server build. The web shows explicit setup and empty states until a testnet factory and relayer are configured.
+- **The UI is the original Juno app.** `packages/app` is the Juno Expo app from `juno-wif/app`, imported verbatim (commit `00251dd`) and switched to NEAR in its chain layer only. Feed cards, reels, trade sheet, coin pages with their charts, the tab bar with the lime home pill and black +, sign-in sheet, theme, logo, icons and art keep their look. The Vite `packages/web` was deleted.
+- **NEAR-only features inside Juno's components:** sealed-bid opening state with a live countdown and "N sealed bids" (feed button and coin-page card), a "Floor X NEAR" chip and floor row, a Redeem side in the trade sheet, a graduation card linking the post account, a dare card, and a 1Click `dry: true` quote line in the trade sheet. Robinhood-only parts (WIF burn, USDG stock trackers, Uniswap, Privy, server comments/watchlists/plans) are gone.
+- **Contract:** a capped on-chain fill log (`trades()`, with NEP-297 style events) and `holders()`, so charts and holder lists come from the chain with no indexer.
+- **Live on NEAR testnet:** factory `juno-awkorp.testnet` (created via the `testnet` registrar), players `mira`/`kai`/`oto`, posts `sprout`, `pile-in` (graduated), `cap-toss` (dare, finalised) and `balloons`. 46 transactions in `deployments/testnet-2026-11-09.json` and the README table.
 
 ## Test counts
 
-`pnpm test` **passed: 19 tests, 0 failed, 0 skipped** — 1 Rust curve math, 7 signed market sandbox, 1 signed NEP-366 sandbox flow, 6 TypeScript SDK, 3 relayer policy tests, and 1 MCP stdio integration test. The production web build and TypeScript checks passed. Browser visual inspection at 375px was unavailable because the browser-access host did not start; responsive CSS is present but that visual gate is unverified.
+`pnpm test`: **20 passed, 0 failed, 0 skipped** (1 Rust unit, 7 sandbox integration, 1 NEP-366 sandbox, 7 SDK, 1 MCP, 3 relayer policy), plus TypeScript checks of every package including the app. The web export renders at 390 and 1440 in headless Chrome on every route (TESTING.md, `docs/qa/`).
 
-## BLOCKED
+## Honest gaps
 
-- **Public testnet transaction evidence:** the official account helper returned **HTTP 429, “retry in 2 hours”** before account creation. No testnet tx hash or explorer link exists yet. Retry `pnpm testnet:run --demo-namespace` when the limit clears; it creates one funded account and three player sub-accounts, then records real hashes in `deployments/testnet-YYYY-MM-DD.json`.
-- **Exact `<slug>.juno.testnet` names:** Nick must provide the authorized `juno.testnet` key via `NEAR_TESTNET_ACCOUNT=juno.testnet` and `NEAR_TESTNET_KEY_FILE` in gitignored `.env`. The existing account is never overwritten by the runner.
-- **Three email players on testnet:** `RELAYER_ACCOUNT`, `RELAYER_KEY_FILE`, `EMAIL_PROVIDER_API_KEY`, `EMAIL_FROM`, `AUTH_SECRET`, and `JUNO_FACTORY_ACCOUNT` are required. Email delivery and public testnet delegated transactions are unverified. The browser-generated signing key stays in memory; the relayer keeps a custodial recovery key in a gitignored file.
-- **1Click buying and BTC floor asset:** `NEAR_MAINNET_ACCOUNT` / `VITE_NEAR_MAINNET_ACCOUNT` are absent. The UI supports only `dry: true` quotes and has sent no swap. The floor vault holds NEAR only, not BTC or USDC.
-- **Rhea pool:** graduation liquidity is locked in the token contract; pool creation on Rhea testnet has not run. The fallback escrow is visible on-chain and has no withdrawal method.
-- **Publication and submission:** this repo has no remote and remains local. Nick supplies the human fields, publishes the repository and demo post, and confirms the exact submission payload. The [deadline](https://nearhackathon.com/HACKATHON.md) is 2026-11-14 23:59 UTC.
+- No transaction has been signed from the UI yet: email sign-in needs the relayer's Resend key (BLOCKED.md #2).
+- Live NEP-366 on testnet is not done: the relayer fronts the delegate action's deposit and had no spare NEAR (BLOCKED.md #3). It passes on the local sandbox.
+- In wave 2 the `cap-toss` bids were committed but not revealed in time, so that auction settled with no fills (penalty applied, as designed), and `balloons` opened with no bids. Wave 1 shows full auctions with clearing prices.
+- Likes and follows are device-local (there is no Juno server on NEAR); comments were removed.
+- FastNEAR's free RPC throttles bursts with a 429 that has no CORS header; the app falls back to other public testnet RPCs for reads.
 
-## Exact demo commands
+## Demo commands
 
 ```bash
-pnpm run setup
-pnpm test
-pnpm dev
+pnpm run setup && pnpm test
+cp packages/app/.env.example packages/app/.env.local   # EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet
+pnpm web:export && pnpm web:serve                      # http://127.0.0.1:8091
+pnpm qa:web                                            # screenshots into docs/qa
 ```
 
-Open `http://127.0.0.1:5173` to see the feed and setup states. For the signed relayer demonstration alone, run `pnpm test:meta`. For a live testnet run after the faucet limit clears, run `pnpm build:contract && pnpm testnet:run --demo-namespace`; for the required namespace, configure the `juno.testnet` credentials in `.env` and run `pnpm build:contract && pnpm testnet:run`. To enable email sign-in after credentials are configured, run `pnpm relayer` in another terminal and set `VITE_FACTORY_ACCOUNT` and `VITE_RELAYER_URL` in `packages/web/.env`. Stop `pnpm dev` and `pnpm relayer` after the demo.
+Stop `pnpm web:serve` (and `pnpm relayer` if started) afterwards.

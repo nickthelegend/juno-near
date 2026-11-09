@@ -19,3 +19,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Reuse notice: packages/app is the Juno Expo app carried over from the
+author's earlier Juno project (juno-wif, Robinhood Chain) and adapted to
+NEAR; see "Prior work" in README.md. Expo template portions of packages/app
+are Copyright (c) 2015-present 650 Industries, Inc. (aka Expo), MIT License.

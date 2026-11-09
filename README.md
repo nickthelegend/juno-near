@@ -1,31 +1,102 @@
 # Juno on NEAR
 
-Every post is a coin. The first minute is a sealed auction with one clearing price; after a minute for reveal, tokens trade on a 16-segment bonding curve. A NEAR vault backs a redeemable floor for every token. The problem is launch sniping and coins with no exit value. This edition makes launch allocation independent of transaction order and keeps a separate redemption reserve.
+Every post is a coin. Juno is a social feed where posting a photo launches a market: the post becomes its own NEAR account (`<name>.<factory>`) holding a token, a one-minute **sealed-bid opening auction** with one clearing price, a 16-segment **bonding curve** priced in NEAR, a **redeemable NEAR floor** every holder can cash against, and optional **dare bonds**. The problem it answers: launch sniping (first transaction wins) and meme coins with no exit value.
 
-**Status on 2026-11-09:** The contract runs in a real local NEAR sandbox. A public testnet run is blocked by the testnet account helper's HTTP 429 response (two-hour retry window) and the missing key for `juno.testnet`; no public testnet transaction is claimed. See [BLOCKED.md](BLOCKED.md) and [REPORT.md](REPORT.md).
+The app is **the original Juno app** (Expo / React Native, same feed, reels, trade sheet, coin pages, tab bar, sign-in sheet, theme and art) with only its chain layer swapped from EVM to NEAR. See [Prior work](#prior-work).
+
+**Status on 2026-11-09:** live on NEAR testnet. Factory [`juno-awkorp.testnet`](https://testnet.nearblocks.io/address/juno-awkorp.testnet) holds four seeded posts with real auctions, trades, a graduation, a floor redemption and a finalised dare: 46 transactions, all linked below. Email sign-in, live NEP-366 on testnet and 1Click quotes need credentials; see [BLOCKED.md](BLOCKED.md).
 
 ## Verify it
 
 ```bash
-pnpm run setup
-pnpm test
+pnpm run setup          # packages, Rust 1.95 + cargo-near, NEAR sandbox binary in .tools/
+pnpm test               # 20 tests on a real local NEAR sandbox; see TESTING.md
 ```
 
-`pnpm run setup` installs packages and downloads the NEAR sandbox binary into `.tools/` on this external-drive project. `pnpm test` builds the WASM and web app, then runs the Rust math, seven signed market sandbox transaction tests, a signed NEP-366 sandbox relay, SDK math, relayer policy tests, and an MCP stdio integration test. No test uses a chain stub. See [TESTING.md](TESTING.md) for real counts and attack coverage.
+See the live app against testnet:
 
-To see the UI, run `pnpm dev` and open `http://127.0.0.1:5173`. With no factory configured it shows **Setup required: VITE_FACTORY_ACCOUNT** and a clear empty feed. After a testnet deployment, put `VITE_FACTORY_ACCOUNT=<factory account>` in `packages/web/.env`; the feed then reads `posts` and each `market` from `https://test.rpc.fastnear.com`. Open a card to see the live bid count, reveal countdown, curve, floor, dare, and creator earnings. Wallet actions use MyNearWallet testnet. Email sign-in requires the configured relayer described below.
+```bash
+cp packages/app/.env.example packages/app/.env.local   # set EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet
+pnpm web:export         # expo export --platform web → packages/app/dist
+pnpm web:serve          # http://127.0.0.1:8091
+```
+
+Do this → see that:
+
+- Open `/social` → the feed of four posts read from `juno-awkorp.testnet`: market cap in NEAR, a **Floor X NEAR** chip, *Bought by* names from the on-chain fill log, and **Graduated** on `$PILE-IN`.
+- Open `/coin/pile-in.juno-awkorp.testnet` → a price chart drawn from the contract's own `trades()` log (auction clearing at 0.0006 NEAR, then the 800-token graduation buy), the graduation escrow card, holders read from `holders()`, and **Redeem against the floor**.
+- Open `/coin/cap-toss.juno-awkorp.testnet` → the opening-auction record (2 sealed bids, 0 revealed: both paid the 1% penalty) and the dare card (bond 0.5 NEAR, proof posted, final).
+- Tap **Buy** on any curve post → the trade sheet quotes from the contract (`quote_buy`, fee, *Added to the floor*, impact), has a **Redeem** side, and shows the 1Click any-chain line (Setup required until `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT` is set).
+- Tap **+** → *Post a photo* or *Post a dare*; launching calls `create_post` with 3 NEAR (+ bond) through the relayer.
+- Run `pnpm testnet:seed --wave 1` against a fresh account (delete `.near-credentials/seed.json` first) → a new factory, players and posts; while a post is in its first minute the feed card shows **Bidding · 0:42** and the coin page shows the live sealed-bid card with a countdown.
+
+Screenshots of every route at 390 and 1440 px are in [docs/qa](docs/qa).
 
 ## Deployment and evidence
 
-| Network | Contract / action | Evidence | Status |
+| Network | What | Evidence | Status |
 | --- | --- | --- | --- |
-| Local NEAR sandbox | Factory creates a named token sub-account | `pnpm test:contract` replays signed transactions and rejection cases | **PASS** (7 integration tests, 0 skipped) |
-| NEAR testnet | `<slug>.juno.testnet` factory and 3-player auction, trades, graduation | Explorer links will be added from `deployments/testnet-YYYY-MM-DD.json` after a real run | **BLOCKED:** `NEAR_TESTNET_KEY_FILE` for `juno.testnet` |
-| Local NEAR sandbox | NEP-366 signed bid from a player key, submitted by a separate relayer | `pnpm test:meta` prints real sandbox tx hashes and checks finalized bid count | **PASS** |
-| NEAR testnet demo namespace | Same sequence under a temporary named account | `pnpm testnet:run --demo-namespace` | **BLOCKED:** official helper returned HTTP 429, retry after two hours |
-| NEAR mainnet 1Click | Dry quote only | [1Click quote API](https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/making-a-request) | **BLOCKED:** `NEAR_MAINNET_ACCOUNT` / `VITE_NEAR_MAINNET_ACCOUNT`; no swap sent |
+| NEAR testnet | Factory `juno-awkorp.testnet`, 3 players, 4 posts: sealed bids, reveals, settlement, refunds, buys, a sell, graduation, floor redemption, hidden-bid penalty, dare proof/vote/finalise | [deployments/testnet-2026-11-09.json](deployments/testnet-2026-11-09.json), table below | **PASS** (46 txs, 45 succeeded, 1 rejected on purpose: `ERR_NO_BID`) |
+| Local NEAR sandbox | Factory, named post account, auction, curve, floor, dare, NEP-141 refund, trade log | `pnpm test:contract` | **PASS** (7 integration + 1 unit) |
+| Local NEAR sandbox | NEP-366: player signs a sealed bid, a separate relayer submits it | `pnpm test:meta` | **PASS** |
+| NEAR testnet | NEP-366 relayed bid | attempted in `testnet:seed`; the relayer account lacked the 1 NEAR the delegate action attaches | **BLOCKED:** funds, see BLOCKED.md |
+| NEAR testnet | Required namespace `<slug>.juno.testnet` | `pnpm testnet:run` | **BLOCKED:** `NEAR_TESTNET_KEY_FILE` for `juno.testnet` |
+| NEAR mainnet 1Click | `dry: true` quote in the trade sheet | [1Click API](https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart) | **BLOCKED:** `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT`; no swap ever sent |
 
-There is no Git remote. Nick will publish this repository before the [2026-11-14 23:59 UTC deadline](https://nearhackathon.com/HACKATHON.md).
+Funding: `juno-awkorp.testnet` was created with `create_account` on the `testnet` registrar (8 NEAR) and topped up by transfer from a funded testnet account file read in code only (`JUNO_FUNDER_FILE`).
+
+### Testnet transactions
+
+Factory: [juno-awkorp.testnet](https://testnet.nearblocks.io/address/juno-awkorp.testnet) · players: [mira.juno-awkorp.testnet](https://testnet.nearblocks.io/address/mira.juno-awkorp.testnet), [kai.juno-awkorp.testnet](https://testnet.nearblocks.io/address/kai.juno-awkorp.testnet), [oto.juno-awkorp.testnet](https://testnet.nearblocks.io/address/oto.juno-awkorp.testnet)
+
+| # | Step | Signer | Receiver | Transaction |
+| ---: | --- | --- | --- | --- |
+| 1 | registrar_create_account | funder | testnet | [DbZNbHe9…](https://testnet.nearblocks.io/txns/DbZNbHe9hBMaMpkY2UAvqXsWx1T2oYajJYQYYGs4eGb8) |
+| 2 | top_up_root_from_engye-5d3dc3dd57 | funder | juno-awkorp.testnet | [4sxQQdMU…](https://testnet.nearblocks.io/txns/4sxQQdMU7spZ3Xeh4MEFzFU8xUcVHKqwroS9v6LG7CjZ) |
+| 3 | top_up_root_from_engye-4f18d8544b | funder | juno-awkorp.testnet | [9d4izNnb…](https://testnet.nearblocks.io/txns/9d4izNnbCsZyXPsPt2qYQjDKknrLH2c52e3Jb7HmfLxb) |
+| 4 | top_up_root_from_engye-90efb5817e | funder | juno-awkorp.testnet | [C9DQf8pW…](https://testnet.nearblocks.io/txns/C9DQf8pWt2pn4eRwJXY3TaFjr45UEH7DuKV4kxBkLZXu) |
+| 5 | create_player_mira | juno-awkorp.testnet | mira | [AgsntQno…](https://testnet.nearblocks.io/txns/AgsntQnoaFuTXdaNrZ3BxBcAQi6L4bPB3v9HDyTedCPU) |
+| 6 | create_player_kai | juno-awkorp.testnet | kai | [GaCz1D7r…](https://testnet.nearblocks.io/txns/GaCz1D7riGHoac4HBp83bW4R5Wh3hXaWgUXQHeURr7CT) |
+| 7 | create_player_oto | juno-awkorp.testnet | oto | [FaaHTMZJ…](https://testnet.nearblocks.io/txns/FaaHTMZJcPM3PeXys9c64PanUVuQayHEsn542ZgWkWFw) |
+| 8 | deploy_factory | juno-awkorp.testnet | juno-awkorp.testnet | [HvSXP63t…](https://testnet.nearblocks.io/txns/HvSXP63tQhyZSPujjj3dVN1eZPFqLXRxTGD19qHMpzxx) |
+| 9 | upload_token_code | juno-awkorp.testnet | juno-awkorp.testnet | [sweTXR5m…](https://testnet.nearblocks.io/txns/sweTXR5mr7fGuMYUM2mfmyYATuHA9Bag3R3MiRcX5jk) |
+| 10 | create_post_sprout | mira | juno-awkorp.testnet | [GnmxDbdg…](https://testnet.nearblocks.io/txns/GnmxDbdgj4wqqakwbiDjKpQZCzryyJ8NeCGdutSdgrT1) |
+| 11 | create_post_pile-in | kai | juno-awkorp.testnet | [BcKhu61P…](https://testnet.nearblocks.io/txns/BcKhu61PLii7PWvwwV4EpSBDaRgSAZ15FS74nSZfN8Mx) |
+| 12 | sprout_sealed_bid_kai | kai | sprout | [Gm9ccwjN…](https://testnet.nearblocks.io/txns/Gm9ccwjNFe12Nk9zmGS4vXMj9M5DJc21zSzmyxfhfbih) |
+| 13 | sprout_sealed_bid_oto | oto | sprout | [9WsPTaa5…](https://testnet.nearblocks.io/txns/9WsPTaa5inciUT8Jkhtjy32DKie9HCcAhxc1StwTggW1) |
+| 14 | pile-in_sealed_bid_mira | mira | pile-in | [B3jeRapt…](https://testnet.nearblocks.io/txns/B3jeRaptKc78kK6xm5ypjYJu2u33eUj5f52oRMEF8GLV) |
+| 15 | pile-in_sealed_bid_oto | oto | pile-in | [FNHtQKCH…](https://testnet.nearblocks.io/txns/FNHtQKCHvUwrG4RKUvBvVjXcyK2LNmSaxA2LgwX4qmdk) |
+| 16 | sprout_reveal_kai | kai | sprout | [2TYV1PHh…](https://testnet.nearblocks.io/txns/2TYV1PHhkUo6JyuumEqSN7CCspfvq7JF7y6X61GrXYxM) |
+| 17 | sprout_reveal_oto | oto | sprout | [C4HwyZ5p…](https://testnet.nearblocks.io/txns/C4HwyZ5pCZExLSPLqCLTj9Rs84KJznhmrd8Tu7aJiwj2) |
+| 18 | pile-in_reveal_mira | mira | pile-in | [56xkUVAc…](https://testnet.nearblocks.io/txns/56xkUVAco2Zs9wQ73CBUco4kCHB13gSUsCtyU6wQNxpm) |
+| 19 | pile-in_reveal_oto | oto | pile-in | [DJRnNC46…](https://testnet.nearblocks.io/txns/DJRnNC46bRjVfLza7T484K2Zn8YAWARCquH5FmMFvAoY) |
+| 20 | sprout_settle | mira | sprout | [5TvNxqnE…](https://testnet.nearblocks.io/txns/5TvNxqnEZNnH6DHoTrvqSpuWzQKcJ2DtvwFFtuuzXAPa) |
+| 21 | sprout_refund_kai | kai | sprout | [AMS2qEGH…](https://testnet.nearblocks.io/txns/AMS2qEGHLhyFY7yEQguyetJrjkDnpmbW3UMd24hkat1N) |
+| 22 | sprout_refund_oto | oto | sprout | [7ddxkpdb…](https://testnet.nearblocks.io/txns/7ddxkpdbXkaFmgdP8g3ujCLRPLix1REeSpSzznMP78Fv) |
+| 23 | sprout_buy_25 | oto | sprout | [Gj48SeoZ…](https://testnet.nearblocks.io/txns/Gj48SeoZXw8UBiox193mifE9J8kRnP9xR6KnrmBYrosZ) |
+| 24 | sprout_buy_10 | mira | sprout | [2AgeMa4Q…](https://testnet.nearblocks.io/txns/2AgeMa4QCjMAUv7Vszn2eMPSd1B5xER5NvRgdgp9AWky) |
+| 25 | sprout_sell_5 | oto | sprout | [AkrBvHGZ…](https://testnet.nearblocks.io/txns/AkrBvHGZkxDHGU2iVyCTMqpppNAE9Qhym87iQEgVnpFj) |
+| 26 | pile-in_settle | kai | pile-in | [EK9gCafY…](https://testnet.nearblocks.io/txns/EK9gCafYjaBgYjJ2YhZCHPjiXZVxnRrRhEFitJ5bmdRr) |
+| 27 | pile-in_refund_mira | mira | pile-in | [8pt6i3Hs…](https://testnet.nearblocks.io/txns/8pt6i3HsMmtaWwQ4tJNcMiaVppHi3aemG6qCrDeatYRn) |
+| 28 | pile-in_refund_oto | oto | pile-in | [3Wungznf…](https://testnet.nearblocks.io/txns/3WungznfVE34GULbSPGXVuHVmySrokscbbmDq2WQmNUQ) |
+| 29 | pile_in_buy_800_graduate | kai | pile-in | [8Z7qTNe6…](https://testnet.nearblocks.io/txns/8Z7qTNe6vizN6dnAhexaP4TyCYE7FnSaZSm3WJ3JJ4LH) |
+| 30 | pile_in_redeem_20_floor | mira | pile-in | [3y1Lcx1X…](https://testnet.nearblocks.io/txns/3y1Lcx1Xt1KSLAUMTYHxbcLZ5UGkH1czhU84ENCrFgDG) |
+| 31 | top_up_root_from_engye-90efb5817e | funder | juno-awkorp.testnet | [55rAQYQM…](https://testnet.nearblocks.io/txns/55rAQYQMJYreeQ5mXxWzkpnHrhefTZrnJqwz7H9HuvLF) |
+| 32 | create_post_cap-toss | oto | juno-awkorp.testnet | [HqzVz5KT…](https://testnet.nearblocks.io/txns/HqzVz5KTBEvNHUcaD8G54hiwzX7GLBU5dfAb9rsMNnTv) |
+| 33 | create_post_balloons | mira | juno-awkorp.testnet | [Fk7jYkJ7…](https://testnet.nearblocks.io/txns/Fk7jYkJ7AuCrsEcvmj5w7zdY5seFNFWe3wHQWw7wNHJB) |
+| 34 | cap-toss_sealed_bid_mira | mira | cap-toss | [C5cZQdsM…](https://testnet.nearblocks.io/txns/C5cZQdsM91R7cSrfBeLmHvPLijMuGvih2g3GRNX1u5oc) |
+| 35 | cap-toss_sealed_bid_kai | kai | cap-toss | [JCYYivQC…](https://testnet.nearblocks.io/txns/JCYYivQCdsHcGCYj8iYKZJfJWymVuPKoUWx5QWcTJbGZ) |
+| 36 | cap-toss_settle | oto | cap-toss | [DxqPU5gp…](https://testnet.nearblocks.io/txns/DxqPU5gpm1CnD2TadwsJg9US6oLPgCbUQGqcgfAspPto) |
+| 37 | cap-toss_refund_mira | mira | cap-toss | [AoaJLDNg…](https://testnet.nearblocks.io/txns/AoaJLDNgcJKZ2RvCJoCgsYqTAYzySSiNSbNHw99Hivwu) |
+| 38 | cap-toss_refund_kai | kai | cap-toss | [GndJvZG6…](https://testnet.nearblocks.io/txns/GndJvZG6jDckgMEsHr2sNaC8cWGya8DaXkvnmMd8PxNi) |
+| 39 | cap_toss_buy_40 | kai | cap-toss | [6wgZR5Di…](https://testnet.nearblocks.io/txns/6wgZR5DiVCfBDkoueY6W3cBaaGsYbGSi9wm3BMFHpr7D) |
+| 40 | cap_toss_submit_proof | oto | cap-toss | [6sWSsRDx…](https://testnet.nearblocks.io/txns/6sWSsRDxfeq5NxopqVwcP9u87RiCGn6hJmJN5CWAjJvE) |
+| 41 | cap_toss_vote_yes | kai | cap-toss | [F6CoijdD…](https://testnet.nearblocks.io/txns/F6CoijdDdFc269SEtNxJHwBgfPhruRxNZqnazeUdMwPH) |
+| 42 | balloons_settle | mira | balloons | [ESi2b1oL…](https://testnet.nearblocks.io/txns/ESi2b1oL3X3PXGggBYrkSeBCLi164UY5CtybN1Mxo6KD) |
+| 43 | balloons_refund_oto_rejected_ERR_NO_BID | oto | balloons | [AWWXogaz…](https://testnet.nearblocks.io/txns/AWWXogazAWUYaLxKVVCLYfekpHkng9kmzqQ8Q89RPedK) |
+| 44 | balloons_buy_60 | mira | balloons | [G97kLxSJ…](https://testnet.nearblocks.io/txns/G97kLxSJ6XfcRBRbbUxo7pHUwTfFgb1gKUcQGVHJWWMR) |
+| 45 | balloons_buy_30 | kai | balloons | [H6LtScqR…](https://testnet.nearblocks.io/txns/H6LtScqRxoRRsko9PWHEiHqF6poi65Dxe2CWcWGqQv4H) |
+| 46 | cap_toss_finalize_dare | oto | cap-toss | [5rQm2yRz…](https://testnet.nearblocks.io/txns/5rQm2yRzXGTo1FNo6wtdxrx5XUAkqKakMevjLwvkakxz) |
 
 ## How a market works
 
@@ -39,22 +110,35 @@ There is no Git remote. Nick will publish this repository before the [2026-11-14
 
 The token implements the NEP-141 core methods `ft_total_supply`, `ft_balance_of`, `ft_transfer`, `ft_transfer_call` with failed receiver refund, and NEP-148 `ft_metadata`. It has 0 decimals and 1,000 maximum initial sale units. `create_post` is capped at 64 auction bidders. The factory locks its uploaded token code after one upload.
 
+The contract also keeps a capped 120-entry fill log (`trades()`, one entry per auction allocation, buy, sell and redemption, each with a NEP-297 style `EVENT_JSON` log) and a `holders()` view, so the app draws charts and holder lists from the chain without an indexer.
+
 ## NEAR features used
 
-- **Named sub-accounts:** each post is its own token and vault account. The intended production namespace is `<slug>.juno.testnet`; that exact namespace requires Nick's key for the already-existing `juno.testnet` account.
-- **NEP-141:** transferable whole-unit post coins with token metadata and transfer callbacks.
-- **NEP-366 meta transactions:** the relayer accepts signed delegate actions only from registered email-player accounts to the factory or its post sub-accounts, with method, deposit, and gas limits. It pays gas; the player account pays deposits. This path is implemented but awaits email and relayer credentials for a live run.
-- **NEAR Intents 1Click:** the web requests mainnet `dry: true` quotes from live 1Click. There is no Intents testnet. It never sends a deposit or claims a swap. `ONECLICK_JWT` is optional; unauthenticated quotes use the event's stated 0.2% fee schedule.
+- **Named sub-accounts:** each post is its own token and vault account under the factory (`sprout.juno-awkorp.testnet`). The intended production namespace is `<slug>.juno.testnet`, which needs the key for the existing `juno.testnet`.
+- **NEP-141 / NEP-148:** transferable whole-unit post coins with metadata and transfer callbacks.
+- **NEP-366 meta transactions:** the app signs every call as a delegate action with a key generated on the device; the relayer checks it against an allowlist (receiver, method, gas, deposit caps) and submits it. Finding from the testnet run: the **relayer fronts both gas and any attached deposit** of the delegated action (a sealed bid attaches 1 NEAR, a launch 3 NEAR), so the policy's deposit caps bound the relayer's exposure.
+- **NEAR Intents 1Click:** the trade sheet requests a mainnet `dry: true` EXACT_OUTPUT quote (USDC on Base → the NEAR a buy costs). There is no Intents testnet, and no swap is ever sent.
+
+## The app (`packages/app`)
+
+Expo Router app; web via `expo export --platform web`, served by `pnpm web:serve` on port 8091 (`pnpm dev` runs the Expo dev server on the same port).
+
+- `lib/api.ts` reads the factory's `posts`, then each post's `market`, `trades` and `holders` through `@juno/sdk`; buy quotes come from the contract's `quote_buy`, sell and redemption quotes from the SDK's mirror of the contract maths.
+- `lib/wallet.tsx` keeps a device key (browser storage on web, secure store on a phone) and sends NEP-366 delegate actions to the relayer. `components/SignInSheet.tsx` keeps Juno's sheet; the relayer sends the email code.
+- `components/Floor.tsx` holds the NEAR-only pieces drawn in the app's existing styles: the floor panel, floor chip, sealed-bid auction card with countdown, graduation card and dare card.
+- Removed from the Robinhood build: the WIF burn counter, USDG stock trackers, Uniswap graduation, Privy, and the server-backed comments, watchlists and savings plans (there is no Juno server on NEAR). Likes and follows are kept on the device only and never shown as anyone else's.
+
+Configuration (`packages/app/.env.local`, gitignored; names in `.env.example`): `EXPO_PUBLIC_JUNO_FACTORY`, `EXPO_PUBLIC_NEAR_RPC_URL`, `EXPO_PUBLIC_RELAYER_URL`, `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT`, `EXPO_PUBLIC_APP_URL`. A missing value shows **Setup required: NAME** on screen.
 
 ## Email and relayer setup
 
-Put secrets only in the gitignored root `.env` or a key file under `.near-credentials/`. Configure `RELAYER_ACCOUNT`, `RELAYER_KEY_FILE`, `JUNO_FACTORY_ACCOUNT`, `EMAIL_PROVIDER_API_KEY`, `EMAIL_FROM`, and `AUTH_SECRET`, then run `pnpm relayer`. Set `VITE_RELAYER_URL=http://127.0.0.1:8787` and `VITE_FACTORY_ACCOUNT` in `packages/web/.env`, then run `pnpm dev`.
+Secrets go only in the gitignored root `.env` or a key file under `.near-credentials/`. Configure `RELAYER_ACCOUNT`, `RELAYER_KEY_FILE`, `JUNO_FACTORY_ACCOUNT`, `EMAIL_PROVIDER_API_KEY`, `EMAIL_FROM`, `AUTH_SECRET` (and `WEB_ORIGIN`, default `http://127.0.0.1:8091`), then run `pnpm relayer` and set `EXPO_PUBLIC_RELAYER_URL=http://127.0.0.1:8787` for the app.
 
-The relayer emails a six-digit code using Resend, creates and funds a named testnet player sub-account, and returns the creation transaction hash. The browser creates the player signing key locally, holds it only in memory for that session, and signs NEP-366 delegated actions. The relayer retains a recovery key for each player in gitignored `.near-credentials/email-users.json`; **this testnet email mode is custodial**. The server binds to localhost by default and enforces an origin, per-email request limit, and signed-action allowlist. A production deployment needs persistent shared rate limits and a security review.
+The relayer emails a six-digit code (Resend), creates and funds a named testnet player sub-account with the device's public key, and keeps a recovery key in gitignored `.near-credentials/email-users.json`, so **this testnet email mode is custodial**. It binds to localhost and enforces an origin, a per-email request limit and the signed-action allowlist. A production deployment needs shared rate limits and a security review.
 
 ## Prior work
 
-Juno already exists on Robinhood Chain in the sibling local `juno-wif` project. Its feed concept, brand artwork, and content-curve weights are prior work. This NEAR edition, including the named account factory, sealed auction, vault floor, dare bond, relayer, SDK, and web port, was built during the hackathon window. The Robinhood repository is not a remote of this one. Source artwork copied from `juno-wif/app/public/art`; the original React Native feed cannot run in Vite, so its post-first layout was rebuilt as clean React components.
+Juno already exists: the sibling local project `juno-wif` is Juno on Robinhood Chain. **`packages/app` is that Juno Expo app, imported verbatim in commit `00251dd`** and then changed only in its chain layer (`lib/api.ts`, `lib/wallet.tsx`, `lib/chain.ts`, `lib/markets.ts`) and in the components that show NEAR-only state; its screens, components, theme, logo, icons, fonts and artwork (`public/art`, `public/brand`) are reused. The curve weights are ported from Juno's earlier Rust curve. Built during the hackathon window for this NEAR edition: the factory and post contract (sealed auction, vault floor, dare bond, trade log), the SDK, the relayer, the MCP server, the NEAR data and signing layer of the app, and the testnet deployment. The Robinhood repository is not a remote of this one. The LICENSE carries the same reuse notice.
 
 ## Team and other projects
 
