@@ -50,37 +50,16 @@ import { theme } from "../../theme";
 /**
  * One coin: what it is, what it costs, and how to trade it.
  *
- * ## Why the chart is the whole top of the screen
+ * The chart is the whole top of the screen, edge to edge, and everything else
+ * is arranged underneath in the order the questions get asked: what is this,
+ * how big is it, who else is here, what are the details.
  *
- * Every other arrangement of this page buried the price in a card among other
- * cards, which is a claim that the price is one fact of several. It is not —
- * it is the reason anyone opened the screen. So it is edge to edge, with no
- * container around it, and everything else is arranged underneath in the order
- * the questions actually get asked: *what is this*, *how big is it*, *who else
- * is here*, *what are the details*.
- *
- * ## Why the rest is tabbed rather than stacked
- *
- * Activity, holders, comments and metadata are four answers to four different
- * questions, and only one is wanted at a time. Stacked, they made the page
- * thousands of points long and pushed the buy button off the bottom of it;
- * tabbed, the action bar is always in reach and the page never changes height
- * when a slow read lands.
- *
- * ## The band card and the savings card
- *
- * A stock tracker's band card — the Chainlink price, the curve's price, how far
- * apart they are, the band the contract enforces and whether the market is
- * open — sits right under the price, because on a tracker that *is* the price
- * story. The savings card lives under **Details**. The watch toggle stays in
- * the nav bar, where it is one tap from anywhere on the page.
- *
- * ## After the curve
- *
- * When the curve sells its last token anyone can graduate it: the contract
- * moves the tokens and the quote it raised into a Uniswap v3 pool. The page
- * offers that button when the curve is full, and once graduated it links out
- * to the pool instead of offering a buy.
+ * On NEAR a coin is a post account. Under the size band sit the three things
+ * only this build has: the redeemable floor, the sealed-bid opening auction
+ * (live with a countdown while it runs, a record of the clearing price after)
+ * and the dare. When the curve sells its last token it graduates by itself:
+ * the curve closes, its liquidity stays in the post account's escrow, and the
+ * floor stays redeemable.
  */
 
 const TABS = [
@@ -128,11 +107,7 @@ export default function CoinScreen() {
   }, [copied]);
 
   const art = coin ? juno.still(coin.media) : null;
-  /*
-   * Every figure on this screen is in the coin's own quote token (WIF for a
-   * post, USDG for a tracker): that is what the curve prices in. The server's
-   * history arrives in USD when it had a rate, so it converts back here.
-   */
+  /* Every figure on this screen is in NEAR, the unit the curve prices in. */
   const unit = coin?.quote.symbol ?? "NEAR";
   const toQuote = (value: number) =>
     coin && coin.marketCapCurrency === "USD" && coin.quoteUsdRate ? value / coin.quoteUsdRate : value;

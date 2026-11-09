@@ -7,7 +7,7 @@ import { Caption, Chevron, Col, Label } from "./kit";
 import { theme } from "../theme";
 
 /**
- * What the + button opens: post a photo, or post a reel.
+ * What the + button opens: post a photo, or post a dare.
  *
  * Both launch a market — on Juno a post *is* its bonding curve — so both hand
  * off to the launch screen with the format chosen. A sheet rather than a
@@ -30,7 +30,7 @@ export function CreateSheet({
   visible: boolean;
   onClose: () => void;
   /** Hand off to the launch screen with the chosen format. */
-  onLaunch: (format: "post" | "reel") => void;
+  onLaunch: (format: "post" | "dare") => void;
 }) {
   return (
     <BottomSheet visible={visible} onClose={onClose}>
@@ -38,7 +38,7 @@ export function CreateSheet({
         <Option
           icon={<CoinIcon />}
           title="Post a photo"
-          blurb="It goes live with its own bonding curve."
+          blurb="It becomes its own NEAR account, opening with a sealed-bid auction."
           accent
           onPress={() => {
             onClose();
@@ -47,11 +47,11 @@ export function CreateSheet({
         />
         <Option
           icon={<ReelIcon />}
-          title="Post a reel"
-          blurb="Vertical video with a market of its own."
+          title="Post a dare"
+          blurb="Put a NEAR bond behind a promise. Holders judge the proof."
           onPress={() => {
             onClose();
-            onLaunch("reel");
+            onLaunch("dare");
           }}
         />
       </Body_>

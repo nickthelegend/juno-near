@@ -20,7 +20,7 @@ import { theme } from "../theme";
 /**
  * What only Juno on NEAR has, drawn in the app's existing surfaces.
  *
- * - The ink panel (where the $WIF burn counter was): NEAR held in every
+ * - The ink panel in the feed rail: NEAR held in every
  *   post's redeemable floor, live sealed bids, and the newest fill.
  * - A floor chip under each post, in the same pill as the old burned chip.
  * - On a coin page: the sealed-bid opening auction (with its countdown), the
@@ -173,7 +173,7 @@ export function FloorPanel() {
           <FloorGlyph color={c.lime} />
           <Text style={s.panelLabel}>{setup ? "Setup required" : "Could not read NEAR testnet"}</Text>
         </Row>
-        <Text style={s.panelDetail}>{markets.error ?? "The RPC did not answer."}</Text>
+        <Text style={s.panelDetail}>{(markets.error ?? "The RPC did not answer.").replace(/^Setup required:\s*/i, "Set ")}</Text>
         {setup ? null : (
           <Button label="Try again" variant="lime" onPress={markets.refresh} style={{ alignSelf: "flex-start", marginTop: 14 }} />
         )}

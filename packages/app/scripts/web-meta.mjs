@@ -11,9 +11,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const file = new URL("../dist/index.html", import.meta.url);
 const app = process.env.EXPO_PUBLIC_APP_URL ?? "";
-const title = "Juno — every post is a $WIF market";
+const title = "Juno on NEAR — every post is a market";
 const description =
-  "Post a photo or a reel and it launches its own token on a bonding curve priced in $WIF. Creators earn half of every fee; the other half is burned. Stock trackers held to Chainlink prices on-chain.";
+  "Post a photo and it launches as its own NEAR account: a one-minute sealed-bid opening auction, a bonding curve priced in NEAR, a floor every holder can redeem, and dare bonds. NEAR testnet.";
 const image = `${app.replace(/\/$/, "")}/brand/og.webp`;
 
 const tags = [

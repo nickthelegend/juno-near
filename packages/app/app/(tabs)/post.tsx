@@ -1,5 +1,5 @@
 import { Image as ExpoImage } from "expo-image";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -62,7 +62,11 @@ export default function PostScreen() {
   const [mediaUrl, setMediaUrl] = useState("");
   const [caption, setCaption] = useState("");
   const [name, setName] = useState("");
-  const [kind, setKind] = useState<"plain" | "dare">("plain");
+  const { format } = useLocalSearchParams<{ format?: string }>();
+  const [kind, setKind] = useState<"plain" | "dare">(format === "dare" ? "dare" : "plain");
+  useEffect(() => {
+    if (format === "dare" || format === "post") setKind(format === "dare" ? "dare" : "plain");
+  }, [format]);
   const [dare, setDare] = useState("");
   const [bond, setBond] = useState("0.5");
   const [status, setStatus] = useState<string | null>(null);

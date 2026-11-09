@@ -124,7 +124,7 @@ export function insideBand(deviationPct: number, bandPct: number): boolean {
 }
 
 /**
- * A WIF amount from an exact decimal string (or a number), split for setting:
+ * An amount from an exact decimal string (or a number), split for setting:
  * the whole part grouped, and up to `places` decimals, truncated rather than
  * rounded so a burn total never reads higher than the contract's.
  *
@@ -139,10 +139,10 @@ export function splitAmount(value: string | number, places = 4): { whole: string
 }
 
 /**
- * An amount of a quote token, labelled: "0.4211 WIF", "24.75 USDG".
+ * An amount of a quote token, labelled: "0.4211 NEAR".
  *
  * The unit always prints. Small amounts keep four decimals (a burn on one
- * trade is usually well under one WIF); large ones are grouped.
+ * trade is usually well under one NEAR); large ones are grouped.
  */
 export function amountOf(value: string | number | null | undefined, unit: string): string {
   if (value === null || value === undefined) return "—";
@@ -150,7 +150,7 @@ export function amountOf(value: string | number | null | undefined, unit: string
   if (!Number.isFinite(n)) return "—";
   if (n === 0) return `0 ${unit}`;
   const abs = Math.abs(n);
-  // Tiny but real (a flush bounty of 0.000092 USDG): two significant figures,
+  // Tiny but real (a 0.000092 NEAR fee): two significant figures,
   // never rounded to zero and never shown as a vague "<0.0001".
   if (abs < 0.0001) return `${n < 0 ? "-" : ""}${Number(abs.toPrecision(2)).toFixed(Math.min(18, 1 - Math.floor(Math.log10(abs))))} ${unit}`;
   const places = abs >= 1000 ? 0 : abs >= 1 ? 2 : 4;

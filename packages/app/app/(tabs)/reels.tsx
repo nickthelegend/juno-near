@@ -54,7 +54,7 @@ import { theme } from "../../theme";
  *
  * What is different is the dock under the caption. On any other app the thing
  * at the bottom of a reel is a song. Here it is the reel's market: its ticker,
- * its price, how far its curve is from graduating into a Uniswap pool, and a
+ * its price, how far its curve is from graduating, and a
  * Buy that opens the same trade sheet as the coin screen — so taking a
  * position in a video costs no more than liking it.
  *
