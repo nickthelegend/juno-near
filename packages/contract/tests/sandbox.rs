@@ -147,6 +147,7 @@ async fn dare_flake_splits_bond_and_creator_cannot_vote_without_tokens() -> Resu
     assert!(bob.call(token.id(),"vote_proof").args_json(json!({"accepted":true})).transact().await?.is_failure());
     worker.fast_forward(700).await?;
     call(&bob,&token,"finalize_dare",json!({}),0).await?;
+    assert_eq!(market(&token).await?["dare_finalized"],true);
     assert_eq!(call(&bob,&token,"claim_dare",json!({}),0).await?,(bond/2).to_string());
     assert_eq!(call(&alice,&token,"claim_dare",json!({}),0).await?,(bond/2).to_string());
     Ok(())

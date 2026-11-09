@@ -48,6 +48,7 @@ pub struct MarketView {
     pub dare: String,
     pub dare_bond: U128,
     pub proof: String,
+    pub dare_finalized: bool,
 }
 
 #[near(contract_state)]
@@ -310,7 +311,7 @@ impl Juno {
             total_supply: U128(self.supply), curve_sold: U128(self.curve_sold), floor_vault: U128(self.floor_vault),
             floor_per_token: U128(if self.supply == 0 { 0 } else { self.floor_vault / self.supply }), curve_reserve: U128(self.curve_reserve),
             graduation_escrow: U128(self.graduation_escrow), creator_earnings: U128(self.creator_earnings), graduated: self.graduated,
-            dare: self.dare.clone(), dare_bond: U128(self.dare_bond), proof: self.proof.clone() }
+            dare: self.dare.clone(), dare_bond: U128(self.dare_bond), proof: self.proof.clone(), dare_finalized: self.dare_finalized }
     }
     pub fn quote_buy(&self, quantity: U128) -> U128 { let gross = self.gross_buy(quantity.0); U128(gross + gross / 5 + gross / 100) }
     pub fn ft_total_supply(&self) -> U128 { U128(self.supply) }

@@ -59,6 +59,9 @@ mod tests {
         assert_eq!(sizes.iter().sum::<u128>(),800);
         assert!(prices.windows(2).all(|w|w[1]>=w[0]));
         assert!(range_cost(0,800,true)>0);
+        assert_eq!(range_cost(0,1,true),101852896845351800139);
+        assert_eq!(range_cost(100,25,true),18539463988387537570164);
+        assert_eq!(range_cost(799,1,true),9991663140311081779785);
         for sold in (0..775).step_by(25) {
             assert!(range_cost(sold,25,false)<=range_cost(sold,25,true));
         }
