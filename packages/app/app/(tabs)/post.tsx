@@ -371,8 +371,8 @@ const styles = StyleSheet.create({
   fieldLabel: { fontSize: theme.type.label.size, fontWeight: "500", color: theme.colors.muted },
   fieldHint: { fontSize: theme.type.micro.size, fontWeight: "500", color: theme.colors.neg },
   fieldNote: { fontSize: theme.type.micro.size, fontWeight: "600", color: theme.colors.muted },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 14, justifyContent: "center" },
-  cell: { width: "30%", aspectRatio: 1, borderRadius: 12, overflow: "hidden", backgroundColor: theme.colors.surfaceAlt },
+  grid: { alignSelf: "stretch", flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 14, justifyContent: "center" },
+  cell: { width: "31%", aspectRatio: 1, borderRadius: 14, overflow: "hidden", backgroundColor: theme.colors.surfaceAlt },
   input: {
     height: 48,
     borderRadius: theme.radius.md,
