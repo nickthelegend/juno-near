@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
 :root {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Urbanist", system-ui, sans-serif;
   color: #12150e;
   background: #dce7d5;
   font-synthesis: none;
@@ -47,9 +47,7 @@ img {
 .brand {
   border: 0;
   background: none;
-  font:
-    700 33px "Space Grotesk",
-    sans-serif;
+  font: 800 33px "Urbanist", system-ui, sans-serif;
   letter-spacing: -0.09em;
   padding: 0;
 }
@@ -119,7 +117,7 @@ main {
 .hero h1,
 h2,
 h3 {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Urbanist", system-ui, sans-serif;
 }
 .hero h1 {
   font-size: clamp(68px, 8vw, 126px);
@@ -727,3 +725,13 @@ footer span:first-child {
 .dare-actions .action-row {
   margin-top: 12px;
 }
+
+/* Claude design pass (Nov 9): Oboro pair, fix display clipping, creator-platform energy */
+:root { --mono: "Space Mono", ui-monospace, monospace; --blue: #46b8e6; }
+body { -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.hero h1 { font-weight: 900; line-height: .96; letter-spacing: -.065em; padding-bottom: .06em; }
+.hero h1 em { padding: 0 .08em .04em; line-height: .9; display: inline-block; background: linear-gradient(120deg, var(--lime) 0 58%, #9fe08e 78%, var(--blue)); }
+h2, h3 { font-weight: 800; }
+.eyebrow { font-family: var(--mono); font-weight: 400; letter-spacing: .16em; }
+.brand + small, header small { font-family: var(--mono); letter-spacing: .12em; }
