@@ -278,7 +278,8 @@ function Reel({
   onOpenCoin: () => void;
   onOpenCreator: () => void;
 }) {
-  const uri = juno.media(coin.media.url);
+  // Only a video post gets a player; a photo post shows its still full-bleed.
+  const uri = coin.media.kind === "video" ? juno.media(coin.media.url) : null;
   const poster = juno.still(coin.media);
   const like = useLike(coin);
   const [held, setHeld] = useState(false);

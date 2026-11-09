@@ -31,7 +31,7 @@ import { theme } from "../theme";
  */
 
 const c = theme.colors;
-const POLL_MS = 10_000;
+const POLL_MS = 30_000;
 
 /* ------------------------------------------------------------------ */
 /* Glyphs                                                              */

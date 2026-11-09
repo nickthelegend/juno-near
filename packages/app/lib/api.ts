@@ -18,7 +18,7 @@ import {
 } from "@juno/sdk";
 import { Platform } from "react-native";
 
-import { explorer, FACTORY, RPC_URL } from "./chain";
+import { explorer, FACTORY, RPC_URLS } from "./chain";
 
 /**
  * The Juno client, on NEAR.
@@ -431,11 +431,31 @@ function toCoin({ account, market: m, trades, holders }: Raw): Coin {
   };
 }
 
+/**
+ * A read that a public RPC dropped (a throttled burst, a reset connection) is
+ * worth two quiet retries before the screen says it failed. Only reads.
+ */
+let preferred = 0;
+async function retry<T>(read: (endpoint: string) => Promise<T>): Promise<T> {
+  for (let attempt = 0; ; attempt += 1) {
+    const index = (preferred + attempt) % RPC_URLS.length;
+    try {
+      const value = await read(RPC_URLS[index]!);
+      preferred = index;
+      return value;
+    } catch (error) {
+      const text = error instanceof Error ? error.message : String(error);
+      if (attempt >= RPC_URLS.length + 1 || /does not exist|UNKNOWN_ACCOUNT|ERR_/i.test(text)) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+    }
+  }
+}
+
 async function readOne(account: string): Promise<Raw> {
   const [m, t, h] = await Promise.all([
-    readMarket(account, RPC_URL),
-    readTrades(account, RPC_URL),
-    readHolders(account, RPC_URL),
+    retry((rpc) => readMarket(account, rpc)),
+    retry((rpc) => readTrades(account, rpc)),
+    retry((rpc) => readHolders(account, rpc)),
   ]);
   return { account, market: m, trades: t, holders: h };
 }
@@ -446,7 +466,7 @@ async function readAll(fresh = false): Promise<Raw[]> {
   if (!fresh && shared && Date.now() - shared.at < 15_000) return shared.value;
   const value = (async () => {
     const factory = requireFactory();
-    const accounts = await guard(readPosts(factory, RPC_URL));
+    const accounts = await guard(retry((rpc) => readPosts(factory, rpc)));
     const settled = await Promise.allSettled(accounts.map((account) => readOne(account)));
     return settled.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
   })();
@@ -597,7 +617,7 @@ export const juno = {
   /** Every post on the factory, as markets. `missing` counts posts whose read failed. */
   coins: async (_limit?: number, opts: { viewer?: string | null; fresh?: boolean } = {}) => {
     const factory = requireFactory();
-    const accounts = await guard(readPosts(factory, RPC_URL));
+    const accounts = await guard(retry((rpc) => readPosts(factory, rpc)));
     const raws = await readAll(opts.fresh);
     const liked = localSet(`likes:${opts.viewer ?? "anon"}`);
     const coins = raws.map((raw) => {
@@ -771,8 +791,8 @@ export const juno = {
   /** A NEAR balance, and optionally one post token's. */
   balances: async (wallet: string, token?: string | null): Promise<Balances> => {
     const [nearBalance, held] = await Promise.all([
-      accountBalance(wallet, RPC_URL).then(near).catch(() => null),
-      token ? balanceOf(token, wallet, RPC_URL).then(Number).catch(() => null) : Promise.resolve(null),
+      retry((rpc) => accountBalance(wallet, rpc)).then(near).catch(() => null),
+      token ? retry((rpc) => balanceOf(token, wallet, rpc)).then(Number).catch(() => null) : Promise.resolve(null),
     ]);
     return { near: nearBalance, token: held };
   },
@@ -789,7 +809,7 @@ export const juno = {
     if (input.side === "sell" && quantity > coin.near.curveSold) throw new ApiError(`At most ${coin.near.curveSold} can be sold back to the curve`, 400);
     const quote = quoteFor(coin, input.side, quantity);
     let deposit = 0n;
-    if (input.side === "buy") deposit = await quoteBuy(coin.address, BigInt(quantity), RPC_URL);
+    if (input.side === "buy") deposit = await retry((rpc) => quoteBuy(coin.address, BigInt(quantity), rpc));
     const label = input.side === "buy" ? "Buy" : input.side === "sell" ? "Sell" : "Redeem";
     return {
       quote,

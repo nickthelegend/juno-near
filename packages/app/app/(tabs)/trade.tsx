@@ -269,9 +269,9 @@ function MarketCard({
         </View>
 
         <View style={styles.stats}>
-          <Stat label="Market cap" value={inQuote(coin, coin.marketCapQuote, coin.marketCap)} />
+          <Stat label="Cap · NEAR" value={money(coin.marketCapQuote ?? coin.marketCap, "NEAR").replace(/ NEAR$/, "")} />
           <View style={styles.statRule} />
-          <Stat label="Floor / token" value={coin.near.floorPerToken > 0 ? money(coin.near.floorPerToken, "NEAR") : "—"} tone={coin.near.floorPerToken > 0 ? "pos" : undefined} />
+          <Stat label="Floor · NEAR" value={coin.near.floorPerToken > 0 ? money(coin.near.floorPerToken, "NEAR").replace(/ NEAR$/, "") : "—"} tone={coin.near.floorPerToken > 0 ? "pos" : undefined} />
           <View style={styles.statRule} />
           <Stat label="Holders" value={coin.holders === null ? "—" : count(coin.holders) || "0"} />
         </View>

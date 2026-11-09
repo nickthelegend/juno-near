@@ -10,6 +10,12 @@
 import { TESTNET_RPC } from "@juno/sdk";
 
 export const RPC_URL = process.env.EXPO_PUBLIC_NEAR_RPC_URL || TESTNET_RPC;
+/**
+ * Public testnet RPCs tried in order when one throttles (FastNEAR answers a
+ * burst with a 429 that carries no CORS header, which a browser reports as a
+ * failed fetch). Reads only; every one of them is a real NEAR testnet node.
+ */
+export const RPC_URLS: string[] = [...new Set([RPC_URL, TESTNET_RPC, "https://near-testnet.drpc.org", "https://rpc.testnet.near.org"])];
 /** The factory account every post is a sub-account of. Null means Setup required. */
 export const FACTORY: string | null = process.env.EXPO_PUBLIC_JUNO_FACTORY || null;
 /** The relayer that creates email accounts and submits NEP-366 meta transactions. */

@@ -1,4 +1,4 @@
-import { juno, type Coin } from "./api";
+import { invalidateReads, juno, type Coin } from "./api";
 import { money } from "./format";
 
 /** Juno on NEAR has one product: posts. Every coin is a post. */
@@ -48,6 +48,7 @@ let shared: { key: string; at: number; value: ReturnType<typeof readMarkets> } |
 
 export function invalidateMarkets() {
   shared = null;
+  invalidateReads();
 }
 
 export function loadMarkets(viewer?: string | null) {
@@ -70,7 +71,7 @@ export function loadMarkets(viewer?: string | null) {
 }
 
 async function readMarkets(viewer?: string | null) {
-  const { coins, missing } = await juno.coins(undefined, { viewer, fresh: true });
+  const { coins, missing } = await juno.coins(undefined, { viewer });
   return { posts: coins, stocks: [] as Coin[], missing };
 }
 
