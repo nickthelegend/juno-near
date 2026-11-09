@@ -11,6 +11,21 @@ const AUCTION_UNITS: u128 = 200;
 const CURVE_UNITS: u128 = 800;
 const BASE: u128 = N / 10_000; // 0.0001 NEAR per whole token
 const MAX_BIDS: usize = 64;
+const MAX_TRADES: usize = 120;
+
+/// One fill, kept on-chain so a client can draw price history without an indexer.
+/// `total` is the NEAR (yocto) that moved for `quantity` whole tokens; `sold_after`
+/// is the curve position after the fill.
+#[near(serializers = [borsh, json])]
+#[derive(Clone)]
+pub struct Trade {
+    pub ms: u64,
+    pub kind: String,
+    pub account: AccountId,
+    pub quantity: U128,
+    pub total: U128,
+    pub sold_after: U128,
+}
 
 #[near(serializers = [borsh, json])]
 #[derive(Clone)]
@@ -80,6 +95,7 @@ pub struct Juno {
     votes: BTreeMap<AccountId, bool>,
     dare_finalized: bool,
     dare_payouts: BTreeMap<AccountId, u128>,
+    trades: Vec<Trade>,
 }
 
 fn blank(owner: AccountId) -> Juno {
@@ -88,7 +104,7 @@ fn blank(owner: AccountId) -> Juno {
         clearing_price: 0, balances: BTreeMap::new(), supply: 0, curve_sold: 0, floor_vault: 0,
         curve_reserve: 0, graduation_escrow: 0, creator_earnings: 0, graduated: false,
         dare: String::new(), dare_bond: 0, proof: String::new(), votes: BTreeMap::new(),
-        dare_finalized: false, dare_payouts: BTreeMap::new() }
+        dare_finalized: false, dare_payouts: BTreeMap::new(), trades: vec![] }
 }
 fn send(to: &AccountId, amount: u128) {
     if amount > 0 { Promise::new(to.clone()).transfer(NearToken::from_yoctonear(amount)).detach(); }
@@ -99,6 +115,12 @@ fn bid_hash(owner: &AccountId, amount: u128, max_price: u128, salt: &str) -> Vec
 
 #[near]
 impl Juno {
+    fn record(&mut self, kind: &str, account: &AccountId, quantity: u128, total: u128) {
+        if self.trades.len() >= MAX_TRADES { self.trades.remove(0); }
+        self.trades.push(Trade { ms: env::block_timestamp_ms(), kind: kind.into(), account: account.clone(),
+            quantity: U128(quantity), total: U128(total), sold_after: U128(self.curve_sold) });
+        env::log_str(&format!("EVENT_JSON:{{\"standard\":\"juno\",\"version\":\"1.0.0\",\"event\":\"{}\",\"data\":[{{\"account\":\"{}\",\"quantity\":\"{}\",\"total\":\"{}\"}}]}}", kind, account, quantity, total));
+    }
     fn gross_buy(&self, quantity: u128) -> u128 {
         let curve = curve::range_cost(self.curve_sold, quantity, true);
         let floor = if self.supply == 0 { 0 } else {
@@ -183,6 +205,7 @@ impl Juno {
             self.bids[i].allocated = take;
             if take > 0 { self.clearing_price = self.bids[i].max_price; left -= take; }
         }
+        let fills: Vec<(AccountId, u128)> = self.bids.iter().filter(|b| b.revealed && b.allocated > 0).map(|b| (b.owner.clone(), b.allocated)).collect();
         for b in &mut self.bids {
             if b.revealed {
                 let paid = b.allocated * self.clearing_price;
@@ -197,6 +220,8 @@ impl Juno {
             }
         }
         self.settled = true;
+        let price = self.clearing_price;
+        for (owner, allocated) in fills { self.record("auction", &owner, allocated, allocated * price); }
     }
 
     pub fn claim_refund(&mut self) -> U128 {
@@ -223,6 +248,7 @@ impl Juno {
         self.supply += quantity.0;
         *self.balances.entry(env::predecessor_account_id()).or_default() += quantity.0;
         if self.curve_sold == CURVE_UNITS { self.graduated = true; }
+        self.record("buy", &env::predecessor_account_id(), quantity.0, total);
         send(&env::predecessor_account_id(), paid - total);
         U128(total)
     }
@@ -246,6 +272,7 @@ impl Juno {
         self.creator_earnings += fee / 2;
         self.graduation_escrow += fee - fee / 2;
         self.graduated = false;
+        self.record("sell", &owner, quantity.0, payout);
         send(&owner, payout);
         U128(payout)
     }
@@ -260,6 +287,7 @@ impl Juno {
         self.floor_vault -= payout;
         self.balances.insert(owner.clone(), balance - quantity.0);
         self.supply -= quantity.0;
+        self.record("redeem", &owner, quantity.0, payout);
         send(&owner, payout);
         U128(payout)
     }
@@ -312,6 +340,14 @@ impl Juno {
             floor_per_token: U128(if self.supply == 0 { 0 } else { self.floor_vault / self.supply }), curve_reserve: U128(self.curve_reserve),
             graduation_escrow: U128(self.graduation_escrow), creator_earnings: U128(self.creator_earnings), graduated: self.graduated,
             dare: self.dare.clone(), dare_bond: U128(self.dare_bond), proof: self.proof.clone(), dare_finalized: self.dare_finalized }
+    }
+    /// The newest fills, oldest first (at most 120 are kept).
+    pub fn trades(&self) -> Vec<Trade> { self.trades.clone() }
+    /// Every account holding a non-zero balance, largest first.
+    pub fn holders(&self) -> Vec<(AccountId, U128)> {
+        let mut list: Vec<(AccountId, U128)> = self.balances.iter().filter(|(_, b)| **b > 0).map(|(a, b)| (a.clone(), U128(*b))).collect();
+        list.sort_by(|a, b| b.1 .0.cmp(&a.1 .0));
+        list
     }
     pub fn quote_buy(&self, quantity: U128) -> U128 { let gross = self.gross_buy(quantity.0); U128(gross + gross / 5 + gross / 100) }
     pub fn ft_total_supply(&self) -> U128 { U128(self.supply) }

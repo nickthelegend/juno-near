@@ -85,6 +85,31 @@ export async function view<T>(account: string, method: string, args: object = {}
   const result = await rpc({method:'query', params:{request_type:'call_function', finality:'final', account_id:account, method_name:method, args_base64:base64(new TextEncoder().encode(JSON.stringify(args)))}}, endpoint);
   return JSON.parse(new TextDecoder().decode(Uint8Array.from(result.result)));
 }
+export type Trade = { ms: number; kind: 'auction'|'buy'|'sell'|'redeem'; account: string; quantity: string; total: string; sold_after: string };
+export const trades = (account: string, endpoint?: string) => view<Trade[]>(account, 'trades', {}, endpoint);
+export const holders = (account: string, endpoint?: string) => view<Array<[string, string]>>(account, 'holders', {}, endpoint);
+export const balanceOf = (token: string, accountId: string, endpoint?: string) => view<string>(token, 'ft_balance_of', {account_id: accountId}, endpoint);
+export const quoteBuy = (token: string, quantity: bigint, endpoint?: string) => view<string>(token, 'quote_buy', {quantity: quantity.toString()}, endpoint).then(BigInt);
+/** Marginal price of the next whole token on the curve, in yocto. */
+export function spotPrice(sold: bigint): bigint { return sold >= 800n ? curveCost(799n, 1n) : curveCost(sold, 1n); }
+/** What a sell of `quantity` pays out after the 1% fee, mirroring the contract (curve or floor, whichever is higher). */
+export function sellQuote(sold: bigint, quantity: bigint, vault: bigint, supply: bigint): bigint {
+  if (quantity <= 0n || quantity > sold || supply === 0n) throw Error('ERR_SELL');
+  const gross = curveCost(sold - quantity, quantity, false);
+  const floorGross = vault * quantity / supply;
+  const actual = gross < floorGross ? floorGross : gross;
+  return actual - actual / 100n;
+}
+/** What redeeming `quantity` against the floor pays (1% stays for remaining holders). */
+export function redeemQuote(vault: bigint, supply: bigint, quantity: bigint): bigint {
+  if (quantity <= 0n || supply === 0n) return 0n;
+  const proRata = vault * quantity / supply;
+  return proRata - proRata / 100n;
+}
+export async function accountBalance(accountId: string, endpoint = TESTNET_RPC): Promise<bigint> {
+  const result = await rpc({method:'query', params:{request_type:'view_account', finality:'final', account_id:accountId}}, endpoint);
+  return BigInt(result.amount);
+}
 export const posts = (factory: string, endpoint?: string) => view<string[]>(factory, 'posts', {}, endpoint);
 export const market = (account: string, endpoint?: string) => view<Market>(account, 'market', {}, endpoint);
 export async function oneClickTokens(): Promise<Array<{assetId:string;symbol:string;blockchain:string;decimals:number}>> {
@@ -92,8 +117,8 @@ export async function oneClickTokens(): Promise<Array<{assetId:string;symbol:str
   if (!response.ok) throw Error(`1Click HTTP ${response.status}`);
   return response.json();
 }
-export async function dryQuote(input: {originAsset:string; destinationAsset:string; amount:string; recipient:string; refundTo:string; recipientType?:'DESTINATION_CHAIN'|'INTENTS'; refundType?:'ORIGIN_CHAIN'|'INTENTS'}, jwt?:string): Promise<unknown> {
-  const response = await fetch(`${ONECLICK}/quote`, {method:'POST', headers:{'Content-Type':'application/json', ...(jwt ? {Authorization:`Bearer ${jwt}`} : {})}, body:JSON.stringify({dry:true, swapType:'EXACT_INPUT', slippageTolerance:100, depositType:'ORIGIN_CHAIN', originAsset:input.originAsset, destinationAsset:input.destinationAsset, amount:input.amount, recipient:input.recipient, recipientType:input.recipientType ?? 'DESTINATION_CHAIN', refundTo:input.refundTo, refundType:input.refundType ?? 'ORIGIN_CHAIN', deadline:new Date(Date.now()+180_000).toISOString()})});
+export async function dryQuote(input: {originAsset:string; destinationAsset:string; amount:string; recipient:string; refundTo:string; recipientType?:'DESTINATION_CHAIN'|'INTENTS'; refundType?:'ORIGIN_CHAIN'|'INTENTS'; swapType?:'EXACT_INPUT'|'EXACT_OUTPUT'}, jwt?:string): Promise<unknown> {
+  const response = await fetch(`${ONECLICK}/quote`, {method:'POST', headers:{'Content-Type':'application/json', ...(jwt ? {Authorization:`Bearer ${jwt}`} : {})}, body:JSON.stringify({dry:true, swapType:input.swapType ?? 'EXACT_INPUT', slippageTolerance:100, depositType:'ORIGIN_CHAIN', originAsset:input.originAsset, destinationAsset:input.destinationAsset, amount:input.amount, recipient:input.recipient, recipientType:input.recipientType ?? 'DESTINATION_CHAIN', refundTo:input.refundTo, refundType:input.refundType ?? 'ORIGIN_CHAIN', deadline:new Date(Date.now()+180_000).toISOString()})});
   const data = await response.json();
   if (!response.ok) throw Error(`1Click quote ${response.status}: ${JSON.stringify(data)}`);
   return data;

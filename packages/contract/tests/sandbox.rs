@@ -133,6 +133,14 @@ async fn curve_round_trip_fee_split_graduation_and_floor_grief() -> Result<()> {
     let vault: u128=end["floor_vault"].as_str().unwrap().parse()?;
     let redeem: u128=call(&bob,&token,"redeem",json!({"quantity":"50"}),0).await?.as_str().unwrap().parse()?;
     assert!(redeem <= vault*50/end["total_supply"].as_str().unwrap().parse::<u128>()?);
+    let trades: Value=token.view("trades").await?.json()?;
+    let kinds: Vec<&str>=trades.as_array().unwrap().iter().map(|t| t["kind"].as_str().unwrap()).collect();
+    assert_eq!(kinds,vec!["auction","auction","buy","sell","buy","redeem"]);
+    assert_eq!(trades[2]["total"],paid.to_string());
+    assert_eq!(trades[3]["total"],out.to_string());
+    assert_eq!(trades[4]["sold_after"],"800");
+    let holders: Value=token.view("holders").await?.json()?;
+    assert_eq!(holders[0][0],bob.id().as_str());
     Ok(())
 }
 

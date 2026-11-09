@@ -26,3 +26,15 @@ test('commitment binds bidder, amount, price and salt', () => {
   assert.notDeepEqual(a, commitment('b.testnet',3n,BASE*2n,'secret'));
   assert.notDeepEqual(a, commitment('a.testnet',4n,BASE*2n,'secret'));
 });
+
+test('sell and redeem quotes mirror the contract and never pay more than a buy cost', async () => {
+  const { buyQuote, sellQuote, redeemQuote, spotPrice, curveCost } = await import('../src/index.ts');
+  const cost = buyQuote(0n, 10n);
+  const out = sellQuote(10n, 10n, 0n, 210n);
+  assert.ok(out < cost);
+  assert.equal(out, curveCost(0n, 10n, false) - curveCost(0n, 10n, false) / 100n);
+  assert.equal(redeemQuote(1000n, 100n, 10n), 100n - 1n);
+  assert.equal(redeemQuote(1000n, 0n, 10n), 0n);
+  assert.ok(spotPrice(799n) > spotPrice(0n));
+  assert.throws(() => sellQuote(5n, 10n, 0n, 100n), /ERR_SELL/);
+});
