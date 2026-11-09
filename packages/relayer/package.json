@@ -1,0 +1,1 @@
+{"name":"@juno/relayer","version":"0.1.0","private":true,"type":"module","scripts":{"start":"tsx src/server.ts","build":"tsc --noEmit","test":"node --import tsx --test test/*.test.ts"},"dependencies":{"@juno/sdk":"workspace:*","near-api-js":"7.3.1","borsh":"1.0.0"},"devDependencies":{"@types/node":"^24.0.0","typescript":"^5.9.3","tsx":"^4.20.6"}}
