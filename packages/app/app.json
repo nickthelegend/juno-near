@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "Juno",
-    "slug": "juno-arbitrum",
-    "version": "2.0.0",
+    "slug": "juno-near",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.launch.junoarb"
+      "bundleIdentifier": "app.launch.junonear"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,8 +18,8 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "app.launch.junoarb",
-      "versionCode": 200
+      "package": "app.launch.junonear",
+      "versionCode": 300
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,7 +29,6 @@
       "expo-video",
       "expo-font",
       "expo-secure-store",
-      "expo-web-browser",
       [
         "expo-image-picker",
         {
@@ -38,8 +37,8 @@
       ],
       "./plugins/withQuotedBundleScript"
     ],
-    "scheme": "junoarb",
+    "scheme": "junonear",
     "backgroundColor": "#D3E3CB",
-    "description": "Every post is a market: photos and reels launch their own bonding curves on Arbitrum, and stock trackers are held to Chainlink prices on-chain."
+    "description": "Every post is a market: photos launch as named NEAR sub-accounts with a sealed-bid opening auction, a bonding curve, a redeemable NEAR floor and dare bonds."
   }
 }

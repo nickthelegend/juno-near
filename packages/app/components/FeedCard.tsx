@@ -9,7 +9,7 @@ import { useHandle } from "../lib/names";
 import { HeartGlyph, PlayGlyph, ReelBadgeGlyph, ReplyBubble, ShareGlyph, TriangleGlyph } from "./icons";
 import { Tappable } from "./Press";
 import { juno, type Coin } from "../lib/api";
-import { BurnedChip } from "./Burn";
+import { FloorChip, phaseLabel, useCountdown } from "./Floor";
 import { count, inQuote, progressLabel } from "../lib/markets";
 import { useFollow, useLike } from "../lib/social";
 import { money, since } from "../lib/useApi";
@@ -72,6 +72,9 @@ export function FeedCard({
   const tone = change === null ? theme.colors.text : change >= 0 ? theme.colors.pos : theme.colors.neg;
   const comments = (coin.commentCount ?? 0) + extraComments;
   const pct = coin.curve.progress * 100;
+  const n = coin.near;
+  const secondsLeft = useCountdown(n.phase === "commit" ? n.commitEndMs : n.phase === "reveal" ? n.revealEndMs : null);
+  const auction = n.phase === "commit" || n.phase === "reveal" || n.phase === "settle";
 
   // Double tap likes; a single tap opens — after the double-tap window, so the
   // first half of a double tap does not navigate away from the heart.
@@ -107,7 +110,7 @@ export function FeedCard({
               {handle}
             </Text>
             <Text style={styles.meta} numberOfLines={1}>
-              {since(coin.createdAt)} · {coin.curvePreset} curve
+              {since(coin.createdAt)} · {auction ? "sealed-bid opening" : n.dare ? "dare post" : "sealed-bid curve"}
             </Text>
           </View>
         </Pressable>
@@ -204,9 +207,17 @@ export function FeedCard({
         <View style={{ flex: 1 }} />
 
         {coin.curve.graduated ? (
-          <View style={styles.graduated}>
-            <Text style={styles.graduatedText}>On Uniswap</Text>
-          </View>
+          <Tappable onPress={onOpen} to={0.94}>
+            <View style={styles.graduated} accessibilityRole="link" accessibilityLabel={`$${coin.symbol} graduated. Open the market.`}>
+              <Text style={styles.graduatedText}>Graduated</Text>
+            </View>
+          </Tappable>
+        ) : auction ? (
+          <Tappable onPress={onOpen} to={0.94}>
+            <View style={styles.auction} accessibilityRole="button" accessibilityLabel={`Opening auction, ${n.sealedBids} sealed bids. Open to bid.`}>
+              <Text style={styles.auctionText}>{phaseLabel(coin, secondsLeft)}</Text>
+            </View>
+          </Tappable>
         ) : (
           <Tappable onPress={onBuy} to={0.94}>
             <View style={styles.buy} accessibilityRole="button" accessibilityLabel={`Buy $${coin.symbol}`}>
@@ -243,6 +254,10 @@ export function FeedCard({
               ) : null}
             </Text>
           </>
+        ) : auction ? (
+          <Text style={styles.buyersText}>
+            <Text style={styles.strong}>{n.sealedBids} sealed {n.sealedBids === 1 ? "bid" : "bids"}</Text> · prices stay hidden until the reveal
+          </Text>
         ) : buyers && coin.curve.progress === 0 && !coin.curve.graduated ? (
           <Text style={styles.buyersText}>No buyers yet — be the first in.</Text>
         ) : null}
@@ -282,9 +297,11 @@ export function FeedCard({
         <Text style={styles.curveText}>
           {coin.curve.graduated
             ? "Graduated"
-            : `${progressLabel(pct)} to graduation`}
+            : auction
+              ? "Curve opens after the auction"
+              : `${progressLabel(pct)} to graduation`}
         </Text>
-        <BurnedChip wif={coin.burn?.wifBurned} />
+        <FloorChip coin={coin} />
       </View>
     </View>
   );
@@ -420,6 +437,15 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surfaceAlt,
   },
   graduatedText: { fontSize: 13, fontWeight: "700", color: theme.colors.muted },
+  auction: {
+    height: 44,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.colors.ink,
+  },
+  auctionText: { fontSize: 13, fontWeight: "800", color: theme.colors.lime, fontVariant: ["tabular-nums"] },
 
   buyers: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 14, paddingTop: 12 },
   stack: { flexDirection: "row" },

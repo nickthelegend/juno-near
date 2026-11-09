@@ -71,7 +71,8 @@ export function commitment(owner: string, amount: bigint, maxPrice: bigint, salt
   return sha256(new TextEncoder().encode(`juno:v1:${owner}:${amount}:${maxPrice}:${salt}`));
 }
 export function base64(bytes: Uint8Array): string {
-  if (typeof Buffer !== 'undefined') return Buffer.from(bytes).toString('base64');
+  const B = (globalThis as {Buffer?: {from(b: Uint8Array): {toString(e: string): string}}}).Buffer;
+  if (B) return B.from(bytes).toString('base64');
   return btoa(String.fromCharCode(...bytes));
 }
 async function rpc(body: object, endpoint = TESTNET_RPC): Promise<any> {

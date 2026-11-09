@@ -5,8 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 import { CoinArt } from "../../components/art";
-import { BurnPanel, useBurns } from "../../components/Burn";
-import { CommentsSheet } from "../../components/CommentsSheet";
 import { FeedCard, type Buyers } from "../../components/FeedCard";
 import { Button, Placeholder, Skeleton } from "../../components/kit";
 import { JunoMark } from "../../components/logo";
@@ -48,11 +46,6 @@ export default function SocialScreen() {
   const revision = useFeedRevision();
   const tabBar = useTabBarHeight();
   const [scope, setScope] = useState<Scope>("everyone");
-  // On a wide web window the burn counter lives in the right rail (see the
-  // root layout); in the phone column it leads the feed.
-  const { width } = useWindowDimensions();
-  const burnInFeed = !(Platform.OS === "web" && width >= 1000);
-  const burns = useBurns(6);
 
   const once = useViewerOnce();
   const markets = useApi(
@@ -79,8 +72,6 @@ export default function SocialScreen() {
   );
 
   const [trade, setTrade] = useState<Coin | null>(null);
-  const [talking, setTalking] = useState<Coin | null>(null);
-  const [extraComments, setExtraComments] = useState<Record<string, number>>({});
   const [toast, setToast] = useState<string | null>(null);
 
   const flash = useCallback((message: string) => {
@@ -117,25 +108,10 @@ export default function SocialScreen() {
     return map;
   }, [record.data?.items]);
 
-  /** The newest thing each coin's creator wrote about it. */
-  const captions = useMemo(() => {
-    const creators = new Map((markets.data?.posts ?? []).map((coin) => [coin.address, coin.creator.wallet.toLowerCase()]));
-    const map = new Map<string, { body: string; id: string; replies: number }>();
-    for (const item of record.data?.items ?? []) {
-      if (item.kind !== "post" || !item.coin || map.has(item.coin.address)) continue;
-      // Only the creator's own words caption their coin; anyone else's post
-      // about it is a post, not the caption.
-      if (creators.get(item.coin.address) !== item.author.wallet.toLowerCase()) continue;
-      map.set(item.coin.address, { body: item.body, id: item.id, replies: item.replyCount });
-    }
-    return map;
-  }, [record.data?.items, markets.data?.posts]);
-
   const refresh = () => {
     invalidateMarkets();
     markets.refresh();
     record.refresh();
-    burns.refresh();
   };
 
   return (
@@ -235,18 +211,10 @@ export default function SocialScreen() {
             </ScrollView>
           ) : null}
 
-          {burnInFeed ? (
-            <View style={styles.burn}>
-              <BurnPanel burns={burns} onSeeAll={() => router.push("/burns" as never)} />
-            </View>
-          ) : null}
-
           {(markets.data?.missing ?? 0) > 0 ? (
             <Text style={styles.footnote}>
-              {/* Markets, not posts: an unpriced row cannot be sorted into a
-                  post or a stock, so the count covers both. */}
-              {markets.data!.missing} more {markets.data!.missing === 1 ? "market is" : "markets are"}{" "}
-              live but could not be priced just now. Pull to retry.
+              {markets.data!.missing} more {markets.data!.missing === 1 ? "post is" : "posts are"}{" "}
+              on the factory but could not be read just now. Pull to retry.
             </Text>
           ) : null}
 
@@ -271,7 +239,7 @@ export default function SocialScreen() {
               <Placeholder
                 art
                 title="No posts yet"
-                detail="Every post here is a market. Tap + to launch the first one."
+                detail="Every post here is a market on NEAR testnet. Tap + to launch the first one."
               />
             )
           ) : (
@@ -279,19 +247,13 @@ export default function SocialScreen() {
               <FeedCard
                 key={coin.address}
                 coin={coin}
-                caption={captions.get(coin.address)?.body ?? coin.description ?? null}
-                thread={captions.get(coin.address) ?? null}
-                onOpenThread={() => {
-                  const thread = captions.get(coin.address);
-                  if (thread) router.push(`/post/${thread.id}`);
-                }}
+                caption={coin.description ?? null}
                 // Unknown while the record loads — "No buyers yet" would be a
                 // claim made before reading.
                 buyers={record.loading ? null : (buyers.get(coin.address) ?? { wallets: [], handles: [] })}
-                extraComments={extraComments[coin.address] ?? 0}
                 onOpen={() => router.push(`/coin/${coin.address}`)}
                 onBuy={() => setTrade(coin)}
-                onComments={() => setTalking(coin)}
+                onComments={() => router.push(`/coin/${coin.address}`)}
                 onShare={async () => {
                   const outcome = await shareCoin(coin);
                   if (outcome === "copied") flash("Link copied");
@@ -323,17 +285,6 @@ export default function SocialScreen() {
         />
       ) : null}
 
-      <CommentsSheet
-        visible={talking !== null}
-        onClose={() => setTalking(null)}
-        target={{ kind: "coin", mint: talking?.address ?? "", symbol: talking?.symbol ?? "" }}
-        onPosted={() => {
-          if (!talking) return;
-          setExtraComments((all) => ({ ...all, [talking.address]: (all[talking.address] ?? 0) + 1 }));
-        }}
-        /* Clear of the tab bar, which the navigator paints over this sheet. */
-        bottomInset={tabBar.height - 10}
-      />
     </SafeAreaView>
   );
 }

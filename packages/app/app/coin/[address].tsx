@@ -7,19 +7,11 @@ import Svg, { Path, Rect } from "react-native-svg";
 import styled from "styled-components/native";
 
 import { CoinGlyph, Identicon } from "../../components/art";
-import { CoinBurnRow, FlushBurn, GraduationMoment, StockNotice } from "../../components/Burn";
-import { CommentsSheet } from "../../components/CommentsSheet";
+import { AuctionCard, DareCard, FloorGlyph, GraduationMoment } from "../../components/Floor";
 import { DepthChart } from "../../components/DepthChart";
 import { Handle } from "../../components/Handle";
 import { PriceLine } from "../../components/PriceLine";
 import { Tappable } from "../../components/Press";
-import {
-  AlertSheet,
-  PlanSheet,
-  SaveCard,
-  WatchToggle,
-  type SavedState,
-} from "../../components/Save";
 import { TradeSheet } from "../../components/TradeSheet";
 import {
   Body,
@@ -38,21 +30,19 @@ import {
   Stat,
   Title,
 } from "../../components/kit";
-import { ApiError, juno, type NavReference, type Plan } from "../../lib/api";
+import { ApiError, juno } from "../../lib/api";
 import {
   describeTxError,
   displayAddress,
   explorer,
-  FEED_NOTE,
-  FEED_SOURCE,
   EXPLORER_NAME,
+  FACTORY,
   NETWORK_NAME,
   sameAddress,
   shortAddress,
-  uniswapPoolUrl,
   validAddress,
 } from "../../lib/chain";
-import { age, insideBand, money, since, tokens, useApi } from "../../lib/useApi";
+import { money, since, tokens, useApi } from "../../lib/useApi";
 import { shareCoin } from "../../lib/social";
 import { useWallet } from "../../lib/wallet";
 import { theme } from "../../theme";
@@ -96,7 +86,6 @@ import { theme } from "../../theme";
 const TABS = [
   { id: "activity" as const, label: "Activity" },
   { id: "holders" as const, label: "Holders" },
-  { id: "comments" as const, label: "Comments" },
   { id: "details" as const, label: "Details" },
 ];
 
@@ -104,34 +93,19 @@ type Tab = (typeof TABS)[number]["id"];
 
 export default function CoinScreen() {
   const { address: rawAddress } = useLocalSearchParams<{ address: string }>();
-  // The server keys every coin by its lowercase token address.
+  // A post is a NEAR account; account ids are lowercase.
   const mint = (rawAddress ?? "").toLowerCase();
   const router = useRouter();
-  const [sheet, setSheet] = useState<"buy" | "sell" | null>(null);
-  const [savingsSheet, setSavingsSheet] = useState<"alert" | "plan" | null>(null);
-  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [sheet, setSheet] = useState<"buy" | "sell" | "redeem" | null>(null);
   const [tab, setTab] = useState<Tab>("activity");
   const [copied, setCopied] = useState(false);
-  /**
-   * The plan this buy is a contribution to, if any.
-   *
-   * Held while the trade sheet is open so the fill can be recorded against the
-   * right row — and cleared when the sheet closes, so an ordinary buy made
-   * straight afterwards is not silently counted towards a savings goal.
-   */
-  const [contributing, setContributing] = useState<Omit<Plan, "coin"> | null>(null);
-
   const wallet = useWallet();
   // A link that is not an address is answered here, as the server would
   // answer it (400 → "No such coin"), without asking the server.
   const wellFormed = validAddress(mint);
-  const notAnAddress = () => Promise.reject(new ApiError("That is not an address.", 400));
+  const notAnAddress = () => Promise.reject(new ApiError("That is not a NEAR account.", 400));
   const detail = useApi(() => (wellFormed ? juno.coin(mint) : notAnAddress()), [mint]);
   const coin = detail.data?.coin;
-
-  // Only for the count on the tab — the sheet reads its own list when opened,
-  // because a list fetched on mount is stale by the time anyone looks at it.
-  const comments = useApi(() => (wellFormed ? juno.comments(mint) : notAnAddress()), [mint]);
 
   /*
    * What this wallet holds: the coin, for the sell side; ETH and USDC, for the
@@ -143,32 +117,7 @@ export default function CoinScreen() {
     [wallet.address, mint, tradeRevision],
   );
   const holding = balances.data?.token ?? null;
-  const quoteField = coin?.quote.symbol === "WIF" ? "wif" : coin?.quote.symbol === "USDG" ? "usdg" : "eth";
-  const quoteBalance = balances.data ? balances.data[quoteField] : null;
-
-  /*
-   * Watching, alerts and plans for this wallet on this coin.
-   *
-   * Postgres only — no chain reads — because this decides what a button says
-   * and the list endpoints that answer the same questions each hydrate every
-   * pool to do it. Held in local state as well as fetched, so a toggle shows
-   * immediately instead of after a round trip.
-   */
-  const savedRead = useApi(
-    async () => (wallet.address ? juno.saved(wallet.address, mint) : null),
-    [wallet.address, mint],
-  );
-  const [savedLocal, setSavedLocal] = useState<SavedState | null>(null);
-  const [savedError, setSavedError] = useState<string | null>(null);
-  useEffect(() => {
-    if (!savedRead.data) return;
-    setSavedLocal({
-      watching: savedRead.data.watching,
-      alertPrice: savedRead.data.alertPrice,
-      alertSetAtPrice: savedRead.data.alertSetAtPrice,
-      plans: savedRead.data.plans,
-    });
-  }, [savedRead.data]);
+  const quoteBalance = balances.data?.near ?? null;
 
   // "Copied" is a state that has to expire on its own: nothing else on the
   // screen changes to clear it.
@@ -184,7 +133,7 @@ export default function CoinScreen() {
    * post, USDG for a tracker): that is what the curve prices in. The server's
    * history arrives in USD when it had a rate, so it converts back here.
    */
-  const unit = coin?.quote.symbol ?? "WIF";
+  const unit = coin?.quote.symbol ?? "NEAR";
   const toQuote = (value: number) =>
     coin && coin.marketCapCurrency === "USD" && coin.quoteUsdRate ? value / coin.quoteUsdRate : value;
   const ticks = useMemo(
@@ -192,7 +141,6 @@ export default function CoinScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [coin?.priceHistory, coin?.quoteUsdRate, coin?.marketCapCurrency],
   );
-  const commentCount = comments.data?.comments.length ?? null;
 
   return (
     <Page edges={["top"]}>
@@ -201,12 +149,6 @@ export default function CoinScreen() {
           <ChevronLeft />
         </Back>
         <NavGrow />
-        <WatchToggle
-          saved={savedLocal}
-          wallet={wallet.address}
-          baseMint={mint}
-          onChange={setSavedLocal}
-        />
       </Nav>
 
       {detail.loading ? (
@@ -247,7 +189,6 @@ export default function CoinScreen() {
                 refreshing={detail.refreshing}
                 onRefresh={() => {
                   detail.refresh();
-                  comments.refresh();
                 }}
                 tintColor={theme.colors.muted}
               />
@@ -258,7 +199,7 @@ export default function CoinScreen() {
                 nowhere on the page — the thing people are buying into, missing
                 from the screen where they buy it. Trackers have no media and
                 open on their chart. */}
-            {art && !coin.nav && coin.reference == null ? (
+            {art ? (
               <Padded>
                 <Tappable
                   onPress={() =>
@@ -391,37 +332,24 @@ export default function CoinScreen() {
                   <Caption numberOfLines={2}>Creator fees</Caption>
                 </Cell>
               </Band>
-              {coin.quoteUsdRate ? (
-                <Caption style={{ marginTop: 6 }}>
-                  1 {unit} ≈ {money(coin.quoteUsdRate, "USD")}
-                  {unit === "WIF" ? " at the WIF/WETH pool price. Display only." : "."}
-                </Caption>
-              ) : null}
-
-              {/* What this market has taken out of WIF's supply. */}
-              <CoinBurnRow coin={coin} />
-
-              {/* A tracker's band: the stock, the curve, and the rule between them. */}
-              {coin.nav ? <NavBand nav={coin.nav} feed={coin.reference?.feed ?? null} /> : null}
-              {coin.nav ? (
-                <View style={{ marginTop: 16, gap: 12 }}>
-                  <FlushBurn
-                    coin={coin}
-                    onFlushed={() => {
-                      setTradeRevision((n) => n + 1);
-                      detail.refresh();
-                    }}
-                  />
-                  <StockNotice compact />
+              {/* What only NEAR has: the floor, the sealed-bid opening and the dare. */}
+              <FloorRow>
+                <FloorGlyph size={20} filled />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <FloorFigure>{money(coin.near.floorPerToken, unit)} floor per token</FloorFigure>
+                  <Caption>
+                    {money(coin.near.floorVault, unit)} held for {tokens(coin.near.totalSupply)} tokens. Redeemable at any time, even after graduation.
+                  </Caption>
                 </View>
-              ) : null}
+              </FloorRow>
+              <AuctionCard coin={coin} onChanged={detail.refresh} />
+              <DareCard coin={coin} />
 
               {/* The creator's own payday, on their own coin. The contract
                   checks it too; the button is simply not shown to anyone else. */}
               {wallet.address && sameAddress(wallet.address, coin.creator.wallet) ? (
                 <ClaimFees
                   curve={coin.pool}
-                  creator={wallet.address}
                   rewards={coin.creatorFeesQuote ?? toQuote(coin.creatorRewards)}
                   currency={unit}
                   onClaimed={() => {
@@ -433,15 +361,7 @@ export default function CoinScreen() {
 
               {/* Raised against threshold, with both ends labelled. A bar with
                   no numbers on it is a mood. */}
-              {!coin.curve.graduated && coin.curve.progress >= 1 ? (
-                <Graduate
-                  curve={coin.pool}
-                  onGraduated={() => {
-                    setTradeRevision((n) => n + 1);
-                    detail.refresh();
-                  }}
-                />
-              ) : !coin.curve.graduated ? (
+              {coin.near.phase !== "curve" && !coin.curve.graduated ? null : !coin.curve.graduated ? (
                 <RaisedRow>
                   <End>{money(coin.curve.raisedQuote ?? toQuote(coin.curve.raisedUsd), unit)}</End>
                   <Track>
@@ -463,16 +383,12 @@ export default function CoinScreen() {
                 <GraduationMoment coin={coin} />
                 <Row gap={8}>
                   <Pill label="Graduated" tone="pos" />
-                  {coin.graduatedPool ? (
-                    <Tappable onPress={() => void Linking.openURL(uniswapPoolUrl(coin.graduatedPool!, coin.chainId))}>
-                      <Row gap={6} align="center">
-                        <LinkText>Trading on Uniswap</LinkText>
-                        <ExternalGlyph />
-                      </Row>
-                    </Tappable>
-                  ) : (
-                    <Caption style={{ flex: 1 }}>Trading on Uniswap.</Caption>
-                  )}
+                  <Tappable onPress={() => void Linking.openURL(explorer("address", coin.address))}>
+                    <Row gap={6} align="center">
+                      <LinkText>Graduated · escrow on {EXPLORER_NAME}</LinkText>
+                      <ExternalGlyph />
+                    </Row>
+                  </Tappable>
                 </Row>
                 </View>
               )}
@@ -481,17 +397,12 @@ export default function CoinScreen() {
                 {TABS.map((option) => (
                   <TabTap
                     key={option.id}
-                    onPress={() =>
-                      option.id === "comments" ? setCommentsOpen(true) : setTab(option.id)
-                    }
+                    onPress={() => setTab(option.id)}
                     accessibilityRole="button"
                     accessibilityState={{ selected: tab === option.id }}
                   >
                     <TabLabel $on={tab === option.id}>
                       {option.label}
-                      {option.id === "comments" && commentCount !== null && commentCount > 0
-                        ? ` ${commentCount}`
-                        : ""}
                     </TabLabel>
                     <TabRule $on={tab === option.id} />
                   </TabTap>
@@ -513,25 +424,7 @@ export default function CoinScreen() {
                   onOpenTrader={(target) => router.push(`/trader/${target}` as never)}
                 />
               ) : (
-                <DetailsTab
-                  coin={coin}
-                  launchTxHash={detail.data!.launchTxHash ?? null}
-                  saveCard={
-                    <SaveCard
-                      coin={coin}
-                      saved={savedLocal}
-                      wallet={wallet.address}
-                      error={savedError}
-                      onEditAlert={() => setSavingsSheet("alert")}
-                      onNewPlan={() => setSavingsSheet("plan")}
-                      onContribute={(plan) => {
-                        setContributing(plan);
-                        setSheet("buy");
-                      }}
-                      onTogglePlan={(plan) => void togglePlan(plan)}
-                    />
-                  }
-                />
+                <DetailsTab coin={coin} />
               )}
             </Padded>
           </ScrollView>
@@ -542,37 +435,19 @@ export default function CoinScreen() {
             {/* The glyph alone. The word beside it was the one label on a bar
                 whose other half says Buy, and it read as a second primary
                 action competing with the one that matters. */}
-            <Tappable onPress={() => setCommentsOpen(true)} to={0.94}>
-              <PostTap accessibilityRole="button" accessibilityLabel="Comment on this coin">
-                <PostGlyph />
+            <Tappable onPress={() => setSheet("redeem")} to={0.94}>
+              <PostTap accessibilityRole="button" accessibilityLabel="Redeem against the floor">
+                <FloorGlyph size={22} color={theme.colors.text} />
               </PostTap>
             </Tappable>
             {coin.curve.graduated ? (
-              coin.graduatedPool ? (
-                <Button
-                  label="Trading on Uniswap ↗"
-                  variant="ink"
-                  tall
-                  onPress={() => void Linking.openURL(uniswapPoolUrl(coin.graduatedPool!, coin.chainId))}
-                  style={{ flex: 1 }}
-                />
-              ) : (
-                <GraduatedNote>This market moved to Uniswap.</GraduatedNote>
-              )
-            ) : coin.curve.progress >= 1 ? (
-              // Every token on the curve has sold; a buy would revert
-              // `SoldOut`. The graduate card above is the next step.
-              <GraduatedNote>Curve is full — graduating.</GraduatedNote>
+              <Button label="Redeem against the floor" variant="ink" tall onPress={() => setSheet("redeem")} style={{ flex: 1 }} />
+            ) : coin.near.phase !== "curve" ? (
+              <GraduatedNote>
+                {coin.near.phase === "settle" ? "Auction over — settle it above." : "Sealed-bid auction open — bid above."}
+              </GraduatedNote>
             ) : (
-              <Button
-                // A tracker whose stock price is stale takes sells only; the
-                // contract refuses buys, so the button does not offer one.
-                label={coin.nav?.marketOpen === false ? "Sell · market closed" : "Buy"}
-                variant="lime"
-                tall
-                onPress={() => setSheet(coin.nav?.marketOpen === false ? "sell" : "buy")}
-                style={{ flex: 1 }}
-              />
+              <Button label="Buy" variant="lime" tall onPress={() => setSheet("buy")} style={{ flex: 1 }} />
             )}
           </Actions>
 
@@ -582,104 +457,20 @@ export default function CoinScreen() {
               side={sheet}
               holding={holding}
               quoteBalance={quoteBalance}
-              feeBalance={balances.data?.eth ?? null}
-              initialAmount={sheet === "buy" && contributing ? String(contributing.amount) : ""}
-              onFilled={(spent) => void recordFill(spent)}
-              onCommented={() => comments.refresh()}
-              onClose={() => {
-                setSheet(null);
-                setContributing(null);
-              }}
+              onClose={() => setSheet(null)}
               onDone={() => {
                 setSheet(null);
-                setContributing(null);
                 setTradeRevision((n) => n + 1);
                 detail.refresh();
               }}
             />
           ) : null}
 
-          <CommentsSheet
-            visible={commentsOpen}
-            onClose={() => setCommentsOpen(false)}
-            target={{ kind: "coin", mint, symbol: coin.symbol }}
-            onPosted={() => comments.refresh()}
-          />
-
-          <AlertSheet
-            visible={savingsSheet === "alert"}
-            onClose={() => setSavingsSheet(null)}
-            coin={coin}
-            wallet={wallet.address}
-            saved={savedLocal}
-            onSaved={setSavedLocal}
-          />
-          <PlanSheet
-            visible={savingsSheet === "plan"}
-            onClose={() => setSavingsSheet(null)}
-            coin={coin}
-            wallet={wallet.address}
-            saved={savedLocal}
-            onSaved={setSavedLocal}
-          />
         </>
       )}
     </Page>
   );
-
-  /** Pause or resume, optimistically, rolling back if the write is refused. */
-  async function togglePlan(plan: Omit<Plan, "coin">) {
-    if (!savedLocal) return;
-    const next = !plan.active;
-    setSavedError(null);
-    setSavedLocal({
-      ...savedLocal,
-      plans: savedLocal.plans.map((row) =>
-        row.id === plan.id ? { ...row, active: next, due: next && row.due } : row,
-      ),
-    });
-    try {
-      await juno.setPlanActive(plan.id, next);
-    } catch (caught) {
-      setSavedLocal(savedLocal);
-      setSavedError(caught instanceof Error ? caught.message : "That could not be saved");
-    }
-  }
-
-  /**
-   * A buy confirmed on chain; if it was a contribution, write it down.
-   *
-   * Not optimistic, and deliberately so. Everything else on this card can be
-   * rolled back on a failed write; a contribution total is the one figure that
-   * is supposed to mean *this actually happened*, so it moves only once the
-   * server has agreed, and the row it returns is what replaces the local one.
-   */
-  async function recordFill(spent: number) {
-    const plan = contributing;
-    if (!plan || spent <= 0) return;
-    setSavedError(null);
-    try {
-      const { plan: fresh } = await juno.recordContribution(plan.id, spent);
-      setSavedLocal((current) =>
-        current === null
-          ? current
-          : {
-              ...current,
-              plans: current.plans.map((row) => (row.id === fresh.id ? { ...row, ...fresh } : row)),
-            },
-      );
-    } catch (caught) {
-      // The swap landed either way — this only failed to be *recorded*, and
-      // saying so is better than a progress bar that quietly did not move.
-      setSavedError(
-        caught instanceof Error
-          ? `The buy went through, but it was not recorded against your plan: ${caught.message}`
-          : "The buy went through, but it was not recorded against your plan.",
-      );
-    }
-  }
 }
-
 
 /* ------------------------------------------------------------------ */
 /* Tabs                                                                */
@@ -726,7 +517,9 @@ function ActivityTab({
               </Label>
             </Row>
           </Tappable>
-          <Verb $buy={row.side === "buy"}>{row.side === "buy" ? "Buy" : "Sell"}</Verb>
+          <Verb $buy={row.side === "buy"}>
+            {row.kind === "auction" ? "Bid" : row.kind === "redeem" ? "Redeem" : row.side === "buy" ? "Buy" : "Sell"}
+          </Verb>
           <Mono style={{ flex: 1, textAlign: "right" }}>{tokens(row.amount)}</Mono>
           <Mono muted numberOfLines={1} style={{ width: 92, textAlign: "right" }}>
             {money(row.valueQuote ?? toQuote(row.valueUsd), currency)}
@@ -784,21 +577,13 @@ function HoldersTab({
         </Line>
       ))}
       <Caption style={{ marginTop: 12 }}>
-        The twenty largest holders, from the token&rsquo;s transfers.
+        Every holder, read from the post contract&rsquo;s balances.
       </Caption>
     </>
   );
 }
 
-function DetailsTab({
-  coin,
-  launchTxHash,
-  saveCard,
-}: {
-  coin: import("../../lib/api").Coin;
-  launchTxHash: string | null;
-  saveCard: React.ReactNode;
-}) {
+function DetailsTab({ coin }: { coin: import("../../lib/api").Coin }) {
   const [copied, setCopied] = useState<string | null>(null);
   useEffect(() => {
     if (copied === null) return;
@@ -810,21 +595,16 @@ function DetailsTab({
     await Clipboard.setStringAsync(displayAddress(value));
     setCopied(key);
   }
+  const n = coin.near;
 
   return (
     <Col gap={0}>
-      {saveCard ? <SaveSlot>{saveCard}</SaveSlot> : null}
-
-      {coin.curve.graduated ? null : <DepthChart mint={coin.address} />}
+      {coin.curve.graduated || n.phase !== "curve" ? null : <DepthChart mint={coin.address} />}
 
       <Rows>
+        <DetailRow label="Created" value={new Date(coin.createdAt).toLocaleString()} shaded={false} />
         <DetailRow
-          label="Created"
-          value={new Date(coin.createdAt).toLocaleString()}
-          shaded={false}
-        />
-        <DetailRow
-          label="Token"
+          label="Post account"
           value={shortAddress(coin.address)}
           shaded
           copied={copied === "token"}
@@ -832,38 +612,22 @@ function DetailsTab({
         />
         <DetailRow label="Ticker" value={coin.symbol} shaded={false} copied={copied === "ticker"} onCopy={() => void copy("ticker", coin.symbol)} />
         <DetailRow label="Network" value={NETWORK_NAME} shaded />
-        <DetailRow label="Quote" value={coin.quote.symbol} shaded={false} />
-        <DetailRow label="Curve preset" value={coin.curvePreset} shaded />
-        <DetailRow label="Format" value={coin.format === "reel" ? "Reel" : "Post"} shaded={false} />
-        <DetailRow
-          label="Curve contract"
-          value={shortAddress(coin.pool)}
-          shaded
-          copied={copied === "curve"}
-          onCopy={() => void copy("curve", coin.pool)}
-        />
-        {coin.graduatedPool ? (
-          <DetailRow
-            label="Uniswap pool"
-            value={shortAddress(coin.graduatedPool)}
-            shaded={false}
-            copied={copied === "pool"}
-            onCopy={() => void copy("pool", coin.graduatedPool!)}
-          />
-        ) : null}
+        <DetailRow label="Quote" value="NEAR" shaded={false} />
+        <DetailRow label="Supply" value={`${tokens(n.totalSupply)} of 1,000`} shaded />
+        <DetailRow label="Curve sold" value={`${n.curveSold} of 800`} shaded={false} />
+        <DetailRow label="Auction cleared" value={n.clearingPrice > 0 ? money(n.clearingPrice, "NEAR") : "—"} shaded />
+        <DetailRow label="Floor vault" value={money(n.floorVault, "NEAR")} shaded={false} />
+        <DetailRow label="Graduation escrow" value={money(n.graduationEscrow, "NEAR")} shaded />
+        {FACTORY ? <DetailRow label="Factory" value={shortAddress(FACTORY)} shaded={false} copied={copied === "factory"} onCopy={() => void copy("factory", FACTORY!)} /> : null}
       </Rows>
 
-      <LinkTap onPress={() => Linking.openURL(explorer("token", coin.address, coin.chainId))}>
-        <LinkText>The token on {EXPLORER_NAME}</LinkText>
+      <LinkTap onPress={() => Linking.openURL(explorer("address", coin.address))}>
+        <LinkText>The post account on {EXPLORER_NAME}</LinkText>
         <ExternalGlyph />
       </LinkTap>
-      <LinkTap onPress={() => Linking.openURL(explorer("address", coin.pool, coin.chainId))}>
-        <LinkText>The curve contract on {EXPLORER_NAME}</LinkText>
-        <ExternalGlyph />
-      </LinkTap>
-      {launchTxHash ? (
-        <LinkTap onPress={() => Linking.openURL(explorer("tx", launchTxHash, coin.chainId))}>
-          <LinkText>The transaction that launched it</LinkText>
+      {FACTORY ? (
+        <LinkTap onPress={() => Linking.openURL(explorer("address", FACTORY!))}>
+          <LinkText>The factory on {EXPLORER_NAME}</LinkText>
           <ExternalGlyph />
         </LinkTap>
       ) : null}
@@ -880,13 +644,11 @@ function DetailsTab({
  */
 function ClaimFees({
   curve,
-  creator,
   rewards,
   currency,
   onClaimed,
 }: {
   curve: string;
-  creator: string;
   rewards: number;
   currency: string;
   onClaimed: () => void;
@@ -900,15 +662,12 @@ function ClaimFees({
     setState("busy");
     setError(null);
     try {
-      const built = await juno.buildClaim({ curve, creator });
-      const sent = await wallet.send(built.steps, { chainId: built.chainId });
+      const built = juno.buildClaim({ curve });
+      const sent = await wallet.send(built.steps);
       setReceipt({
         hash: sent.hashes[sent.hashes.length - 1]!,
         at: sent.confirmedAt,
-        amount:
-          built.quote.amount !== undefined
-            ? money(built.quote.amount, built.quote.quoteSymbol ?? currency, { compact: false })
-            : money(rewards, currency, { compact: false }),
+        amount: money(rewards, currency, { compact: false }),
       });
       setState("done");
       onClaimed();
@@ -950,63 +709,6 @@ function ClaimFees({
   );
 }
 
-/**
- * The curve is full: move it to Uniswap.
- *
- * `graduate()` is permissionless once the curve has sold its last token, so
- * anyone on the page can send it. The server usually does it straight after
- * the filling buy; this button is for when it has not yet.
- */
-function Graduate({ curve, onGraduated }: { curve: string; onGraduated: () => void }) {
-  const wallet = useWallet();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [receipt, setReceipt] = useState<{ hash: string; at: Date } | null>(null);
-
-  async function graduate() {
-    setBusy(true);
-    setError(null);
-    try {
-      const caller = wallet.address ?? (await wallet.connect());
-      const built = await juno.buildGraduate({ curve, caller });
-      const sent = await wallet.send(built.steps, { chainId: built.chainId });
-      setReceipt({ hash: sent.hashes[sent.hashes.length - 1]!, at: sent.confirmedAt });
-      onGraduated();
-    } catch (caught) {
-      const failure = describeTxError(caught);
-      setError(failure.cancelled ? null : failure.message || "Graduation failed");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <ClaimBox>
-      <Label style={{ fontWeight: "700" }}>Curve is full — graduating to Uniswap.</Label>
-      <Caption style={{ marginTop: 4 }}>
-        Every token on the curve has sold. Graduating moves the rest of the supply and the raise into a
-        Uniswap v3 pool, where trading continues.
-      </Caption>
-      {receipt ? (
-        <Tappable onPress={() => void Linking.openURL(explorer("tx", receipt.hash))} to={0.97}>
-          <ClaimReceipt>
-            tx {receipt.hash.slice(0, 10)}…{receipt.hash.slice(-8)} ·{" "}
-            {receipt.at.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })} · {EXPLORER_NAME} ↗
-          </ClaimReceipt>
-        </Tappable>
-      ) : (
-        <Button
-          label={busy ? "Graduating…" : "Graduate to Uniswap"}
-          onPress={() => void graduate()}
-          loading={busy}
-          style={{ alignSelf: "stretch", marginTop: 10 }}
-        />
-      )}
-      {error ? <Caption style={{ color: theme.colors.neg, marginTop: 6 }}>{error}</Caption> : null}
-    </ClaimBox>
-  );
-}
-
 function DetailRow({
   label,
   value,
@@ -1037,72 +739,6 @@ function DetailRow({
     body
   );
 }
-
-/**
- * A stock tracker's band card: the stock, the curve, and the rule between them.
- *
- * The curve contract reads this same Chainlink feed on every buy. A buy that
- * would leave the curve more than the band above the stock reverts
- * (`OutsideBand`); once the feed is older than its max age, every buy reverts
- * (`MarketClosed`) and the market takes sells only. This card is that rule,
- * shown before anyone runs into it.
- */
-function NavBand({ nav, feed }: { nav: NavReference; feed: string | null }) {
-  const band = nav.bandBps / 100;
-  const deviation = nav.deviationPct;
-  const inside = deviation === null ? null : insideBand(deviation, band);
-
-  return (
-    <Card style={{ marginTop: 14 }}>
-      <Row justify="space-between">
-        <Label style={{ fontWeight: "700" }}>{nav.symbol} · {FEED_SOURCE}</Label>
-        <Caption style={{ color: nav.marketOpen ? theme.colors.pos : theme.colors.neg, fontWeight: "700" }}>
-          {nav.marketOpen ? "Market open" : "Market closed · sells only"}
-        </Caption>
-      </Row>
-
-      <Row style={{ marginTop: 12 }}>
-        <Stat value={money(nav.price, "USD", { compact: false })} label={`${nav.symbol} price`} />
-        <Stat value={money(nav.curvePrice, "USD", { compact: false })} label="Curve price" />
-        <Stat
-          value={deviation === null ? "—" : `${deviation >= 0 ? "+" : ""}${deviation.toFixed(2)}%`}
-          label="Deviation"
-        />
-      </Row>
-
-      <Split />
-
-      <Row justify="space-between" align="center">
-        <Caption>Band</Caption>
-        <Mono style={{ color: inside === null ? theme.colors.muted : inside ? theme.colors.pos : theme.colors.neg }}>
-          ±{band}% {inside === null ? "" : inside ? "· inside" : "· outside"}
-        </Mono>
-      </Row>
-      <Row justify="space-between" align="center" style={{ marginTop: 6 }}>
-        <Caption>Price updated</Caption>
-        <Mono muted>{age(nav.ageSeconds)} ago</Mono>
-      </Row>
-
-      <Caption style={{ marginTop: 10 }}>
-        {nav.marketOpen
-          ? `The curve contract checks ${nav.symbol}'s Chainlink price on every buy and refuses one that would take the curve more than ${band}% above it. Sells are never blocked.`
-          : `${nav.symbol}'s Chainlink price is stale — the exchange is closed — so the contract refuses buys until it updates. You can still sell.`}
-        {FEED_NOTE ? ` ${FEED_NOTE}` : ""}
-      </Caption>
-
-      {feed ? (
-        <LinkTap onPress={() => Linking.openURL(explorer("address", feed))}>
-          <LinkText>The {nav.symbol} feed on {EXPLORER_NAME}</LinkText>
-          <ExternalGlyph />
-        </LinkTap>
-      ) : null}
-    </Card>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Glyphs                                                              */
-/* ------------------------------------------------------------------ */
 
 function ShareGlyph() {
   return (
@@ -1264,6 +900,24 @@ const ChipText = styled.Text`
   font-weight: 700;
   letter-spacing: ${(p) => p.theme.type.label.tracking}px;
   color: ${(p) => p.theme.colors.text};
+`;
+
+const FloorRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: ${(p) => p.theme.radius.lg}px;
+  background-color: ${(p) => p.theme.colors.posSoft};
+`;
+
+const FloorFigure = styled.Text`
+  font-size: ${(p) => p.theme.type.lead.size}px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: ${(p) => p.theme.colors.pos};
+  font-variant: tabular-nums;
 `;
 
 const Band = styled.View`

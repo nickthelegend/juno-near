@@ -23,7 +23,6 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 
 import { CoinArt, Identicon } from "../../components/art";
 import { BrandImage } from "../../components/brand";
-import { CommentsSheet } from "../../components/CommentsSheet";
 import { HeartBurst } from "../../components/HeartBurst";
 import { Handle } from "../../components/Handle";
 import {
@@ -91,7 +90,8 @@ export default function ReelsScreen() {
   const reels = useApi(async () => {
     if (!once.ready) return null;
     const { posts } = await loadMarkets(once.viewer());
-    return posts.filter((coin) => coin.format === "reel" && coin.media.kind === "video");
+    // Juno on NEAR has photo posts, so every post plays here full-bleed; a video post would play as a video.
+    return [...posts].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
   }, [once.ready]);
 
   const list = useMemo(() => reels.data ?? [], [reels.data]);
@@ -104,7 +104,6 @@ export default function ReelsScreen() {
   // not that you want to unmute every reel one by one.
   const [muted, setMuted] = useState(true);
   const [trade, setTrade] = useState<{ coin: Coin; side: "buy" | "sell" } | null>(null);
-  const [talking, setTalking] = useState<Coin | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   /** Comments posted from this screen, so the rail's count moves without a refetch. */
   const [extraComments, setExtraComments] = useState<Record<string, number>>({});
@@ -121,7 +120,7 @@ export default function ReelsScreen() {
 
   const insets = useSafeAreaInsets();
   const TAB_H = useTabBarHeight().height;
-  const sheetOpen = trade !== null || talking !== null;
+  const sheetOpen = trade !== null;
 
   // Light status bar while Reels is on screen. The app's is dark for its
   // light pages, and over full-bleed night video the clock and signal simply
@@ -158,9 +157,9 @@ export default function ReelsScreen() {
       ) : list.length === 0 ? (
         <NightState
           art
-          title="No reels yet"
-          detail="A reel is a vertical video with its own market. Post one and it lands here."
-          action={{ label: "Post a reel", onPress: () => router.push("/(tabs)/post?format=reel" as never) }}
+          title="No posts yet"
+          detail="Every post is its own market on NEAR. Post one and it lands here."
+          action={{ label: "Post a photo", onPress: () => router.push("/(tabs)/post" as never) }}
         />
       ) : (
         <FlatList
@@ -188,7 +187,7 @@ export default function ReelsScreen() {
               onToggleMute={() => setMuted((on) => !on)}
               extraComments={extraComments[item.address] ?? 0}
               onTrade={(side) => setTrade({ coin: item, side })}
-              onComments={() => setTalking(item)}
+              onComments={() => router.push(`/coin/${item.address}`)}
               onShare={async () => {
                 const outcome = await shareCoin(item);
                 if (outcome === "copied") flash("Link copied");
@@ -207,7 +206,7 @@ export default function ReelsScreen() {
         <Text style={styles.headerTitle}>Reels</Text>
         <View style={styles.livePill}>
           <View style={styles.liveDot} />
-          <Text style={styles.liveText}>Every reel is a coin</Text>
+          <Text style={styles.liveText}>Every post is a coin</Text>
         </View>
         <View style={{ flex: 1 }} />
         <Pressable
@@ -240,16 +239,6 @@ export default function ReelsScreen() {
         />
       ) : null}
 
-      <CommentsSheet
-        visible={talking !== null}
-        onClose={() => setTalking(null)}
-        target={{ kind: "coin", mint: talking?.address ?? "", symbol: talking?.symbol ?? "" }}
-        onPosted={() => {
-          if (!talking) return;
-          setExtraComments((all) => ({ ...all, [talking.address]: (all[talking.address] ?? 0) + 1 }));
-        }}
-        bottomInset={TAB_H}
-      />
     </View>
   );
 }
@@ -459,12 +448,14 @@ function Reel({
             </Text>
             <Text style={styles.dockMuted} numberOfLines={1}>
               {coin.curve.graduated
-                ? "Graduated · trading on Uniswap"
-                : `${progressLabel(pct)} to graduation`}
+                ? "Graduated · redeem against the floor"
+                : coin.near.phase !== "curve"
+                  ? `Sealed-bid opening · ${coin.near.sealedBids} ${coin.near.sealedBids === 1 ? "bid" : "bids"}`
+                  : `${progressLabel(pct)} to graduation`}
             </Text>
           </View>
         </Pressable>
-        {coin.curve.graduated ? null : (
+        {coin.curve.graduated || coin.near.phase !== "curve" ? null : (
           <>
             <Tappable onPress={() => onTrade("sell")} to={0.94}>
               <View style={styles.sell} accessibilityRole="button" accessibilityLabel={`Sell $${coin.symbol}`}>

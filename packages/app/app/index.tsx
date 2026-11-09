@@ -5,10 +5,11 @@ import styled from "styled-components/native";
 
 import { OnboardingArt } from "../components/art";
 import { BrandImage } from "../components/brand";
-import { useBurns } from "../components/Burn";
+import { loadMarkets } from "../lib/markets";
+import { useApi } from "../lib/useApi";
 import { Body, Button, Display } from "../components/kit";
-import { IS_FORK, NETWORK_NAME } from "../lib/chain";
-import { amountOf } from "../lib/useApi";
+import { NETWORK_NAME } from "../lib/chain";
+import { amountOf } from "../lib/format";
 
 /**
  * Onboarding.
@@ -20,13 +21,13 @@ import { amountOf } from "../lib/useApi";
  */
 export default function Onboarding() {
   const router = useRouter();
-  const burns = useBurns(1);
-  const b = burns.data;
-  // Three live figures from the factory's burn counter; dashes until it answers.
+  const markets = useApi(() => loadMarkets(), []);
+  const posts = markets.data?.posts ?? null;
+  // Three live figures read from the factory on NEAR testnet; dashes until it answers.
   const stats: [string, string][] = [
-    [b ? amountOf(b.totalWifBurned, "WIF") : "—", "burned"],
-    [b ? amountOf(b.tradeWifBurned, "WIF") : "—", "trade fees"],
-    [b ? amountOf(b.graduationWifBurned, "WIF") : "—", "graduations"],
+    [posts ? String(posts.length) : "—", "posts"],
+    [posts ? String(posts.reduce((n, c) => n + c.near.sealedBids, 0)) : "—", "sealed bids"],
+    [posts ? amountOf(posts.reduce((n, c) => n + c.near.floorVault, 0), "NEAR") : "—", "in floors"],
   ];
 
   return (
@@ -58,15 +59,15 @@ export default function Onboarding() {
         <Copy>
           <Network>
             <Dot />
-            <NetworkText>{IS_FORK ? `${NETWORK_NAME} · not real money` : NETWORK_NAME}</NetworkText>
+            <NetworkText>{`${NETWORK_NAME} · test NEAR, no real money`}</NetworkText>
           </Network>
           <Display>Every post{"\n"}is a market.</Display>
           <Body muted>
-            Post a photo and it launches its own token, priced in $WIF. Half of every trade fee burns.
+            Post a photo and it launches as its own NEAR account with a sealed-bid opening, a bonding curve and a floor you can always redeem.
           </Body>
         </Copy>
 
-        <Stats accessibilityLabel="Live burn counter">
+        <Stats accessibilityLabel="Live figures from NEAR testnet">
           {stats.map(([value, label], i) => (
             <StatCell key={label} $first={i === 0}>
               <StatValue numberOfLines={1} adjustsFontSizeToFit>{value}</StatValue>

@@ -1,21 +1,11 @@
 import { juno, type Coin } from "./api";
 import { money } from "./format";
 
-/**
- * Which of Juno's two products a coin belongs to.
- *
- * - **post** — someone's photo or reel, launched as a coin on its own curve.
- *   These are the feed and the reels.
- * - **stock** — a tracker: a curve held to a stock's Chainlink price. These
- *   are the Trade tab's Stocks list.
- *
- * The server says so in `reference`: a Chainlink feed for a tracker, null for
- * a post or reel.
- */
-export type MarketKind = "post" | "stock";
+/** Juno on NEAR has one product: posts. Every coin is a post. */
+export type MarketKind = "post";
 
-export function marketKind(coin: Coin): MarketKind {
-  return coin.reference ? "stock" : "post";
+export function marketKind(_coin: Coin): MarketKind {
+  return "post";
 }
 
 /** A web link to a coin, for the share sheet. The Next app serves the same market. */
@@ -80,12 +70,8 @@ export function loadMarkets(viewer?: string | null) {
 }
 
 async function readMarkets(viewer?: string | null) {
-  const { coins, missing } = await juno.coins(undefined, { social: true, viewer, nav: true });
-  const sorted = { posts: [] as Coin[], stocks: [] as Coin[] };
-  for (const coin of coins) {
-    (marketKind(coin) === "post" ? sorted.posts : sorted.stocks).push(coin);
-  }
-  return { ...sorted, missing };
+  const { coins, missing } = await juno.coins(undefined, { viewer, fresh: true });
+  return { posts: coins, stocks: [] as Coin[], missing };
 }
 
 /**
@@ -102,28 +88,17 @@ export function progressLabel(pct: number): string {
   return `${Math.floor(pct)}%`;
 }
 
-/**
- * A coin figure in the coin's own quote token: WIF for a post, USDG for a
- * stock tracker. This is the unit the curve prices in, so it leads; USD is
- * only ever a secondary estimate.
- *
- * `quote` is the server's quote-denominated twin. Older payloads carry only
- * the USD figure, which converts back through `quoteUsdRate`; with neither,
- * the figure is unknown and prints as "—".
- */
+/** A coin figure in NEAR, the unit every post's curve prices in. */
 export function inQuote(
   coin: Pick<Coin, "quote" | "quoteUsdRate">,
   quote: number | null | undefined,
-  usd?: number | null,
+  _usd?: number | null,
   opts: { compact?: boolean } = {},
 ): string {
-  const value =
-    quote ?? (usd !== null && usd !== undefined && coin.quoteUsdRate ? usd / coin.quoteUsdRate : null);
-  return money(value, coin.quote.symbol, opts);
+  return money(quote ?? null, coin.quote.symbol, opts);
 }
 
-/** The USD estimate beside a quote figure, or null when there is no rate. */
-export function usdEstimate(coin: Pick<Coin, "quoteUsdRate">, quote: number | null | undefined): string | null {
-  if (quote === null || quote === undefined || !coin.quoteUsdRate) return null;
-  return `≈ ${money(quote * coin.quoteUsdRate, "USD")}`;
+/** There is no USD feed on testnet NEAR, so there is never an estimate. */
+export function usdEstimate(_coin: Pick<Coin, "quoteUsdRate">, _quote: number | null | undefined): string | null {
+  return null;
 }

@@ -22,40 +22,33 @@ import {
   Title,
 } from "../../components/kit";
 import { CoinArt, Identicon } from "../../components/art";
-import { FlushBurn, StockNotice } from "../../components/Burn";
+import { FloorChip, phaseLabel } from "../../components/Floor";
 import { Handle } from "../../components/Handle";
 import { Tappable } from "../../components/Press";
 import { QuickTrade } from "../../components/QuickTrade";
-import { juno, type Coin, type StockReference, type Trader } from "../../lib/api";
-import { explorer, FEED_NOTE, FEED_SOURCE } from "../../lib/chain";
+import { juno, type Coin, type Trader } from "../../lib/api";
 import { useLinkedState } from "../../lib/linked";
 import { count, inQuote, invalidateMarkets, loadMarkets, progressLabel } from "../../lib/markets";
-import { age, insideBand, money, useApi } from "../../lib/useApi";
+import { money, useApi } from "../../lib/useApi";
 import { useViewerOnce } from "../../lib/social";
 import { theme } from "../../theme";
 
-type Sort = "stocks" | "memes" | "traders";
+type Sort = "memes" | "traders";
 
 const SORTS = [
-  { id: "stocks" as const, label: "Stocks" },
-  { id: "memes" as const, label: "Memes" },
+  { id: "memes" as const, label: "Posts" },
   { id: "traders" as const, label: "Traders" },
 ];
 
 /**
  * Trade: the markets as lists.
  *
- * **Stocks** lead: each Chainlink reference (TSLA, NVDA, AAPL) with its price,
- * how old that price is and whether the market is open, and under it the
- * Juno trackers held to it. A tracker's curve contract reads the same feed on
- * every buy and reverts one that would leave the band, or any buy at all once
- * the price is stale — so "Market closed" here is the contract's rule, not a
- * label. **Memes** are the posts, as a list rather than a feed, for someone who
- * wants to compare curves instead of scrolling pictures. **Traders** ranks the
- * people.
+ * **Posts** are the feed as a list, for someone who wants to compare
+ * markets instead of scrolling pictures: each one's cap, floor, and where it
+ * is in its life (sealed-bid opening, curve, graduated). **Traders** ranks
+ * the accounts by what they took out of every post's fill log on NEAR.
  *
- * Every Trade button opens the same sheet the coin screen uses, over this
- * screen — quoting against the live curve is the same act wherever it starts.
+ * Every Trade button opens the same sheet the coin screen uses.
  */
 export default function TradeScreen() {
   const router = useRouter();
@@ -63,10 +56,9 @@ export default function TradeScreen() {
   const [sort, setSort] = useLinkedState<Sort>(
     "sort",
     SORTS.map((option) => option.id),
-    "stocks",
+    "memes",
   );
   const onTraders = sort === "traders";
-  const onStocks = sort === "stocks";
 
   // Read with the same viewer as the feed and the reels, so all three share one walk.
   const once = useViewerOnce();
@@ -74,19 +66,17 @@ export default function TradeScreen() {
     () => (sort !== "memes" || !once.ready ? Promise.resolve(null) : loadMarkets(once.viewer())),
     [sort, once.ready],
   );
-  const stocks = useApi(() => (onStocks ? juno.stocks() : Promise.resolve(null)), [onStocks]);
   const board = useApi(() => (onTraders ? juno.leaderboard(25) : Promise.resolve(null)), [onTraders]);
-  const [trade, setTrade] = useState<{ coin: Coin; side: "buy" | "sell" } | null>(null);
+  const [trade, setTrade] = useState<{ coin: Coin; side: "buy" | "sell" | "redeem" } | null>(null);
 
   const refresh = () => {
     invalidateMarkets();
     markets.refresh();
-    stocks.refresh();
   };
 
   const refreshControl = (
     <RefreshControl
-      refreshing={markets.refreshing || stocks.refreshing}
+      refreshing={markets.refreshing}
       onRefresh={refresh}
       tintColor={theme.colors.muted}
     />
@@ -109,46 +99,6 @@ export default function TradeScreen() {
 
       {onTraders ? (
         <TraderBoard board={board} onOpen={(wallet) => router.push(`/trader/${wallet}` as never)} />
-      ) : onStocks ? (
-        stocks.error && !stocks.loading ? (
-          <Placeholder
-            title="Could not load the stocks"
-            detail={stocks.error}
-            action={<Button label="Try again" onPress={stocks.refresh} />}
-          />
-        ) : stocks.loading || stocks.data === null ? (
-          loadingCards
-        ) : (
-          <ScrollView
-            contentContainerStyle={{ width: "100%", paddingHorizontal: 16, paddingBottom: 130, gap: 14 }}
-            showsVerticalScrollIndicator={false}
-            refreshControl={refreshControl}
-          >
-            <Intro />
-            <StockNotice />
-            {(stocks.data ?? []).length === 0 ? (
-              <Placeholder
-                art
-                title="No stock trackers yet"
-                detail="Trackers held to a Chainlink stock price land here once they are launched."
-              />
-            ) : (
-              (stocks.data ?? []).map((reference) => (
-                <StockCard
-                  key={reference.symbol}
-                  reference={reference}
-                  onTrade={(coin, side) => setTrade({ coin, side })}
-                  onOpen={(address) => router.push(`/coin/${address}`)}
-                  onFlushed={() => stocks.refresh()}
-                />
-              ))
-            )}
-            <Caption style={{ paddingHorizontal: 4 }}>
-              Prices are Chainlink&apos;s, read on-chain. A tracker is a Juno curve held to the
-              stock&apos;s price, not a share, and it trades in USDG.{FEED_NOTE ? ` ${FEED_NOTE}` : ""}
-            </Caption>
-          </ScrollView>
-        )
       ) : markets.loading || markets.data === null ? (
         markets.error ? (
           <Placeholder
@@ -193,20 +143,20 @@ export default function TradeScreen() {
             </Footnote>
           ) : null}
           {markets.data!.posts.length === 0 ? (
-            <Placeholder art title="No memes yet" detail="Post something with +." />
+            <Placeholder art title="No posts yet" detail="Post something with +." />
           ) : (
             <View style={{ gap: 14 }}>
               <Intro
-                pill="Priced in $WIF"
+                pill="NEAR testnet"
                 title="Every post is a market."
-                body="Posts and reels launched as coins on curves priced in WIF. Creators earn half of every fee; the other half is burned."
+                body="Each post is its own NEAR account: a sealed-bid opening, then a bonding curve priced in NEAR, with a floor every holder can redeem."
               />
               {markets.data!.posts.map((coin) => (
                 <MarketCard
                   key={coin.address}
                   coin={coin}
                   onOpen={() => router.push(`/coin/${coin.address}`)}
-                  onTrade={() => setTrade({ coin, side: "buy" })}
+                  onTrade={() => setTrade({ coin, side: coin.curve.graduated ? "redeem" : "buy" })}
                 />
               ))}
             </View>
@@ -223,7 +173,6 @@ export default function TradeScreen() {
             setTrade(null);
             invalidateMarkets();
             markets.refresh();
-            stocks.refresh();
           }}
         />
       ) : null}
@@ -233,9 +182,9 @@ export default function TradeScreen() {
 
 /** What this list is, once, in the app's one dark panel. */
 function Intro({
-  pill = "Held to Chainlink",
-  title = "Listed names, on a curve.",
-  body = "Each tracker is a Juno curve in USDG, held to the stock's Chainlink price on every trade. Half of every fee buys and burns WIF.",
+  pill = "NEAR testnet",
+  title = "Every post is a market.",
+  body = "",
 }: {
   pill?: string;
   title?: string;
@@ -282,171 +231,6 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: "po
   );
 }
 
-/** The company behind a listed ticker, for when the reference comes back without a name. */
-const LISTED: Record<string, { name: string; venue: string }> = {
-  AAPL: { name: "Apple", venue: "Nasdaq" },
-  MSFT: { name: "Microsoft", venue: "Nasdaq" },
-  NVDA: { name: "NVIDIA", venue: "Nasdaq" },
-  TSLA: { name: "Tesla", venue: "Nasdaq" },
-  AMZN: { name: "Amazon", venue: "Nasdaq" },
-  GOOGL: { name: "Alphabet", venue: "Nasdaq" },
-  META: { name: "Meta", venue: "Nasdaq" },
-};
-
-/**
- * The company's own logo, so a listed name reads as that company at a glance.
- *
- * Loaded from a public stock-logo endpoint by ticker. Should it fail — an
- * unknown ticker, no network — the tile falls back to the ticker in type, so
- * the card never shows a broken image.
- */
-function StockLogo({ ticker }: { ticker: string }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) {
-    return (
-      <View style={styles.tickerTile}>
-        {/* Sized by length rather than `adjustsFontSizeToFit`, which web ignores. */}
-        <Text style={[styles.tickerTileText, { fontSize: ticker.length > 3 ? 12 : 15 }]} numberOfLines={1}>
-          {ticker.slice(0, 4)}
-        </Text>
-      </View>
-    );
-  }
-  return (
-    <View style={styles.logoTile}>
-      <ExpoImage
-        source={{ uri: `https://financialmodelingprep.com/image-stock/${encodeURIComponent(ticker)}.png` }}
-        style={{ width: 34, height: 34 }}
-        contentFit="contain"
-        accessibilityLabel={`${LISTED[ticker]?.name ?? ticker} logo`}
-        onError={() => setFailed(true)}
-      />
-    </View>
-  );
-}
-
-/**
- * One stock and the trackers held to it.
- *
- * The stock half is Chainlink's, read on-chain: the price, how old it is, and
- * whether the market is open (a fresh price) or closed (stale, so the
- * trackers take sells only). The tracker half is Juno's: each curve, its price
- * against the stock, and the band its contract enforces.
- */
-function StockCard({
-  reference,
-  onTrade,
-  onOpen,
-  onFlushed,
-}: {
-  reference: StockReference;
-  onTrade: (coin: Coin, side: "buy" | "sell") => void;
-  onOpen: (address: string) => void;
-  onFlushed: () => void;
-}) {
-  const listed = LISTED[reference.symbol];
-  const open = reference.marketOpen;
-
-  return (
-    <View style={styles.company}>
-      <View style={styles.companyHead}>
-        <StockLogo ticker={reference.symbol} />
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={styles.companyName} numberOfLines={1}>
-            {reference.name || listed?.name || reference.symbol}
-          </Text>
-          <Text
-            style={styles.companySector}
-            numberOfLines={1}
-            onPress={() => void Linking.openURL(explorer("address", reference.feed))}
-          >
-            {listed?.venue ?? "Listed"} · {reference.symbol} · {FEED_SOURCE} feed ↗
-          </Text>
-        </View>
-        <View style={[styles.preBadge, open ? styles.badgeInk : styles.badgeClosed]}>
-          <Text style={[styles.preBadgeText, open ? styles.badgeInkText : styles.badgeClosedText]}>
-            {open ? "OPEN" : "CLOSED"}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.stats}>
-        <Stat
-          label={`${FEED_SOURCE} price`}
-          value={reference.price === null ? "—" : money(reference.price, "USD", { compact: false })}
-        />
-        <View style={styles.statRule} />
-        <Stat label="Updated" value={reference.ageSeconds === null ? "—" : `${age(reference.ageSeconds)} ago`} />
-        <View style={styles.statRule} />
-        <Stat label="Market" value={open ? "Open" : "Sells only"} tone={open ? "pos" : "neg"} />
-      </View>
-
-      {!open ? (
-        <Text style={styles.closed}>Market closed · sells only. The price is stale, so the curve refuses buys.</Text>
-      ) : null}
-
-      {reference.trackers.length === 0 ? (
-        <Text style={styles.noMarket}>No Juno tracker on {reference.symbol} yet.</Text>
-      ) : (
-        reference.trackers.map((coin) => {
-          const pct = coin.curve.progress * 100;
-          const nav = coin.nav ?? null;
-          const deviation = nav?.deviationPct ?? null;
-          const band = nav ? nav.bandBps / 100 : null;
-          const inside = deviation === null || band === null ? null : insideBand(deviation, band);
-          return (
-            <View key={coin.address} style={{ gap: 10 }}>
-            <Tappable onPress={() => onOpen(coin.address)} to={0.985}>
-              <View style={styles.market}>
-                <CoinArt uri={juno.still(coin.media)} seed={coin.address} size={40} radius={12} />
-                <View style={{ flex: 1, gap: 3 }}>
-                  <Text style={styles.marketName} numberOfLines={1}>
-                    ${coin.symbol} <Text style={styles.marketPreset}>{coin.curvePreset}</Text>
-                  </Text>
-                  {nav ? (
-                    <Text
-                      style={[
-                        styles.marketMeta,
-                        inside === null
-                          ? null
-                          : { color: inside ? theme.colors.pos : theme.colors.neg, fontWeight: "700" },
-                      ]}
-                      numberOfLines={2}
-                    >
-                      Curve {money(nav.curvePrice, "USD", { compact: false })}
-                      {deviation === null ? "" : ` · ${deviation >= 0 ? "+" : ""}${deviation.toFixed(2)}% vs stock`}
-                      {band === null ? "" : ` · ±${band}% band`}
-                    </Text>
-                  ) : null}
-                  <Text style={styles.marketMeta} numberOfLines={1}>
-                    {inQuote(coin, coin.marketCapQuote, coin.marketCap)} cap ·{" "}
-                    {coin.curve.graduated ? "graduated" : `${progressLabel(pct)} to graduation`}
-                  </Text>
-                </View>
-                {coin.curve.graduated ? (
-                  <Pill label="On Uniswap" />
-                ) : (
-                  <Tappable onPress={() => onTrade(coin, open ? "buy" : "sell")} to={0.94}>
-                    <View
-                      style={styles.tradeButton}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Trade $${coin.symbol}`}
-                    >
-                      <Text style={styles.tradeText}>{open ? "Trade" : "Sell"}</Text>
-                    </View>
-                  </Tappable>
-                )}
-              </View>
-            </Tappable>
-            <FlushBurn coin={coin} compact onFlushed={onFlushed} />
-            </View>
-          );
-        })
-      )}
-    </View>
-  );
-}
-
 /**
  * One post or reel, as a card.
  *
@@ -479,7 +263,7 @@ function MarketCard({
           </View>
           <View style={[styles.preBadge, styles.badgeHeart]}>
             <Text style={[styles.preBadgeText, styles.badgeHeartText]}>
-              {coin.format === "reel" ? "REEL" : "MEME"}
+              {coin.near.phase === "curve" ? "CURVE" : coin.near.phase === "graduated" ? "GRAD" : "AUCTION"}
             </Text>
           </View>
         </View>
@@ -487,15 +271,15 @@ function MarketCard({
         <View style={styles.stats}>
           <Stat label="Market cap" value={inQuote(coin, coin.marketCapQuote, coin.marketCap)} />
           <View style={styles.statRule} />
-          <Stat label="WIF burned" value={coin.burn ? money(coin.burn.wifBurned, "WIF") : "—"} />
+          <Stat label="Floor / token" value={coin.near.floorPerToken > 0 ? money(coin.near.floorPerToken, "NEAR") : "—"} tone={coin.near.floorPerToken > 0 ? "pos" : undefined} />
           <View style={styles.statRule} />
-          <Stat label="Likes" value={coin.likes === undefined ? "—" : count(coin.likes) || "0"} />
+          <Stat label="Holders" value={coin.holders === null ? "—" : count(coin.holders) || "0"} />
         </View>
 
         <View style={styles.market}>
           <View style={{ flex: 1, gap: 6 }}>
             <Text style={styles.marketName} numberOfLines={1}>
-              ${coin.symbol} <Text style={styles.marketPreset}>{coin.curvePreset}</Text>
+              ${coin.symbol} <Text style={styles.marketPreset}>{coin.near.sealedBids} sealed {coin.near.sealedBids === 1 ? "bid" : "bids"}</Text>
             </Text>
             <View style={styles.rowCurve}>
               <View style={styles.rowTrack}>
@@ -512,7 +296,13 @@ function MarketCard({
             </View>
           </View>
           {coin.curve.graduated ? (
-            <Pill label="On Uniswap" />
+            <Pill label="Graduated" />
+          ) : coin.near.phase !== "curve" ? (
+            <Tappable onPress={onOpen} to={0.94}>
+              <View style={styles.tradeButton} accessibilityRole="button" accessibilityLabel={`Open the auction for $${coin.symbol}`}>
+                <Text style={styles.tradeText}>{phaseLabel(coin, null)}</Text>
+              </View>
+            </Tappable>
           ) : (
             <Tappable onPress={onTrade} to={0.94}>
               <View style={styles.tradeButton} accessibilityRole="button" accessibilityLabel={`Trade $${coin.symbol}`}>

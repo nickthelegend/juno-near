@@ -1,163 +1,144 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { parseEventLogs, type Hex, type TransactionReceipt } from "viem";
-import { junoFactoryAbi } from "@config/abi";
+import { Platform } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import {
+  Account,
+  JsonRpcProvider,
+  KeyPair,
+  KeyPairSigner,
+  actions,
+  encodeSignedDelegate,
+  type KeyPairString,
+} from "near-api-js";
 
-import { juno, type TxRecord, type TxStep } from "./api";
-import { CHAIN_ID, chainFor, describeTxError, EXPLORER_NAME, publicClient, TxError } from "./chain";
-import { PrivyRoot, usePrivyBridge } from "./privy";
-import { forgetSession, setSessionSigner } from "./session";
+import { invalidateReads, type TxStep } from "./api";
+import { describeTxError, EXPLORER_NAME, RELAYER_URL, RPC_URL, TxError } from "./chain";
 import { SignInSheet } from "../components/SignInSheet";
 
 /**
- * The wallet.
+ * The wallet: Juno on NEAR, signed in with email.
  *
- * Juno's transactions are built on the server — calldata, value, the steps in
- * order — and sent from here by the person's own Privy wallet. This module
- * owns that second half: make sure the wallet is on the app's chain, send each
- * step, wait for its receipt before the next, and tell the server what landed.
+ * The relayer (`packages/relayer`) sends a six-digit code; on verify it
+ * creates a named testnet account for that email with the public half of a
+ * key generated here, on this device. The secret half never leaves it: it
+ * lives in the browser's storage on web and in the secure store on a phone.
  *
- * There is one backend on every platform: a Privy embedded EVM wallet (or, in
- * a browser, a wallet such as MetaMask signed in through Privy). `connect()`
- * opens the sign-in sheet and resolves with the address once Privy has one, so
- * every "sign in first" path (buy, like, comment, post) goes through the same
- * door.
+ * Every transaction is a NEP-366 delegate action: this device signs the
+ * function call, the relayer wraps it and pays the gas. Any deposit (a buy, a
+ * 1 NEAR sealed-bid escrow, a launch's 3 NEAR) still comes from the player's
+ * own account. The relayer only relays calls on its allowlist.
  */
 
 export type SendProgress = {
-  /** Index of the step this is about. */
   index: number;
   label: string;
   phase: "checking" | "signing" | "confirming" | "confirmed";
-  hash?: Hex;
+  hash?: string;
 };
 
 export type SendResult = {
-  hashes: Hex[];
-  receipts: TransactionReceipt[];
-  /**
-   * The server's record of the last transaction. Null when that call failed:
-   * the transaction still landed, and the indexer will find it.
-   */
-  record: TxRecord | null;
-  /** A launch's token and curve, from the server's record or, failing that, the receipt itself. */
-  launched: { token: string; curve: string } | null;
-  /** When the last receipt came back. */
+  hashes: string[];
   confirmedAt: Date;
 };
 
+export type SignInBridge = {
+  /** Null when the relayer is not configured or not ready: the text says what is missing. */
+  setup: string | null;
+  sendCode: (email: string) => Promise<void>;
+  loginWithCode: (code: string, email: string) => Promise<void>;
+};
+
 export type WalletState = {
-  /** Lowercase 0x address, or null when signed out. */
+  /** The NEAR account, or null when signed out. */
   address: string | null;
   ready: boolean;
-  /** True while a transaction or a signature is in flight. */
   signing: boolean;
-  /** Email sign-in (Privy) versus a browser wallet the user brings. */
   emailLogin: boolean;
-  /**
-   * Send server-built steps in order, each confirmed before the next.
-   *
-   * Throws a `TxError` whose message is ready to show; `cancelled` is set when
-   * the person declined in their wallet, and the caller should then say nothing.
-   */
-  send: (
-    steps: TxStep[],
-    options?: { chainId?: number; onProgress?: (progress: SendProgress) => void },
-  ) => Promise<SendResult>;
-  /** EIP-191 `personal_sign` over `text`. Returns the 0x signature. */
-  signMessage: (text: string) => Promise<string>;
-  /** Open the sign-in sheet (every platform) and resolve with the address. */
+  send: (steps: TxStep[], options?: { onProgress?: (progress: SendProgress) => void }) => Promise<SendResult>;
   connect: () => Promise<string>;
   disconnect: () => Promise<void>;
 };
 
 const WalletContext = createContext<WalletState | null>(null);
+const STORE_KEY = "juno-near-player";
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <PrivyRoot>
-      <Wallet>{children}</Wallet>
-    </PrivyRoot>
-  );
-}
+type Player = { accountId: string; secretKey: string };
 
-/**
- * Replay a transaction as a call to learn why it would revert.
- *
- * Returns null when the call succeeds, or when the failure is not a revert
- * (an RPC hiccup is not a reason to refuse to send). At `blockNumber` it
- * answers why a mined transaction reverted.
- */
-async function whyReverts(
-  from: string,
-  step: { to: Hex; data: Hex; value: bigint },
-  blockNumber?: bigint,
-): Promise<TxError | null> {
+async function loadPlayer(): Promise<Player | null> {
   try {
-    await publicClient.call({
-      account: from as Hex,
-      to: step.to,
-      data: step.data,
-      value: step.value,
-      ...(blockNumber !== undefined ? { blockNumber } : {}),
-    });
-    return null;
-  } catch (error) {
-    const failure = describeTxError(error);
-    // Only a contract saying no is worth stopping for; anything else might
-    // be the RPC, and the wallet's own send will say if it really fails.
-    if (failure.reason) return new TxError(failure);
-    const text = error instanceof Error ? error.message : String(error);
-    if (/execution reverted|revert/i.test(text)) return new TxError(failure);
-    return null;
-  }
-}
-
-function launchedFrom(receipt: TransactionReceipt): { token: string; curve: string } | null {
-  try {
-    const [event] = parseEventLogs({ abi: junoFactoryAbi, logs: receipt.logs, eventName: "Launched" });
-    if (!event) return null;
-    const args = event.args as { token: string; curve: string };
-    return { token: args.token.toLowerCase(), curve: args.curve.toLowerCase() };
+    const raw =
+      Platform.OS === "web"
+        ? typeof localStorage === "undefined"
+          ? null
+          : localStorage.getItem(STORE_KEY)
+        : await SecureStore.getItemAsync(STORE_KEY);
+    return raw ? (JSON.parse(raw) as Player) : null;
   } catch {
     return null;
   }
 }
 
-function Wallet({ children }: { children: React.ReactNode }) {
-  const privy = usePrivyBridge();
+async function savePlayer(player: Player | null) {
+  const raw = player ? JSON.stringify(player) : null;
+  if (Platform.OS === "web") {
+    if (typeof localStorage === "undefined") return;
+    if (raw) localStorage.setItem(STORE_KEY, raw);
+    else localStorage.removeItem(STORE_KEY);
+    return;
+  }
+  if (raw) await SecureStore.setItemAsync(STORE_KEY, raw);
+  else await SecureStore.deleteItemAsync(STORE_KEY);
+}
+
+async function relayer<T>(path: string, body?: object): Promise<T> {
+  if (!RELAYER_URL) throw new Error("Setup required: EXPO_PUBLIC_RELAYER_URL");
+  let response: Response;
+  try {
+    response = await fetch(`${RELAYER_URL}${path}`, {
+      method: body ? "POST" : "GET",
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error("The Juno relayer can't be reached. Start it with `pnpm relayer`.");
+  }
+  const data = (await response.json().catch(() => ({}))) as { error?: string } & T;
+  if (!response.ok) throw new Error(data.error || `Relayer HTTP ${response.status}`);
+  return data;
+}
+
+export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [ready, setReady] = useState(false);
   const [signing, setSigning] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
-  // The `connect()` call waiting on the sign-in sheet.
+  const [setup, setSetup] = useState<string | null>(RELAYER_URL ? null : "Setup required: EXPO_PUBLIC_RELAYER_URL");
   const pending = useRef<{ resolve: (address: string) => void; reject: (error: Error) => void } | null>(null);
+  const pendingKey = useRef<KeyPair | null>(null);
 
-  const address = privy.address;
-  /*
-   * Ready when Privy is, or after a few seconds regardless.
-   *
-   * Every read that shows the viewer's own state waits on `ready`, and a
-   * Privy that never initialises — no network to auth.privy.io, or a web
-   * origin not yet allowed in the Privy dashboard — would otherwise leave the
-   * whole feed on a skeleton. Past the wait the app carries on signed out;
-   * if Privy arrives later, the address appears and the reads follow it.
-   */
-  const [gaveUp, setGaveUp] = useState(false);
   useEffect(() => {
-    if (privy.ready) return;
-    const timer = setTimeout(() => {
-      console.warn("[juno:wallet] Privy did not become ready in 5s; continuing signed out");
-      setGaveUp(true);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [privy.ready]);
-  const ready = privy.ready || gaveUp;
+    let live = true;
+    loadPlayer().then((saved) => {
+      if (!live) return;
+      setPlayer(saved);
+      setReady(true);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
-  // Privy has made the wallet: hand the address to whoever asked for it.
+  // Ask the relayer whether it can sign anyone in, once the sheet is opened.
   useEffect(() => {
-    if (!privy.address) return;
-    pending.current?.resolve(privy.address);
-    pending.current = null;
-    setSigningIn(false);
-  }, [privy.address]);
+    if (!signingIn || !RELAYER_URL) return;
+    relayer<{ ready: boolean }>("/health")
+      .then((health) =>
+        setSetup(health.ready ? null : "Setup required: the relayer needs EMAIL_PROVIDER_API_KEY, EMAIL_FROM, AUTH_SECRET, RELAYER_ACCOUNT, RELAYER_KEY_FILE and JUNO_FACTORY_ACCOUNT"),
+      )
+      .catch((error: unknown) => setSetup(error instanceof Error ? error.message : String(error)));
+  }, [signingIn]);
+
+  const address = player?.accountId ?? null;
 
   const connect = useCallback(async () => {
     if (address) return address;
@@ -174,133 +155,98 @@ function Wallet({ children }: { children: React.ReactNode }) {
     pending.current = null;
   }, []);
 
+  const bridge = useMemo<SignInBridge>(
+    () => ({
+      setup,
+      sendCode: async (email) => {
+        await relayer("/auth/request", { email });
+      },
+      loginWithCode: async (code, email) => {
+        const key = pendingKey.current ?? KeyPair.fromRandom("ed25519");
+        pendingKey.current = key;
+        const result = await relayer<{ accountId: string; transactionHash: string }>("/auth/verify", {
+          email,
+          code,
+          publicKey: key.getPublicKey().toString(),
+        });
+        const next = { accountId: result.accountId, secretKey: key.toString() };
+        await savePlayer(next);
+        pendingKey.current = null;
+        setPlayer(next);
+        setSigningIn(false);
+        pending.current?.resolve(next.accountId);
+        pending.current = null;
+      },
+    }),
+    [setup],
+  );
+
   const disconnect = useCallback(async () => {
-    // Signing out ends the wallet's session too: a shared device keeps no key to it.
-    if (privy.address) await forgetSession(privy.address);
-    await privy.logout();
-  }, [privy]);
+    await savePlayer(null);
+    setPlayer(null);
+  }, []);
 
   const send = useCallback<WalletState["send"]>(
     async (steps, options = {}) => {
-      const from = privy.address;
-      if (!from) throw new TxError({ message: "Sign in to continue.", cancelled: false, reason: null });
+      if (!player) throw new TxError({ message: "Sign in to continue.", cancelled: false, reason: null });
       if (steps.length === 0) throw new TxError({ message: "Nothing to send.", cancelled: false, reason: null });
-      const chainId = options.chainId ?? CHAIN_ID;
       const progress = options.onProgress ?? (() => undefined);
-
+      const account = new Account(
+        player.accountId,
+        new JsonRpcProvider({ url: RPC_URL }),
+        new KeyPairSigner(KeyPair.fromString(player.secretKey as KeyPairString)),
+      );
       setSigning(true);
-      const hashes: Hex[] = [];
-      const receipts: TransactionReceipt[] = [];
+      const hashes: string[] = [];
       try {
-        try {
-          await privy.switchChain(chainId);
-        } catch (error) {
-          const failure = describeTxError(error);
-          if (failure.cancelled) throw new TxError(failure);
-          throw new TxError({
-            message: `Switch your wallet to ${chainFor(chainId)?.name ?? `chain ${chainId}`} and try again.`,
-            cancelled: false,
-            reason: null,
-          });
-        }
-
         for (const [index, step] of steps.entries()) {
-          const tx = {
-            to: step.to as Hex,
-            data: step.data as Hex,
-            value: BigInt(step.value || "0"),
-            ...(step.gas ? { gas: BigInt(step.gas) } : {}),
-          };
-
-          // Ask the chain first, so a revert is explained before anything is
-          // signed rather than after gas is spent on it. Each step runs after
-          // the previous one confirmed, so a buy is checked with its approval
-          // already in place.
-          progress({ index, label: step.label, phase: "checking" });
-          const refusal = await whyReverts(from, tx);
-          if (refusal) throw refusal;
-
           progress({ index, label: step.label, phase: "signing" });
-          let hash: Hex;
+          let encoded: string;
           try {
-            hash = await privy.sendTransaction({ ...tx, chainId });
+            const { signedDelegate } = await account.createSignedMetaTransaction({
+              receiverId: step.receiverId,
+              actions: [actions.functionCall(step.methodName, step.args, BigInt(step.gas), BigInt(step.deposit))],
+              blockHeightTtl: 120,
+            });
+            encoded = btoa(String.fromCharCode(...encodeSignedDelegate(signedDelegate)));
           } catch (error) {
             throw new TxError(describeTxError(error));
           }
+          progress({ index, label: step.label, phase: "confirming" });
+          const result = await relayer<{ transactionHash: string }>("/relay", { signedDelegate: encoded }).catch((error: unknown) => {
+            throw new TxError(describeTxError(error));
+          });
+          const hash = result.transactionHash;
+          // The relayer answers once the outer transaction is final; the inner
+          // call's own failure comes back as an error above.
           hashes.push(hash);
-
-          progress({ index, label: step.label, phase: "confirming", hash });
-          const receipt = await publicClient
-            .waitForTransactionReceipt({ hash, timeout: 120_000, pollingInterval: 1_000 })
-            .catch((error: unknown) => {
-              throw new TxError({
-                message: `Sent, but no receipt yet (${hash.slice(0, 10)}…). Check it on ${EXPLORER_NAME} before trying again.`,
-                cancelled: false,
-                reason: describeTxError(error).reason,
-              });
-            });
-          if (receipt.status !== "success") {
-            const why = await whyReverts(from, tx, receipt.blockNumber);
-            throw why ?? new TxError({ message: `${step.label} reverted on-chain.`, cancelled: false, reason: null });
-          }
-          receipts.push(receipt);
           progress({ index, label: step.label, phase: "confirmed", hash });
         }
-
-        const last = hashes[hashes.length - 1]!;
-        const record = await juno.recordTx({ chainId, txHash: last }).catch((error: unknown) => {
-          console.warn(`[juno:wallet] tx/record failed for ${last}: ${String(error)}`);
-          return null;
-        });
-        const launched =
-          (record?.launched
-            ? { token: record.launched.token.toLowerCase(), curve: record.launched.curve.toLowerCase() }
-            : null) ?? launchedFrom(receipts[receipts.length - 1]!);
-
-        return { hashes, receipts, record, launched, confirmedAt: new Date() };
-      } finally {
-        setSigning(false);
-      }
-    },
-    [privy],
-  );
-
-  const signMessage = useCallback(
-    async (text: string) => {
-      if (!privy.address) throw new Error("Sign in to continue.");
-      setSigning(true);
-      try {
-        return await privy.signMessage(text);
+        invalidateReads();
+        return { hashes, confirmedAt: new Date() };
       } catch (error) {
-        throw new TxError(describeTxError(error));
+        if (error instanceof TxError) throw error;
+        throw new TxError({
+          message: `${describeTxError(error).message} Check your account on ${EXPLORER_NAME} before trying again.`,
+          cancelled: false,
+          reason: null,
+        });
       } finally {
         setSigning(false);
       }
     },
-    [privy],
+    [player],
   );
-
-  // Social writes sign a session with the connected wallet (lib/session.ts).
-  useEffect(() => {
-    setSessionSigner(address ? { wallet: address, sign: signMessage } : null);
-  }, [address, signMessage]);
 
   const value = useMemo<WalletState>(
-    () => ({ address, ready, signing, emailLogin: privy.emailLogin !== false, send, signMessage, connect, disconnect }),
-    [address, ready, signing, privy.emailLogin, send, signMessage, connect, disconnect],
+    () => ({ address, ready, signing, emailLogin: true, send, connect, disconnect }),
+    [address, ready, signing, send, connect, disconnect],
   );
 
   return (
     <WalletContext.Provider value={value}>
       {children}
-      <SignInSheet
-        visible={signingIn}
-        onClose={cancelSignIn}
-        // Privy's own modal takes over; the pending `connect()` resolves when
-        // its wallet arrives, exactly as the email path does.
-        onHandOff={() => setSigningIn(false)}
-        privy={privy}
-      />
+      <SignInSheet visible={signingIn} onClose={cancelSignIn} bridge={bridge} />
     </WalletContext.Provider>
   );
 }
@@ -310,4 +256,3 @@ export function useWallet(): WalletState {
   if (!context) throw new Error("useWallet must be used inside a WalletProvider");
   return context;
 }
-

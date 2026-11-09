@@ -19,7 +19,7 @@ export function QuickTrade({
   onDone,
 }: {
   coin: Coin;
-  side?: "buy" | "sell";
+  side?: "buy" | "sell" | "redeem";
   onClose: () => void;
   onDone: () => void;
 }) {
@@ -29,15 +29,13 @@ export function QuickTrade({
     [wallet.address, coin.address],
   );
   const held = balances.data ?? null;
-  const quoteField = coin.quote.symbol === "WIF" ? "wif" : coin.quote.symbol === "USDG" ? "usdg" : "eth";
 
   return (
     <TradeSheet
       coin={coin}
       side={side}
-      quoteBalance={held ? held[quoteField] : null}
+      quoteBalance={held?.near ?? null}
       holding={held?.token ?? null}
-      feeBalance={held?.eth ?? null}
       onClose={onClose}
       onDone={onDone}
     />

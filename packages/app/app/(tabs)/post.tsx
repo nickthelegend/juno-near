@@ -1,7 +1,5 @@
 import { Image as ExpoImage } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useVideoPlayer, VideoView } from "expo-video";
+import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -18,82 +16,58 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CurvePreview } from "../../components/CurvePreview";
 import { Button, Card, Pill } from "../../components/kit";
-import { juno, type LaunchPreset } from "../../lib/api";
-import { describeTxError, explorer, NETWORK_NAME } from "../../lib/chain";
+import { APP_URL, juno } from "../../lib/api";
+import { describeTxError, explorer, FACTORY, NETWORK_NAME } from "../../lib/chain";
 import { feedChanged } from "../../lib/refresh";
 import { useTabBarHeight } from "../../lib/tabbar";
 import { useWallet } from "../../lib/wallet";
 import { theme } from "../../theme";
 
 /**
- * Post — which here means launching a real market.
+ * Post — which here means launching a real market on NEAR.
  *
- * This is Juno's whole claim in one screen. Publishing does not create a row in
- * a table; it calls `JunoFactory.launch` on Arbitrum, which deploys the post's
- * own ERC-20 and bonding curve in one transaction. The curve's sixteen
- * segments come from the chosen preset and are priced by Juno's Stylus
- * (Rust) maths contract. The post *is* that market.
+ * Publishing calls `create_post` on the Juno factory. The factory creates a
+ * named sub-account (`<name>.<factory>`), deploys the market contract to it
+ * and initialises it in the same transaction: the post *is* that account.
+ * The 3 NEAR attached pays for the account's storage; a dare bond is added on
+ * top and held by the post until holders vote on the proof.
  *
- * ## One transaction, then the listing
+ * The new post opens with a one-minute sealed-bid auction, a minute of
+ * reveals, then its bonding curve.
  *
- * The media and the token metadata are pinned to IPFS first, then the launch
- * is one signature. The receipt's `Launched` event names the token and the
- * curve; `tx/record` hands the hash to the server, which reads the same event
- * and lists the coin. If that last call fails, the coin is still live on-chain,
- * and the screen says so and offers to retry without signing again.
+ * Media is a URL stored on-chain (300 characters at most). There is no Juno
+ * upload server on NEAR, so the picker offers Juno's own art (served by this
+ * app) or any https image URL.
  */
 
-const PRESETS = [
-  {
-    id: "content",
-    label: "Content",
-    blurb: "Back-loaded. Cheap to enter, steepens as attention arrives.",
-  },
-  {
-    id: "thin-name",
-    label: "Thin name",
-    blurb: "Front-loaded. Deep at the issue price so early size fills.",
-  },
-  {
-    id: "ipo-book",
-    label: "IPO book",
-    blurb: "Deep at both ends, thin in the middle. Book-building.",
-  },
-] as const satisfies ReadonlyArray<{ id: LaunchPreset; label: string; blurb: string }>;
+/** Juno's own art, served from this app's /art. Square, so it sits in the feed as a photo would. */
+const ART = [
+  "/art/juno-feature-1.webp",
+  "/art/juno-feature-2.webp",
+  "/art/juno-feature-3.webp",
+  "/art/juno-social-square.webp",
+  "/art/juno-mark.webp",
+  "/art/juno-object-2.webp",
+];
+
+const KINDS = [
+  { id: "plain", label: "Plain post", blurb: "A sealed-bid opening, then the curve. Holders can always redeem against the floor." },
+  { id: "dare", label: "Dare post", blurb: "Put NEAR behind a promise. Holders vote on your proof; flake and the bond is split among them." },
+] as const;
 
 export default function PostScreen() {
   const router = useRouter();
   const wallet = useWallet();
-  /*
-   * Which kind of thing is being launched, chosen in the create sheet.
-   *
-   * It was hardcoded to "post", so the phone could not launch a reel at all
-   * while the web could — and a reel is a different object in the feed, not a
-   * cosmetic label: it decides whether this lands in the grid or the swipe
-   * feed. Defaulting to "post" keeps a direct visit to this route working.
-   */
-  const { format } = useLocalSearchParams<{ format?: string }>();
-  const kind: "post" | "reel" = format === "reel" ? "reel" : "post";
-
-  const [media, setMedia] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [media, setMedia] = useState<string | null>(null);
+  const [mediaUrl, setMediaUrl] = useState("");
   const [caption, setCaption] = useState("");
-  /** A launch that confirmed on-chain but could not be listed yet — kept so listing can be retried. */
-  const [unlisted, setUnlisted] = useState<{ txHash: string; chainId: number; token: string | null } | null>(null);
   const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [preset, setPreset] = useState<LaunchPreset>("content");
+  const [kind, setKind] = useState<"plain" | "dare">("plain");
+  const [dare, setDare] = useState("");
+  const [bond, setBond] = useState("0.5");
   const [status, setStatus] = useState<string | null>(null);
-  /**
-   * What has actually happened, as it happens: each step with its receipt —
-   * an IPFS address, a transaction hash, a contract — and the time it landed.
-   * Shown while the launch runs, so the chain's answers are on screen rather
-   * than a spinner that says "trust me".
-   */
   const [log, setLog] = useState<LogEntry[]>([]);
-  const note = (entry: Omit<LogEntry, "at">) =>
-    setLog((current) => [...current, { ...entry, at: new Date() }]);
-  // The log grows under the fold, beneath the tab bar; keep its newest row in
-  // view, the way a terminal follows its output.
+  const note = (entry: Omit<LogEntry, "at">) => setLog((current) => [...current, { ...entry, at: new Date() }]);
   const scroller = useRef<ScrollView>(null);
   const TAB_H = useTabBarHeight().height;
   useEffect(() => {
@@ -102,197 +76,68 @@ export default function PostScreen() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // A different format wants a different file: a photo for a post, a video
-  // for a reel. Switching formats clears a pick of the wrong kind.
-  useEffect(() => {
-    if (media && (media.type === "video") !== (kind === "reel")) setMedia(null);
-  }, [kind, media]);
-
-  const symbolOk = /^[A-Z0-9]{2,10}$/.test(symbol.trim().toUpperCase());
+  const slug = name.trim().toLowerCase();
+  const slugOk = /^[a-z0-9-]{2,32}$/.test(slug) && !slug.startsWith("-") && !slug.endsWith("-");
   const captionOk = caption.trim().length <= MAX_CAPTION;
-  /*
-   * Media is required. Every post in the feed is a picture and every reel is
-   * a video; a launch without one produced a coin that drew as a placeholder
-   * in the feed and — for a reel — never appeared in Reels at all.
-   */
-  const canLaunch = !!media && name.trim().length > 0 && symbolOk && captionOk && !busy;
-  const missing = !media
-    ? kind === "reel"
-      ? "Add a video to launch"
-      : "Add a photo to launch"
-    : !name.trim()
-      ? "Name it to launch"
-      : !symbolOk
-        ? "Add a 2–10 character ticker"
+  const bondNear = Number(bond);
+  const dareOk = kind === "plain" || (dare.trim().length > 0 && dare.trim().length <= 300 && bondNear > 0 && bondNear <= 2);
+  const chosen = media ?? (/^https:\/\/\S{6,290}$/.test(mediaUrl.trim()) ? mediaUrl.trim() : null);
+  const canLaunch = !!chosen && slugOk && captionOk && dareOk && !busy && !!FACTORY;
+  const missing = !FACTORY
+    ? "Setup required: EXPO_PUBLIC_JUNO_FACTORY"
+    : !chosen
+      ? "Pick art or paste an https image URL"
+      : !slugOk
+        ? "Name it: 2–32 lowercase letters, digits or dashes"
         : !captionOk
           ? "Caption is too long"
-          : null;
+          : !dareOk
+            ? "A dare needs its promise and a bond up to 2 NEAR"
+            : null;
 
-  async function pick() {
-    setError(null);
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: kind === "reel" ? ["videos"] : ["images"],
-        // A JPEG, not the library's HEIC original: an iPhone photo is HEIC,
-        // which the server's image reader refused ("heif: security limit
-        // exceeded") and which a browser viewing the post cannot draw. A
-        // quality below 1 already makes iOS re-encode; `Compatible` says so.
-        quality: 0.9,
-        preferredAssetRepresentationMode:
-          ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
-        videoMaxDuration: 90,
-      });
-      if (result.canceled || !result.assets[0]) return;
-      const asset = result.assets[0];
-      if (asset.fileSize && asset.fileSize > MAX_BYTES) {
-        setError("That file is over 25MB. Pick a smaller one.");
-        return;
-      }
-      setMedia(asset);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not open your library");
-    }
-  }
-
-  /** Clear the composer and open the new coin, after a beat on the finished log. */
-  async function finish(token: string) {
-    setUnlisted(null);
-    // The caption is also the creator's first post on the coin: the feed shows
-    // it, and it is the thread people reply under. The coin is live either
-    // way, so a post that fails is said and does not undo the launch.
-    const text = caption.trim();
-    if (text && wallet.address) {
-      try {
-        const { post } = await juno.createPost({ authorWallet: wallet.address, body: text, baseMint: token });
-        note({ label: "Caption posted", receipt: post.id });
-      } catch (caught) {
-        setError(`Your coin is live, but the caption was not posted: ${caught instanceof Error ? caught.message : "try again from the coin page"}`);
-      }
-    }
+  async function finish(account: string) {
     setStatus("Live");
     feedChanged();
-    // A beat on the finished log: every receipt is on screen at once, which
-    // is the proof, before the coin page replaces it.
     await new Promise((resolve) => setTimeout(resolve, 3500));
     setStatus(null);
-    // A blank composer for the next one. The tab stays mounted, so coming
-    // back to it showed the last post filled in — one tap from launching a
-    // duplicate coin.
     setMedia(null);
+    setMediaUrl("");
     setName("");
-    setSymbol("");
     setCaption("");
-    setPreset("content");
-    router.push(`/coin/${token}`);
-  }
-
-  /** Ask the server to list a launch that landed but was not recorded. Nothing is signed again. */
-  async function retryListing() {
-    if (!unlisted) return;
-    setBusy(true);
-    setError(null);
-    setStatus("Listing it on Juno…");
-    try {
-      const record = await juno.recordTx({ chainId: unlisted.chainId, txHash: unlisted.txHash });
-      const token = record.launched?.token ?? unlisted.token;
-      if (!token) throw new Error("The server found no launch in that transaction yet. Try again in a moment.");
-      note({ label: "Listed on Juno", receipt: token, kind: "address" });
-      await finish(token.toLowerCase());
-    } catch (caught) {
-      setStatus(null);
-      setError(
-        `Your coin is live on-chain, but Juno could not list it yet: ${
-          caught instanceof Error ? caught.message : "unknown error"
-        }. Tap "Retry listing" — nothing needs signing again.`,
-      );
-    } finally {
-      setBusy(false);
-    }
+    setDare("");
+    setKind("plain");
+    router.push(`/coin/${account}`);
   }
 
   async function launch() {
-    if (!media) return;
+    if (!chosen) return;
     setBusy(true);
     setError(null);
     setLog([]);
     try {
-      const address = wallet.address ?? (await wallet.connect());
-
-      setStatus(kind === "reel" ? "Uploading your video…" : "Uploading your photo…");
-      const uploaded = await juno.upload(
-        media.file ?? {
-          uri: media.uri,
-          name: media.fileName ?? (media.type === "video" ? "reel.mp4" : "post.jpg"),
-          type: media.mimeType ?? (media.type === "video" ? "video/mp4" : "image/jpeg"),
-        },
-      );
-
-      // A fork build stores media in the API's own content-addressed store
-      // (an http URL on this machine) rather than IPFS; say which it was.
-      const where = uploaded.uri.startsWith("ipfs://") ? "pinned to IPFS" : "stored (local fork media)";
-      note({ label: `${kind === "reel" ? "Video" : "Photo"} ${where}`, receipt: uploaded.uri });
-
-      setStatus("Pinning the token metadata…");
-      const metadata = await juno.pinMetadata({
-        name: name.trim(),
-        symbol: symbol.trim().toUpperCase(),
-        description: caption.trim() || undefined,
-        curvePreset: preset,
-        format: kind,
-        // The media itself; a reel also carries its poster, which becomes the
-        // `image` wallets and explorers show (the video is `animation_url`).
-        mediaUrl: uploaded.uri,
-        mimeType: uploaded.mimeType,
-        posterUrl: uploaded.posterUri,
-        width: uploaded.width,
-        height: uploaded.height,
-      });
-
-      note({ label: metadata.uri.startsWith("ipfs://") ? "Token metadata pinned" : "Token metadata stored", receipt: metadata.uri });
-
+      await (wallet.address ? Promise.resolve(wallet.address) : wallet.connect());
       setStatus("Building the launch…");
-      const built = await juno.buildLaunch({
-        creator: address,
-        name: name.trim(),
-        symbol: symbol.trim().toUpperCase(),
-        metadataUri: metadata.uri,
-        format: kind,
-        preset,
+      const built = juno.buildLaunch({
+        slug,
+        caption: caption.trim(),
+        mediaUrl: chosen,
+        dare: kind === "dare" ? dare.trim() : "",
+        dareBondNear: kind === "dare" ? bondNear : 0,
       });
-
       const sent = await wallet.send(built.steps, {
-        chainId: built.chainId,
         onProgress: (at) =>
           setStatus(
             at.phase === "signing"
-              ? `${at.label}: confirm in your wallet…`
+              ? `${at.label}: signing on this device…`
               : at.phase === "confirming"
-                ? `${at.label}: waiting for ${NETWORK_NAME}…`
-                : at.phase === "checking"
-                  ? `${at.label}: checking…`
-                  : `${at.label}: confirmed`,
+                ? `${at.label}: relaying to ${NETWORK_NAME}…`
+                : `${at.label}: final`,
           ),
       });
       const launchHash = sent.hashes[sent.hashes.length - 1]!;
-      note({ label: "Launch transaction confirmed", receipt: launchHash, kind: "tx" });
-
-      if (sent.launched) {
-        note({ label: "Curve deployed", receipt: sent.launched.curve, kind: "address" });
-      }
-
-      /*
-       * The coin exists on-chain from here on. If the server did not record
-       * it, say so and keep what is needed to retry without signing again.
-       */
-      if (!sent.record || !sent.record.launched || !sent.launched) {
-        setUnlisted({ txHash: launchHash, chainId: built.chainId, token: sent.launched?.token ?? null });
-        setStatus(null);
-        throw new Error(
-          `Your coin is live on-chain, but Juno could not list it yet. Tap "Retry listing" — nothing needs signing again.`,
-        );
-      }
-      note({ label: "Listed on Juno", receipt: sent.launched.token, kind: "address" });
-      await finish(sent.launched.token);
+      note({ label: "create_post final on NEAR testnet", receipt: launchHash, kind: "tx" });
+      note({ label: "Post account created", receipt: built.account, kind: "address" });
+      await finish(built.account);
     } catch (caught) {
       const failure = describeTxError(caught);
       setError(failure.cancelled ? null : failure.message || "Launch failed");
@@ -304,58 +149,54 @@ export default function PostScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
         <ScrollView
           ref={scroller}
           contentContainerStyle={[styles.body, { paddingBottom: TAB_H + 24 }]}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.title}>
-            {kind === "reel" ? "Post a reel" : "Post a photo"}
-          </Text>
+          <Text style={styles.title}>Post a photo</Text>
           <Text style={styles.lede}>
-            {kind === "reel"
-              ? "A vertical video with its own bonding curve, priced in WIF, behind it. It lands in the swipe feed."
-              : "Publishing deploys this post's own token and a bonding curve priced in WIF. Half of every trade fee is burned. The post is the market."}
+            Publishing creates this post&apos;s own NEAR account with its market inside: a sealed-bid opening, a bonding
+            curve priced in NEAR, and a floor every holder can redeem. The post is the market.
           </Text>
 
-          <MediaPicker kind={kind} media={media} onPick={pick} disabled={busy} />
+          <MediaPicker media={chosen} onPick={setMedia} disabled={busy} />
+          {media ? null : (
+            <TextInput
+              value={mediaUrl}
+              onChangeText={setMediaUrl}
+              placeholder="…or paste an https image URL"
+              placeholderTextColor={theme.colors.faint}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+              maxLength={300}
+            />
+          )}
 
           <Card style={styles.form}>
-            <Field label="Name">
+            <Field
+              label="Name"
+              hint={name.length > 0 && !slugOk ? "2–32 lowercase letters, digits or dashes" : undefined}
+              note={slugOk && FACTORY ? `${slug}.${FACTORY} · ticker $${slug.toUpperCase()}` : undefined}
+            >
               <TextInput
                 value={name}
-                onChangeText={setName}
-                placeholder="Night Market"
+                onChangeText={(next) => setName(next.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                placeholder="night-market"
                 placeholderTextColor={theme.colors.faint}
+                autoCapitalize="none"
                 style={styles.input}
-                maxLength={64}
+                maxLength={32}
               />
             </Field>
 
-            <Field label="Ticker" hint={symbol.length > 0 && !symbolOk ? "2–10 letters or digits" : undefined}>
-              <TextInput
-                value={symbol}
-                onChangeText={(next) => setSymbol(next.toUpperCase())}
-                placeholder="NIGHT"
-                placeholderTextColor={theme.colors.faint}
-                autoCapitalize="characters"
-                style={styles.input}
-                maxLength={10}
-              />
-            </Field>
-
-            <Field
-              label="Caption"
-              hint={!captionOk ? `${caption.trim().length - MAX_CAPTION} over the limit` : undefined}
-            >
+            <Field label="Caption" hint={!captionOk ? `${caption.trim().length - MAX_CAPTION} over the limit` : undefined}>
               <TextInput
                 value={caption}
                 onChangeText={setCaption}
-                placeholder={kind === "reel" ? "Street level, 2am." : "Say what this is"}
+                placeholder="Say what this is"
                 placeholderTextColor={theme.colors.faint}
                 multiline
                 style={[styles.input, styles.caption]}
@@ -364,17 +205,16 @@ export default function PostScreen() {
             </Field>
           </Card>
 
-          <Text style={styles.sectionTitle}>Curve</Text>
+          <Text style={styles.sectionTitle}>Kind</Text>
           <Text style={styles.sectionLede}>
-            Sixteen liquidity-weighted segments, priced in WIF by Juno&apos;s on-chain curve
-            maths. The weights decide how the price behaves, not just where it starts.
+            Every post uses the same sixteen-segment weighted curve, priced in NEAR. 20% of every buy goes into the floor.
           </Text>
 
           <View style={styles.presets}>
-            {PRESETS.map((option) => {
-              const on = preset === option.id;
+            {KINDS.map((option) => {
+              const on = kind === option.id;
               return (
-                <Pressable key={option.id} onPress={() => setPreset(option.id)}>
+                <Pressable key={option.id} onPress={() => setKind(option.id)}>
                   <Card style={[styles.preset, on && styles.presetOn]}>
                     <View style={styles.presetRow}>
                       <View style={styles.presetText}>
@@ -384,10 +224,29 @@ export default function PostScreen() {
                         </View>
                         <Text style={styles.presetBlurb}>{option.blurb}</Text>
                       </View>
-                      {/* The curve itself, drawn from the same sixteen weights
-                          the launch uses. The weights are the whole decision. */}
-                      <CurvePreview preset={option.id} active={on} />
+                      <CurvePreview preset="content" active={on} />
                     </View>
+                    {on && option.id === "dare" ? (
+                      <View style={{ gap: 10, marginTop: 8 }}>
+                        <TextInput
+                          value={dare}
+                          onChangeText={setDare}
+                          placeholder="I will post the sunrise from the summit by Friday"
+                          placeholderTextColor={theme.colors.faint}
+                          style={styles.input}
+                          maxLength={300}
+                        />
+                        <TextInput
+                          value={bond}
+                          onChangeText={(next) => setBond(next.replace(/[^0-9.]/g, ""))}
+                          placeholder="Bond in NEAR"
+                          placeholderTextColor={theme.colors.faint}
+                          keyboardType="decimal-pad"
+                          style={styles.input}
+                          maxLength={6}
+                        />
+                      </View>
+                    ) : null}
                   </Card>
                 </Pressable>
               );
@@ -402,24 +261,18 @@ export default function PostScreen() {
 
           {log.length > 0 ? <LaunchLog entries={log} /> : null}
 
-          {unlisted ? (
-            <Button label={status ?? "Retry listing"} tall onPress={retryListing} loading={busy} />
-          ) : (
-            <Button
-              label={status ?? (kind === "reel" ? "Launch reel" : "Launch post")}
-              tall
-              onPress={launch}
-              loading={busy}
-              disabled={!canLaunch}
-            />
-          )}
-          {/* Why the button is off, instead of a dead button and a guess. */}
-          {!busy && !unlisted && missing ? <Text style={styles.missing}>{missing}</Text> : null}
+          <Button
+            label={status ?? `Launch post · ${kind === "dare" && bondNear > 0 ? 3 + bondNear : 3} NEAR`}
+            tall
+            onPress={launch}
+            loading={busy}
+            disabled={!canLaunch}
+          />
+          {!busy && missing ? <Text style={styles.missing}>{missing}</Text> : null}
           {busy && status ? <Text style={styles.missing}>{status}</Text> : null}
           <Text style={styles.footnote}>
-            One signature. The factory deploys the token and its curve together. Every
-            trade pays a WIF fee: half to the creator, half burned. When the curve fills,
-            10% of its WIF reserve burns and the rest graduates into a Uniswap v3 pool.
+            One signature, relayed as a NEP-366 meta transaction: the relayer pays the gas, your account pays the 3 NEAR
+            that funds the post account&apos;s storage. Bids, buys and redemptions all land on that account.
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -427,90 +280,42 @@ export default function PostScreen() {
   );
 }
 
-const MAX_CAPTION = 280;
-/** Matches the upload route's own limit, so a doomed upload is refused before it starts. */
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_CAPTION = 400;
 
-/**
- * The photo or video, picked from the library and previewed at its own shape.
- *
- * A reel previews playing and muted, the way it will sit in the feed, so the
- * creator sees what everyone else will before they sign for it.
- */
-function MediaPicker({
-  kind,
-  media,
-  onPick,
-  disabled,
-}: {
-  kind: "post" | "reel";
-  media: ImagePicker.ImagePickerAsset | null;
-  onPick: () => void;
-  disabled: boolean;
-}) {
+/** Juno's art as a grid to pick from, then the pick previewed at its own shape. */
+function MediaPicker({ media, onPick, disabled }: { media: string | null; onPick: (path: string | null) => void; disabled: boolean }) {
   if (!media) {
     return (
-      <Pressable onPress={onPick} disabled={disabled} accessibilityRole="button">
-        <View style={[styles.drop, { aspectRatio: kind === "reel" ? 4 / 5 : 1 }]}>
-          <View style={styles.dropDisc}>
-            <Text style={styles.dropPlus}>+</Text>
-          </View>
-          <Text style={styles.dropTitle}>{kind === "reel" ? "Add a video" : "Add a photo"}</Text>
-          <Text style={styles.dropBlurb}>
-            {kind === "reel" ? "Vertical works best. Up to 25MB." : "Square works best. Up to 25MB."}
-          </Text>
+      <View style={[styles.drop, { paddingVertical: 18 }]}>
+        <Text style={styles.dropTitle}>Pick the art</Text>
+        <View style={styles.grid}>
+          {ART.map((path) => (
+            <Pressable key={path} onPress={() => onPick(path)} disabled={disabled} accessibilityRole="button" accessibilityLabel={`Use ${path}`} style={styles.cell}>
+              <ExpoImage source={{ uri: `${APP_URL}${path}` }} style={StyleSheet.absoluteFill} contentFit="cover" />
+            </Pressable>
+          ))}
         </View>
-      </Pressable>
+        <Text style={styles.dropBlurb}>Square works best.</Text>
+      </View>
     );
   }
-
-  const ratio =
-    media.width && media.height ? Math.max(0.56, Math.min(1.25, media.width / media.height)) : 1;
-
   return (
-    <View style={[styles.preview, { aspectRatio: ratio }]}>
-      {media.type === "video" ? (
-        <VideoPreview uri={media.uri} />
-      ) : (
-        <ExpoImage source={{ uri: media.uri }} style={StyleSheet.absoluteFill} contentFit="cover" />
-      )}
-      <Pressable onPress={onPick} disabled={disabled} style={styles.change} accessibilityRole="button">
+    <View style={[styles.preview, { aspectRatio: 1 }]}>
+      <ExpoImage source={{ uri: juno.media(media) ?? undefined }} style={StyleSheet.absoluteFill} contentFit="cover" />
+      <Pressable onPress={() => onPick(null)} disabled={disabled} style={styles.change} accessibilityRole="button">
         <Text style={styles.changeText}>Change</Text>
       </Pressable>
     </View>
   );
 }
 
-function VideoPreview({ uri }: { uri: string }) {
-  const player = useVideoPlayer(uri, (instance) => {
-    instance.loop = true;
-    instance.muted = true;
-    instance.play();
-  });
-  return (
-    <VideoView
-      player={player}
-      style={StyleSheet.absoluteFill}
-      contentFit="cover"
-      nativeControls={false}
-    />
-  );
-}
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, hint, note, children }: { label: string; hint?: string; note?: string; children: React.ReactNode }) {
   return (
     <View style={{ gap: 6 }}>
       <Text style={styles.fieldLabel}>{label}</Text>
       {children}
       {hint ? <Text style={styles.fieldHint}>{hint}</Text> : null}
+      {note ? <Text style={styles.fieldNote} numberOfLines={1}>{note}</Text> : null}
     </View>
   );
 }
@@ -561,6 +366,9 @@ const styles = StyleSheet.create({
   form: { gap: 16 },
   fieldLabel: { fontSize: theme.type.label.size, fontWeight: "500", color: theme.colors.muted },
   fieldHint: { fontSize: theme.type.micro.size, fontWeight: "500", color: theme.colors.neg },
+  fieldNote: { fontSize: theme.type.micro.size, fontWeight: "600", color: theme.colors.muted },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 14, justifyContent: "center" },
+  cell: { width: "30%", aspectRatio: 1, borderRadius: 12, overflow: "hidden", backgroundColor: theme.colors.surfaceAlt },
   input: {
     height: 48,
     borderRadius: theme.radius.md,
@@ -597,9 +405,8 @@ const styles = StyleSheet.create({
   drop: {
     width: "100%",
     borderRadius: theme.radius.lg,
-    borderWidth: 2,
-    borderStyle: "dashed",
-    borderColor: theme.colors.lineStrong,
+    borderWidth: 1,
+    borderColor: theme.colors.line,
     backgroundColor: theme.colors.surface,
     alignItems: "center",
     justifyContent: "center",

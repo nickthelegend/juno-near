@@ -1,48 +1,42 @@
-import Constants from "expo-constants";
-import { File as DeviceFile } from "expo-file-system";
+import {
+  accountBalance,
+  balanceOf,
+  buyQuote,
+  curveCost,
+  formatNear,
+  holders as readHolders,
+  market as readMarket,
+  posts as readPosts,
+  quoteBuy,
+  redeemQuote,
+  sellQuote,
+  spotPrice,
+  trades as readTrades,
+  YOCTO,
+  type Market,
+  type Trade,
+} from "@juno/sdk";
+import { Platform } from "react-native";
 
-import { CHAIN_ID, explorer } from "./chain";
-import { forgetSession, sessionHeaders } from "./session";
+import { explorer, FACTORY, RPC_URL } from "./chain";
 
 /**
- * The Juno API client.
+ * The Juno client, on NEAR.
  *
- * Every read and every transaction comes from the Next.js app. The phone never
- * encodes calldata itself: it asks the server for the steps (`to`, `data`,
- * `value`), sends them from the Privy wallet, and tells the server the hash of
- * what landed (`tx/record`). The contract is `docs/API.md`.
+ * Every figure here is read from NEAR testnet through `@juno/sdk`: the
+ * factory lists the posts, and each post's own contract answers `market`,
+ * `trades` and `holders`. There is no Juno server. A transaction is a
+ * function call on the post's account (or the factory, for a launch), and
+ * `lib/wallet` signs it as a NEP-366 delegate action for the relayer.
  *
- * ## Finding the server from a simulator
- *
- * `localhost` inside an iOS Simulator is the simulator, not the Mac running the
- * dev server, so a hardcoded localhost fails in exactly the environment this
- * app is demoed in. Expo already knows the host it was served from
- * (`hostUri`), which is the machine running Metro — and that is the same
- * machine running Next. So the default is derived rather than guessed, and
- * `EXPO_PUBLIC_API_URL` overrides it for a deployed backend.
+ * Amounts: one post token is one whole unit (the contract has 0 decimals,
+ * 1,000 per post: 200 in the opening auction, 800 on the curve). NEAR figures
+ * are numbers of NEAR, converted from yocto once, here.
  */
-
-function inferredHost(): string | null {
-  const hostUri =
-    Constants.expoConfig?.hostUri ??
-    // Older/dev-client shapes keep it in different places.
-    (Constants.expoGoConfig as { debuggerHost?: string } | undefined)?.debuggerHost;
-  if (!hostUri) return null;
-  const host = hostUri.split(":")[0];
-  if (!host) return null;
-  return `http://${host}:3000`;
-}
-
-export const API_URL =
-  process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "") ??
-  inferredHost() ??
-  "http://localhost:3000";
 
 export class ApiError extends Error {
   readonly status: number;
-  /** A request abandoned at its timeout, as opposed to one that never connected. */
   timedOut = false;
-  /** The parsed error body, when there was one. */
   body: unknown = null;
   constructor(message: string, status: number, body: unknown = null) {
     super(message);
@@ -52,272 +46,84 @@ export class ApiError extends Error {
   }
 }
 
-/** The faucet said "not yet". `retryAfterSeconds` is null when it did not say how long. */
-export class FaucetLimited extends ApiError {
-  readonly retryAfterSeconds: number | null;
-  constructor(retryAfterSeconds: number | null) {
-    super(
-      retryAfterSeconds
-        ? `The faucet already sent to this wallet. Try again in ${waitText(retryAfterSeconds)}.`
-        : "The faucet already sent to this wallet. Try again later.",
-      429,
-    );
-    this.retryAfterSeconds = retryAfterSeconds;
-  }
+/** Where relative media paths (the seeded posts' art) resolve. */
+export const APP_URL =
+  process.env.EXPO_PUBLIC_APP_URL?.replace(/\/$/, "") ??
+  (Platform.OS === "web" && typeof window !== "undefined" ? window.location.origin : "");
+
+/** Kept for the share link and anything that names the app's own origin. */
+export const API_URL = APP_URL;
+
+function requireFactory(): string {
+  if (!FACTORY) throw new ApiError("Setup required: EXPO_PUBLIC_JUNO_FACTORY", 503);
+  return FACTORY;
 }
 
-function waitText(seconds: number): string {
-  if (seconds < 90) return `${Math.max(1, Math.round(seconds))} seconds`;
-  if (seconds < 90 * 60) return `${Math.round(seconds / 60)} minutes`;
-  const hours = seconds / 3600;
-  return `${hours < 10 ? hours.toFixed(1).replace(/\.0$/, "") : Math.round(hours)} hours`;
+/** yocto → NEAR, as a number for display. Exact strings stay in the SDK. */
+export function near(yocto: bigint | string | number): number {
+  const value = typeof yocto === "bigint" ? yocto : BigInt(yocto);
+  return Number(formatNear(value, 8));
 }
 
-/**
- * One request.
- *
- * A phone loses its network mid-request far more often than a browser does, so
- * a timeout is mandatory rather than optional: without one a dropped connection
- * leaves a spinner on screen forever with nothing to cancel it.
- */
-async function request<T>(
-  path: string,
-  init: RequestInit & { timeoutMs?: number } = {},
-): Promise<T> {
+export function toYocto(amount: number): bigint {
+  const [whole = "0", frac = ""] = amount.toFixed(24).split(".");
+  return BigInt(whole) * YOCTO + BigInt((frac + "0".repeat(24)).slice(0, 24));
+}
+
+async function guard<T>(promise: Promise<T>): Promise<T> {
   try {
-    return await attempt<T>(path, init);
-  } catch (error) {
-    /*
-     * One quiet retry for a read that never got an answer.
-     *
-     * A dropped connection — a proxy recycling, a phone changing networks —
-     * surfaces as a fetch that throws before any response, and the coin page a
-     * launch lands on showed "Could not reach Juno" for a server that answered
-     * the retry in under a second. Reads only: a POST may have reached the
-     * server, and repeating a transaction submit is not a retry.
-     */
-    const method = (init.method ?? "GET").toUpperCase();
-    if (method !== "GET" || !(error instanceof ApiError) || error.status !== 0 || error.timedOut) {
-      throw error;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    return attempt<T>(path, init);
-  }
-}
-
-/**
- * Every Juno call names the chain this build is for. One API serves several
- * chains, and a call without `chainId` gets the server's default: an Arbitrum
- * One build would have read Sepolia's coins. Calls that already name a chain
- * keep theirs.
- */
-function onChain(path: string, body: RequestInit["body"]): { path: string; body: RequestInit["body"] } {
-  if (!path.startsWith("/api/juno/")) return { path, body };
-  const named = /[?&]chainId=/.test(path) ? path : `${path}${path.includes("?") ? "&" : "?"}chainId=${CHAIN_ID}`;
-  if (typeof body !== "string") return { path: named, body };
-  try {
-    const parsed = JSON.parse(body) as unknown;
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && !("chainId" in parsed)) {
-      return { path: named, body: JSON.stringify({ chainId: CHAIN_ID, ...parsed }) };
-    }
-  } catch {
-    // Not JSON: sent as it is.
-  }
-  return { path: named, body };
-}
-
-async function attempt<T>(
-  rawPath: string,
-  init: RequestInit & { timeoutMs?: number },
-): Promise<T> {
-  const { timeoutMs = 45_000, ...given } = init;
-  const scoped = onChain(rawPath, given.body);
-  const path = scoped.path;
-  const rest = { ...given, body: scoped.body };
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(`${API_URL}${path}`, {
-      ...rest,
-      signal: controller.signal,
-      headers: {
-        accept: "application/json",
-        ...(rest.body ? { "content-type": "application/json" } : {}),
-        ...rest.headers,
-      },
-    });
-
-    const text = await response.text();
-    let body: unknown = null;
-    try {
-      body = text ? JSON.parse(text) : null;
-    } catch {
-      // A non-JSON body from a 500 is still worth surfacing as a message.
-      if (!response.ok) throw new ApiError(text.slice(0, 200) || "Request failed", response.status);
-      throw new ApiError("The server sent something that was not JSON", response.status);
-    }
-
-    if (!response.ok) {
-      const message =
-        (body as { error?: string } | null)?.error ?? `Request failed (${response.status})`;
-      throw new ApiError(message, response.status, body);
-    }
-
-    return body as T;
+    return await promise;
   } catch (error) {
     if (error instanceof ApiError) throw error;
-    if (error instanceof Error && error.name === "AbortError") {
-      const timedOut = new ApiError("The request timed out. Check your connection.", 0);
-      timedOut.timedOut = true;
-      throw timedOut;
-    }
-    // Said to whoever is holding the phone: no hostnames, no "server".
-    throw new ApiError("Juno can't be reached right now. Check your connection and try again.", 0);
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-export const api = {
-  get: <T>(path: string, timeoutMs?: number) => request<T>(path, { timeoutMs }),
-  post: <T>(path: string, body: unknown, timeoutMs?: number) =>
-    request<T>(path, { method: "POST", body: JSON.stringify(body), timeoutMs }),
-  patch: <T>(path: string, body: unknown, timeoutMs?: number) =>
-    request<T>(path, { method: "PATCH", body: JSON.stringify(body), timeoutMs }),
-};
-
-/**
- * A write stored against a wallet (a like, comment, follow, watch, plan, post,
- * pin): it carries that wallet's session (see ./session). A session the
- * server no longer accepts is dropped and signed afresh, once.
- */
-async function authed<T>(method: "POST" | "PATCH", path: string, body: unknown, wallet?: string): Promise<T> {
-  const send = async () =>
-    request<T>(path, { method, body: JSON.stringify(body), headers: await sessionHeaders(wallet) });
-  try {
-    return await send();
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 401 && (error.body as { reason?: string } | null)?.reason === "NoSession") {
-      await forgetSession(wallet);
-      return send();
-    }
-    throw error;
+    const text = error instanceof Error ? error.message : String(error);
+    if (/does not exist|UNKNOWN_ACCOUNT/i.test(text)) throw new ApiError("Not found on NEAR testnet", 404);
+    if (/429|rate/i.test(text)) throw new ApiError("NEAR testnet RPC is rate limiting. Try again in a moment.", 429);
+    if (/fetch|network|Failed/i.test(text)) throw new ApiError("NEAR testnet can't be reached right now. Check your connection and try again.", 0);
+    throw new ApiError(text.slice(0, 200), 500);
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Shapes, mirroring the server's own types                            */
+/* Shapes                                                              */
 /* ------------------------------------------------------------------ */
 
 export type CurveState = {
   progress: number;
   raisedUsd: number;
   thresholdUsd: number;
-  /** The same two figures in the curve's own quote token (WIF for a post, USDG for a tracker). */
   raisedQuote?: number;
   thresholdQuote?: number;
   graduated: boolean;
 };
 
-/**
- * What a curve has burned, read from the contract.
- *
- * WIF curves burn half of every trade fee and 10% of the reserve at
- * graduation. A tracker accrues its burn share in USDG (`pendingBurnQuote`)
- * until someone calls `flushBurn`, which swaps it to WIF and burns that.
- */
-export type CoinBurn = {
-  /** WIF, whole tokens. */
-  wifBurned: number;
-  tradeWifBurned: number;
-  graduationWifBurned: number;
-  /** USDG waiting to be swapped and burned; null on a WIF curve. */
-  pendingBurnQuote: number | null;
-  /** Present while a tracker has something to flush. USDG amounts. */
-  flush: null | { bountyQuote: number; batchQuote: number; maxBatchQuote: number };
-};
+export type QuoteAsset = { address: null; symbol: "NEAR"; decimals: 24 };
 
-/** The graduation receipt: when the curve filled, and the WIF that burned in that tx. */
-export type Graduation = {
-  txHash: string;
-  blockNumber: number;
-  timestamp: string;
-  wifBurned: number;
-  pool: string;
-};
-
-export type BurnEvent = {
-  kind: "trade" | "graduation" | "flush";
-  curve: string;
-  token: string;
-  symbol: string;
-  name: string;
-  format: string;
-  quoteSymbol: string;
-  /** WIF burned, exact decimal string. */
-  amount: string;
-  /** The curve's running total after this burn, decimal string. */
-  cumulative: string;
-  /** Flushes only: USDG swapped, USDG paid to the caller, and who called. */
-  usdgSwapped?: string;
-  bounty?: string;
-  caller?: string;
-  txHash: string;
-  logIndex: number;
-  blockNumber: number;
-  timestamp: string;
-};
-
-/** `GET /api/juno/burns`: the factory counter and the newest burn logs. */
-export type Burns = {
-  chainId: number;
-  factory: string;
-  wif: { address: string; decimals: 18 };
-  /** Exact decimal strings, whole WIF. */
-  totalWifBurned: string;
-  tradeWifBurned: string;
-  graduationWifBurned: string;
-  /** Display-only estimate from the WIF/WETH pool and the ETH/USD feed; null when unread. */
-  wifUsd: number | null;
-  events: BurnEvent[];
-  asOfBlock: number;
-};
-
-export type BurnOracleStatus = { pools: { pool: string; cardinality: number; cardinalityNext: number; oldestAge: number; ready: boolean }[]; ready: boolean; waitMinutes: number };
-export type FlushQuote = { usdgProcessed: string; bountyUsdg: string; wifOut: string; minWifOut: string; oracle: BurnOracleStatus };
-
-/**
- * A stock tracker's reference: the Chainlink feed its curve is held to.
- *
- * The curve contract reads the same feed on every buy and reverts one that
- * would leave the price outside `bandBps`, or any buy at all once the feed is
- * older than its max age (`marketOpen: false`). Sells are never blocked.
- */
-export type NavReference = {
-  source: "chainlink";
-  /** "TSLA". */
-  symbol: string;
-  /** The feed's price, USD. */
-  price: number;
-  updatedAt: string;
-  ageSeconds: number;
-  bandBps: number;
-  marketOpen: boolean;
-  /** The curve's own price now, in the same units. */
-  curvePrice: number;
-  /** How far the curve sits from the stock, in percent: 1.2 is 1.2% above. */
-  deviationPct: number | null;
-};
-
-export type QuoteAsset = {
-  /** Null is native ETH. */
-  address: string | null;
-  symbol: "ETH" | "USDC" | "WIF" | "USDG";
-  decimals: 18 | 6;
+/** The NEAR-only state of a post: its opening auction, floor and dare. */
+export type NearState = {
+  phase: Market["phase"];
+  commitEndMs: number;
+  revealEndMs: number;
+  sealedBids: number;
+  revealedBids: number;
+  /** NEAR per token the auction cleared at; 0 before settlement. */
+  clearingPrice: number;
+  /** NEAR held for holders, and what each token can redeem against it. */
+  floorVault: number;
+  floorPerToken: number;
+  totalSupply: number;
+  curveSold: number;
+  curveReserve: number;
+  graduationEscrow: number;
+  dare: string;
+  dareBond: number;
+  proof: string;
+  dareFinalized: boolean;
+  /** Exact yocto strings, for quotes. */
+  raw: Market;
 };
 
 export type Coin = {
+  /** The post's NEAR account, which is also its token contract. */
   address: string;
   format: "post" | "reel";
   name: string;
@@ -326,22 +132,14 @@ export type Coin = {
   media: { kind: "image" | "video"; url: string; posterUrl?: string; width: number; height: number };
   creator: { handle: string; displayName: string; avatarUrl: string; wallet: string };
   createdAt: string;
-  /** The curve contract. `address` is the token, the coin's id everywhere. */
   pool: string;
   chainId: number;
   quote: QuoteAsset;
-  /** The Uniswap v3 pool, once the curve has graduated. */
+  /** Graduation keeps liquidity in the post account's escrow; this is its explorer page. */
   graduatedPool?: string | null;
-  /**
-   * USD price of one quote token, or null when no feed answered.
-   *
-   * Quote-denominated figures — a recurring-buy amount, a contribution — are
-   * signed for in quote units; this is what converts them for display, and
-   * null has to stay null rather than collapsing to one-to-one.
-   */
+  /** No USD feed: prices are in NEAR. Always null. */
   quoteUsdRate: number | null;
   marketCap: number;
-  /** Market cap in the quote token (WIF or USDG). */
   marketCapQuote?: number;
   marketCapCurrency: string;
   marketCapChangePct: number | null;
@@ -350,42 +148,34 @@ export type Coin = {
   totalVolume: number | null;
   totalVolumeQuote?: number | null;
   creatorRewards: number;
-  /** Unclaimed creator fees in the quote token. */
   creatorFeesQuote?: number;
   holders: number | null;
+  /** NEAR per token (named for the shape the screens were written against). */
   priceUsd: number;
-  /** Price of one token in the quote token: the figure the curve itself quotes. */
   priceQuote?: number;
-  burn?: CoinBurn;
-  graduation?: Graduation | null;
+  graduation?: { txHash: string | null; timestamp: string } | null;
   priceHistory?: Array<{ t: string; price: number; volume: number; side: "buy" | "sell" }>;
-  /** The swap read was cut short — the ticks above are a prefix, not the history. */
   priceHistoryPartial?: boolean;
-  nav?: NavReference | null;
   curve: CurveState;
   curvePreset: string;
-  /** What the market is held to: a Chainlink feed for a stock tracker, null for a post or reel. */
-  reference?: { source: "chainlink"; id: string; feed: string } | null;
-  /** Present when the list was asked for `social=1`. */
   likes?: number;
   commentCount?: number;
   viewerLiked?: boolean | null;
+  near: NearState;
 };
 
 export type Activity = {
   id: string;
   side: "buy" | "sell";
+  /** What the contract recorded: an auction fill, a curve buy or sell, or a floor redemption. */
+  kind: Trade["kind"];
   actor: { handle: string; avatarUrl: string };
-  /** Who signed it. The handle is a shortened form of this, not a key. */
   wallet: string;
   amount: number;
   valueUsd: number;
-  /** The same value in the coin's quote token. */
   valueQuote?: number;
   timestamp: string;
   txHash?: string;
-  logIndex?: number;
-  blockNumber?: number;
 };
 
 export type Holder = {
@@ -396,53 +186,20 @@ export type Holder = {
   share: number;
 };
 
-export type FeedItem =
-  | {
-      kind: "trade";
-      id: string;
-      timestamp: string;
-      side: "buy" | "sell";
-      amount: number;
-      valueUsd: number;
-      price: number;
-      priceNow: number | null;
-      currency: string;
-      txHash?: string;
-      /** What the trader said about this fill when they signed it, if anything. */
-      note: string | null;
-      actor: { wallet: string; handle: string; avatarUrl: string };
-      coin: {
-        address: string;
-        name: string;
-        symbol: string;
-        mediaUrl: string | null;
-        mediaKind: string;
-        posterUrl: string | null;
-      };
-    }
-  | {
-      kind: "post";
-      id: string;
-      timestamp: string;
-      body: string;
-      author: { wallet: string; handle: string; avatarUrl: string };
-      mediaUrl: string | null;
-      mediaKind: string | null;
-      replyCount: number;
-      /** The market this post is about, priced. Price is null when unread. */
-      coin: {
-        address: string;
-        name: string;
-        symbol: string;
-        priceUsd: number | null;
-        currency: string;
-        changePct: number | null;
-        progress: number | null;
-        graduated: boolean;
-        /** Null when the holder read was refused — not "held by nobody". */
-        holders: number | null;
-      } | null;
-    };
+export type FeedItem = {
+  kind: "trade";
+  id: string;
+  timestamp: string;
+  side: "buy" | "sell";
+  amount: number;
+  valueUsd: number;
+  price: number;
+  priceNow: number | null;
+  currency: string;
+  note: string | null;
+  actor: { wallet: string; handle: string; avatarUrl: string };
+  coin: { address: string; name: string; symbol: string; mediaUrl: string | null; mediaKind: string; posterUrl: string | null };
+};
 
 export type PositionTrade = { t: string; side: "buy" | "sell"; base: number; price: number };
 
@@ -464,60 +221,30 @@ export type Position = {
   currency: string;
   graduated: boolean;
   trades: PositionTrade[];
+  /** What this many tokens redeem against the floor right now. */
+  floorValue: number;
+  partial: boolean;
 };
 
 export type Portfolio = {
   wallet: string;
   positions: Position[];
-  /** Null when the pool walk did not finish and found nothing — not "$0". */
+  missing: number;
   totalValue: number | null;
   totalPnl: number | null;
   totalPnlPct: number | null;
   currency: string;
   partial: boolean;
-  /** What the wallet was worth at each moment it traded, oldest first. */
   history: Array<{ t: string; value: number }>;
 };
 
-export type PostDetail = {
-  id: string;
-  body: string;
-  timestamp: string;
-  author: { wallet: string; handle: string; avatarUrl: string };
-  mediaUrl: string | null;
-  mediaKind: string | null;
-};
-
-/** A comment on a coin. `side` and the tx hash are set when it came with a trade. */
-export type CoinComment = {
-  id: string;
-  coinMint: string;
-  wallet: string;
-  body: string;
-  side?: "buy" | "sell";
-  /** The trade's transaction hash. Named `signature` in the stored row. */
-  signature?: string;
-  txHash?: string;
-  createdAt: string;
-};
-
-/** Who else is in this market, derived from the fills the chart is drawn from. */
 export type Crowd = {
-  /** USD per quote token, or 1 when no feed answered. Flow figures are in quote units. */
+  currency: string;
   quoteUsdRate: number;
   traders: number;
   holdersStill: number;
-  firstBuyer: {
-    wallet: string;
-    price: number;
-    timestamp: string;
-    multiple: number | null;
-  } | null;
-  netFlow24h: number;
-  netFlow7d: number;
-  fills24h: number;
+  firstBuyer: { wallet: string; price: number; timestamp: string; multiple: number | null } | null;
   biggestBuy: number | null;
-  /** The swap walk was cut short — these are floors, not totals. */
   partial: boolean;
 };
 
@@ -525,108 +252,52 @@ export type DepthPoint = {
   amountIn: number;
   amountOut: number;
   averagePrice: number;
-  /** Total shortfall against spot, fee included. */
   priceImpact: number;
-  /** The part the curve caused, fee excluded. */
   curveImpact: number;
   fee: number;
-  /** The contract would take this trade now (a tracker's band and market state). */
   allowed?: boolean;
 };
 
-/** One transaction the server built, for the wallet to send in order. */
+/** One NEAR function call, for the wallet to sign and the relayer to submit. */
 export type TxStep = {
-  /** "Approve USDC", "Buy", "Launch". */
   label: string;
-  to: string;
-  data: string;
-  /** Wei, as a decimal string. */
-  value: string;
-  /** Padded gas limit, decimal string, when the server set one. */
-  gas?: string;
-};
-
-export type TxBuild<Q = Record<string, unknown>> = {
-  chainId: number;
-  steps: TxStep[];
-  quote: Q;
-};
-
-/** What `tx/record` read from a confirmed receipt. */
-export type TxRecord = {
-  ok: boolean;
-  launched?: { token: string; curve: string };
-  trades: number;
+  receiverId: string;
+  methodName: string;
+  args: Record<string, unknown>;
+  /** yocto, decimal string. */
+  deposit: string;
+  /** gas units, decimal string. */
+  gas: string;
 };
 
 export type SwapQuote = {
-  /** Tokens on a buy, quote asset on a sell. */
+  side: "buy" | "sell" | "redeem";
+  /** Tokens for a buy, NEAR for a sell or redeem. */
   amountOut: number;
-  minimumAmountOut: number;
+  /** NEAR a buy costs (fees and floor share included). */
+  amountIn: number;
   fee: number;
-  feeBps?: number;
-  feeFalling?: boolean;
-  burnWei?: string;
+  /** NEAR a buy adds to the redeemable floor (20% of the curve price). */
+  toFloor: number;
   priceImpact: number;
-  /** Exact-out buys only: expected cost, and the most the transaction may spend. */
-  amountIn?: number;
-  maximumAmountIn?: number;
-  /** Trackers: the buy keeps the price inside the band. Always true for a post. */
-  bandOk?: boolean;
-  /** Trackers: the feed is fresh, so buys are open. Always true for a post. */
-  marketOpen?: boolean;
-  /** The band, when this is a tracker. */
-  bandBps?: number;
-  priceAfter?: number;
-  refPrice?: number;
+  /** Paid from the floor rather than the curve (the floor is higher). */
+  fromFloor: boolean;
 };
 
-export type SwapBuild = TxBuild<SwapQuote> & {
-  quoteSymbol?: string;
-  quoteUsdRate?: number | null;
-  symbol?: string;
-};
-
-/** A visitor's quote (`quoteOnly`) the curve refused: the band, a closed market, sold out. */
-export type QuoteRefusal = { quote: null; steps: []; refusal: { message: string; reason: string | null } };
-
-/** The launch presets the app offers. `tight-nav` is for trackers, which scripts launch. */
-export type LaunchPreset = "content" | "thin-name" | "ipo-book";
-
-/** A stock reference and the Juno trackers held to it. */
-export type StockReference = {
-  symbol: string;
-  name: string;
-  feed: string;
-  price: number | null;
-  updatedAt: string | null;
-  ageSeconds: number | null;
-  marketOpen: boolean;
-  trackers: Coin[];
-};
+export type SwapBuild = { steps: TxStep[]; quote: SwapQuote };
 
 export type Balances = {
-  eth: number | null;
-  usdc: number | null;
-  wif: number | null;
-  usdg: number | null;
-  /** One token's balance, when asked for with `token`. */
+  near: number | null;
+  /** One post token's balance, when asked for with `token`. */
   token: number | null;
 };
 
-/* ------------------------------------------------------------------ */
-/* Social trading and savings                                          */
-/* ------------------------------------------------------------------ */
-
 export type Trader = {
   wallet: string;
-  /** Profit already taken. The rank is on this and nothing else. */
   realised: number;
-  /** Open position against cost. Null when the buys predate the read window. */
   unrealised: number | null;
   trades: number;
   coins: number;
-  /** Null when no sell had a cost to compare against — unmeasured, not zero. */
   winRate: number | null;
   bestExit: number | null;
   holding: number;
@@ -634,560 +305,582 @@ export type Trader = {
   followers: number;
 };
 
-export type WatchItem = {
-  baseMint: string;
-  watchedAt: string;
-  alertPrice: number | null;
-  /** Null when the coin could not be priced: an alert cannot be judged against a price nobody read. */
-  alertCrossed: "up" | "down" | null;
-  coin: {
-    address: string;
-    name: string;
-    symbol: string;
-    priceUsd: number;
-    marketCap: number;
-    currency: string;
-    changePct: number | null;
-    progress: number;
-    graduated: boolean;
-    media: { kind: "image" | "video"; url: string; posterUrl?: string };
-  } | null;
-};
-
-export type Plan = {
-  id: string;
-  baseMint: string;
-  amount: number;
-  cadence: "daily" | "weekly" | "monthly";
-  target: number | null;
-  /** Only moves when a swap confirms — a record of transactions, not intentions. */
-  contributed: number;
-  fills: number;
-  lastFilledAt: string | null;
-  nextDueAt: string;
-  due: boolean;
-  active: boolean;
-  /**
-   * `amount`, `target` and `contributed` are **quote-token units** — ETH or
-   * USDC, whatever this pool is priced in, because that is what a buy is
-   * signed for. `quoteSymbol` labels them; `quoteUsdRate` converts them, and
-   * is null when no feed answered.
-   */
-  coin: {
-    address: string;
-    name: string;
-    symbol: string;
-    priceUsd: number;
-    currency: string;
-    quoteSymbol: string;
-    quoteUsdRate: number | null;
-    media?: { kind: "image" | "video"; url: string; posterUrl?: string };
-  } | null;
-};
+const TGAS = 10n ** 12n;
 
 /* ------------------------------------------------------------------ */
-/* Calls                                                               */
+/* Reading a post                                                      */
+/* ------------------------------------------------------------------ */
+
+type Raw = { account: string; market: Market; trades: Trade[]; holders: Array<[string, string]> };
+
+const ART_EXT = /\.(mp4|webm|mov)(\?|$)/i;
+const FULL_CURVE = near(curveCost(0n, 800n));
+
+function titleCase(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word[0]!.toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+/** Gross NEAR per token of one fill: the price the curve (or floor) charged, before fee and floor share. */
+function fillPrice(trade: Trade): number | null {
+  const quantity = Number(trade.quantity);
+  if (!quantity) return null;
+  const total = BigInt(trade.total);
+  if (trade.kind === "auction") return near(total) / quantity;
+  if (trade.kind === "buy") return near((total * 100n) / 121n) / quantity;
+  if (trade.kind === "sell") return near((total * 100n) / 99n) / quantity;
+  return null;
+}
+
+/** What one more token costs now: the curve's marginal price, or the floor if that is higher. */
+function priceNow(m: Market): number {
+  const supply = BigInt(m.total_supply);
+  const curve = spotPrice(BigInt(m.curve_sold));
+  const floor = BigInt(m.floor_per_token);
+  if (m.phase === "commit" || m.phase === "reveal" || m.phase === "settle") return supply > 0n ? near(floor) : near(spotPrice(0n));
+  return near(curve > floor ? curve : floor);
+}
+
+function toCoin({ account, market: m, trades, holders }: Raw): Coin {
+  const createdMs = m.commit_end_ms - 60_000;
+  const price = priceNow(m);
+  const supply = Number(m.total_supply);
+  const history = trades
+    .map((trade) => ({ trade, price: fillPrice(trade) }))
+    .filter((row): row is { trade: Trade; price: number } => row.price !== null)
+    .map(({ trade, price: p }) => ({
+      t: new Date(trade.ms).toISOString(),
+      price: p,
+      volume: near(trade.total),
+      side: (trade.kind === "sell" ? "sell" : "buy") as "buy" | "sell",
+    }));
+  const dayAgo = Date.now() - 86_400_000;
+  const reference = history.find((point) => Date.parse(point.t) >= dayAgo) ?? history[0];
+  const change = reference && reference.price > 0 && history.length > 0 ? ((price - reference.price) / reference.price) * 100 : null;
+  const volume = trades.filter((t) => t.kind !== "redeem").reduce((sum, t) => sum + near(t.total), 0);
+  const volume24 = trades
+    .filter((t) => t.kind !== "redeem" && t.ms >= dayAgo)
+    .reduce((sum, t) => sum + near(t.total), 0);
+  const video = ART_EXT.test(m.media_url);
+  const marketCap = price * supply;
+  const graduatedAt = m.graduated ? [...trades].reverse().find((t) => t.kind === "buy" && t.sold_after === "800") : undefined;
+
+  return {
+    address: account,
+    format: video ? "reel" : "post",
+    name: titleCase(m.slug),
+    symbol: m.slug.toUpperCase(),
+    description: m.caption || undefined,
+    media: { kind: video ? "video" : "image", url: m.media_url, width: 1, height: 1 },
+    creator: { handle: m.creator, displayName: m.creator, avatarUrl: "", wallet: m.creator },
+    createdAt: new Date(createdMs).toISOString(),
+    pool: account,
+    chainId: 0,
+    quote: { address: null, symbol: "NEAR", decimals: 24 },
+    graduatedPool: m.graduated ? account : null,
+    quoteUsdRate: null,
+    marketCap,
+    marketCapQuote: marketCap,
+    marketCapCurrency: "NEAR",
+    marketCapChangePct: change === null || !Number.isFinite(change) ? null : change,
+    volume24h: volume24,
+    volume24hQuote: volume24,
+    totalVolume: volume,
+    totalVolumeQuote: volume,
+    creatorRewards: near(m.creator_earnings),
+    creatorFeesQuote: near(m.creator_earnings),
+    holders: holders.length,
+    priceUsd: price,
+    priceQuote: price,
+    graduation: m.graduated ? { txHash: null, timestamp: new Date(graduatedAt?.ms ?? Date.now()).toISOString() } : null,
+    priceHistory: history,
+    priceHistoryPartial: trades.length >= 120,
+    curve: {
+      progress: Number(m.curve_sold) / 800,
+      raisedUsd: near(m.curve_reserve),
+      thresholdUsd: FULL_CURVE,
+      raisedQuote: near(m.curve_reserve),
+      thresholdQuote: FULL_CURVE,
+      graduated: m.graduated,
+    },
+    curvePreset: "sealed-bid",
+    near: {
+      phase: m.phase,
+      commitEndMs: m.commit_end_ms,
+      revealEndMs: m.reveal_end_ms,
+      sealedBids: m.sealed_bid_count,
+      revealedBids: m.revealed_bid_count,
+      clearingPrice: near(m.clearing_price),
+      floorVault: near(m.floor_vault),
+      floorPerToken: near(m.floor_per_token),
+      totalSupply: supply,
+      curveSold: Number(m.curve_sold),
+      curveReserve: near(m.curve_reserve),
+      graduationEscrow: near(m.graduation_escrow),
+      dare: m.dare,
+      dareBond: near(m.dare_bond),
+      proof: m.proof,
+      dareFinalized: m.dare_finalized,
+      raw: m,
+    },
+  };
+}
+
+async function readOne(account: string): Promise<Raw> {
+  const [m, t, h] = await Promise.all([
+    readMarket(account, RPC_URL),
+    readTrades(account, RPC_URL),
+    readHolders(account, RPC_URL),
+  ]);
+  return { account, market: m, trades: t, holders: h };
+}
+
+/** Every post, read once and shared for a few seconds between screens. */
+let shared: { at: number; value: Promise<Raw[]> } | null = null;
+async function readAll(fresh = false): Promise<Raw[]> {
+  if (!fresh && shared && Date.now() - shared.at < 15_000) return shared.value;
+  const value = (async () => {
+    const factory = requireFactory();
+    const accounts = await guard(readPosts(factory, RPC_URL));
+    const settled = await Promise.allSettled(accounts.map((account) => readOne(account)));
+    return settled.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
+  })();
+  shared = { at: Date.now(), value };
+  value.catch(() => {
+    if (shared?.value === value) shared = null;
+  });
+  return value;
+}
+
+export function invalidateReads() {
+  shared = null;
+}
+
+function activityOf(raw: Raw): Activity[] {
+  return [...raw.trades].reverse().map((trade, i) => ({
+    id: `${raw.account}:${trade.ms}:${i}`,
+    side: trade.kind === "sell" || trade.kind === "redeem" ? "sell" : "buy",
+    kind: trade.kind,
+    actor: { handle: trade.account, avatarUrl: "" },
+    wallet: trade.account,
+    amount: Number(trade.quantity),
+    valueUsd: near(trade.total),
+    valueQuote: near(trade.total),
+    timestamp: new Date(trade.ms).toISOString(),
+  }));
+}
+
+function holdersOf(raw: Raw): Holder[] {
+  const total = raw.holders.reduce((sum, [, b]) => sum + Number(b), 0) || 1;
+  return raw.holders.map(([wallet, balance], i) => ({
+    rank: i + 1,
+    actor: { handle: wallet, avatarUrl: "" },
+    wallet,
+    balance: Number(balance),
+    share: Number(balance) / total,
+  }));
+}
+
+function crowdOf(raw: Raw, coin: Coin): Crowd | null {
+  const buys = raw.trades.filter((t) => t.kind === "buy" || t.kind === "auction");
+  const traders = new Set(raw.trades.map((t) => t.account));
+  const first = buys[0];
+  const firstPrice = first ? fillPrice(first) : null;
+  return {
+    currency: "NEAR",
+    quoteUsdRate: 0,
+    traders: traders.size,
+    holdersStill: raw.holders.filter(([wallet]) => traders.has(wallet)).length,
+    firstBuyer:
+      first && firstPrice
+        ? {
+            wallet: first.account,
+            price: firstPrice,
+            timestamp: new Date(first.ms).toISOString(),
+            multiple: coin.priceQuote && firstPrice > 0 ? coin.priceQuote / firstPrice : null,
+          }
+        : null,
+    biggestBuy: buys.length ? Math.max(...buys.map((t) => near(t.total))) : null,
+    partial: raw.trades.length >= 120,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Quotes                                                              */
+/* ------------------------------------------------------------------ */
+
+function quoteFor(coin: Coin, side: "buy" | "sell" | "redeem", quantity: number): SwapQuote {
+  const m = coin.near.raw;
+  const q = BigInt(Math.floor(quantity));
+  const sold = BigInt(m.curve_sold);
+  const vault = BigInt(m.floor_vault);
+  const supply = BigInt(m.total_supply);
+  const spot = coin.priceQuote ?? 0;
+  if (side === "buy") {
+    const total = buyQuote(sold, q, vault, supply);
+    const gross = (total * 100n) / 121n;
+    const curveGross = curveCost(sold, q);
+    const average = near(gross) / quantity;
+    return {
+      side,
+      amountOut: quantity,
+      amountIn: near(total),
+      fee: near(gross / 100n),
+      toFloor: near(gross / 5n),
+      priceImpact: spot > 0 ? Math.max(0, average / spot - 1) : 0,
+      fromFloor: gross > curveGross,
+    };
+  }
+  if (side === "sell") {
+    const out = sellQuote(sold, q, vault, supply);
+    const curveOut = curveCost(sold - q, q, false);
+    const gross = (out * 100n) / 99n;
+    const average = near(gross) / quantity;
+    return {
+      side,
+      amountOut: near(out),
+      amountIn: 0,
+      fee: near(gross / 100n),
+      toFloor: 0,
+      priceImpact: spot > 0 ? Math.max(0, 1 - average / spot) : 0,
+      fromFloor: gross > curveOut,
+    };
+  }
+  const out = redeemQuote(vault, supply, q);
+  return { side, amountOut: near(out), amountIn: 0, fee: near(out / 99n), toFloor: 0, priceImpact: 0, fromFloor: true };
+}
+
+/* ------------------------------------------------------------------ */
+/* Device-local social state                                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Likes and follows have no contract behind them on NEAR, so they are kept on
+ * this device only and never shown as anyone else's. A count is the viewer's
+ * own like and nothing more.
+ */
+const memory = new Map<string, string>();
+function local(key: string): string | null {
+  try {
+    if (Platform.OS === "web" && typeof localStorage !== "undefined") return localStorage.getItem(`juno:${key}`);
+  } catch {
+    /* storage refused */
+  }
+  return memory.get(key) ?? null;
+}
+function setLocal(key: string, value: string) {
+  memory.set(key, value);
+  try {
+    if (Platform.OS === "web" && typeof localStorage !== "undefined") localStorage.setItem(`juno:${key}`, value);
+  } catch {
+    /* storage refused */
+  }
+}
+function localSet(key: string): Set<string> {
+  try {
+    return new Set(JSON.parse(local(key) ?? "[]") as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* The client                                                          */
 /* ------------------------------------------------------------------ */
 
 export const juno = {
-  /** Traders ranked by profit taken. `partial` when the walk came back short. */
-  leaderboard: (limit = 20) =>
-    api.get<{
-      chainId?: number;
-      partial: boolean;
-      poolsRead: number;
-      /** What the registry holds, so `poolsRead` can be read against something. */
-      poolsTotal: number;
-      traders: Trader[];
-    }>(
-      `/api/juno/leaderboard?limit=${limit}`,
-    ),
-
-  followStats: (wallet: string, viewer?: string | null) =>
-    api.get<{
-      wallet: string;
-      followers: number;
-      following: number;
-      /** Null when there is no viewer — different from "does not follow". */
-      viewerFollows: boolean | null;
-      followingList: string[];
-    }>(`/api/juno/follow?wallet=${wallet}${viewer ? `&viewer=${viewer}` : ""}`),
-
-  setFollow: (follower: string, target: string, on: boolean) =>
-    authed<{ target: string; isFollowing: boolean; followers: number; following: number }>(
-      "POST",
-      "/api/juno/follow",
-      { follower, target, follow: on },
-      follower,
-    ),
-
-  /**
-   * This wallet's relationship to one coin — watching, alert, plans.
-   *
-   * Postgres only. The list endpoints answer the same questions but hydrate
-   * every pool from the chain to do it, which the coin screen cannot afford to
-   * wait for just to decide what a button says.
-   */
-  saved: (wallet: string, baseMint: string) =>
-    api.get<{
-      wallet: string;
-      baseMint: string;
-      watching: boolean;
-      alertPrice: number | null;
-      /** The price when the alert was set — the direction is derived from it. */
-      alertSetAtPrice: number | null;
-      plans: Omit<Plan, "coin">[];
-    }>(`/api/juno/saved?wallet=${wallet}&baseMint=${baseMint}`),
-
-  watchlist: (wallet: string) =>
-    api.get<{ wallet: string; items: WatchItem[]; missing: number }>(
-      `/api/juno/watchlist?wallet=${wallet}`,
-    ),
-
-  setWatch: (input: {
-    wallet: string;
-    baseMint: string;
-    watch: boolean;
-    alertPrice?: number;
-    priceNow?: number;
-  }) => authed<{ baseMint: string; watching: boolean }>("POST", "/api/juno/watchlist", input, input.wallet),
-
-  plans: (wallet: string) =>
-    api.get<{ wallet: string; plans: Plan[]; missing: number }>(`/api/juno/plans?wallet=${wallet}`),
-
-  createPlan: (input: {
-    wallet: string;
-    baseMint: string;
-    amount: number;
-    cadence: "daily" | "weekly" | "monthly";
-    target?: number | null;
-  }) => authed<{ id: string }>("POST", "/api/juno/plans", input, input.wallet),
-
-  /** Called only after a swap confirms, so progress records real transactions. */
-  recordContribution: (id: string, contributed: number) =>
-    authed<{ plan: Plan }>("PATCH", "/api/juno/plans", { id, contributed }),
-
-  setPlanActive: (id: string, active: boolean) =>
-    authed<{ id: string; active: boolean }>("PATCH", "/api/juno/plans", { id, active }),
-
-  /**
-   * The feed, optionally narrowed to wallets `following` follows.
-   *
-   * Filtered server-side: a client cannot know how many rows to ask for to be
-   * sure the filter has something to work with.
-   */
-  feed: (limit = 40, following?: string) =>
-    api.get<{
-      chainId?: number;
-      items: FeedItem[];
-      /** The trade half came back short — not every trade there is. */
-      tradesPartial: boolean;
-      scope: "everyone" | "following";
-      /** How many wallets the following feed covers. Null on the everyone feed. */
-      followingCount: number | null;
-    }>(
-      `/api/juno/feed?limit=${limit}${following ? `&following=${following}` : ""}`,
-    ),
-
-  coins: (
-    sort?: "marketCap" | "graduating",
-    extra?: {
-      /** Likes and comment counts too, and whether `viewer` liked each. */
-      social?: boolean;
-      viewer?: string | null;
-      /** Each tracker's Chainlink reference. */
-      nav?: boolean;
-    },
-  ) =>
-    api.get<{
-      chainId?: number;
-      coins: Coin[];
-      /** Registry rows the server could not price — the list is short by this many. */
-      missing: number;
-    }>(
-      `/api/juno/coins?limit=40${sort ? `&sort=${sort}` : ""}${
-        extra?.social ? `&social=1${extra.viewer ? `&viewer=${extra.viewer}` : ""}` : ""
-      }${extra?.nav ? "&nav=1" : ""}`,
-    ),
-
-  /** The Chainlink stock references, each with the trackers held to it. */
-  stocks: async () => {
-    const body = await api.get<StockReference[] | { stocks?: StockReference[]; references?: StockReference[] }>(
-      "/api/juno/stocks",
-    );
-    return Array.isArray(body) ? body : (body.stocks ?? body.references ?? []);
+  /** Every post on the factory, as markets. `missing` counts posts whose read failed. */
+  coins: async (_limit?: number, opts: { viewer?: string | null; fresh?: boolean } = {}) => {
+    const factory = requireFactory();
+    const accounts = await guard(readPosts(factory, RPC_URL));
+    const raws = await readAll(opts.fresh);
+    const liked = localSet(`likes:${opts.viewer ?? "anon"}`);
+    const coins = raws.map((raw) => {
+      const coin = toCoin(raw);
+      coin.viewerLiked = liked.has(coin.address);
+      coin.likes = liked.has(coin.address) ? 1 : 0;
+      return coin;
+    });
+    return { coins, missing: Math.max(0, accounts.length - raws.length) };
   },
 
-  /** Like counts for a page of coins, and whether `viewer` liked each. */
-  likes: (coins: string[], viewer?: string | null) =>
-    api.get<{ counts: Record<string, { likes: number; comments: number; viewerLiked: boolean | null }> }>(
-      `/api/juno/likes?coins=${coins.join(",")}${viewer ? `&viewer=${viewer}` : ""}`,
-    ),
+  /** One post with its fills, holders and crowd. */
+  coin: async (token: string) => {
+    const raw = await guard(readOne(token));
+    const coin = toCoin(raw);
+    return {
+      coin,
+      activity: activityOf(raw),
+      activityPartial: raw.trades.length >= 120,
+      holders: holdersOf(raw),
+      holdersUnreadable: false,
+      crowd: crowdOf(raw, coin),
+      launchTxHash: null as string | null,
+    };
+  },
 
-  setLike: (input: { coin: string; wallet: string; like: boolean }) =>
-    authed<{ coin: string; likes: number; liked: boolean }>("POST", "/api/juno/likes", input, input.wallet),
+  /** The newest fills across every post, for "Bought by". */
+  feed: async (limit = 60) => {
+    const raws = await readAll();
+    const items: FeedItem[] = raws
+      .flatMap((raw) => {
+        const coin = toCoin(raw);
+        return raw.trades.map((trade, i) => ({
+          kind: "trade" as const,
+          id: `${raw.account}:${trade.ms}:${i}`,
+          timestamp: new Date(trade.ms).toISOString(),
+          side: (trade.kind === "sell" || trade.kind === "redeem" ? "sell" : "buy") as "buy" | "sell",
+          amount: Number(trade.quantity),
+          valueUsd: near(trade.total),
+          price: fillPrice(trade) ?? 0,
+          priceNow: coin.priceQuote ?? null,
+          currency: "NEAR",
+          note: null,
+          actor: { wallet: trade.account, handle: trade.account, avatarUrl: "" },
+          coin: { address: coin.address, name: coin.name, symbol: coin.symbol, mediaUrl: coin.media.url, mediaKind: coin.media.kind, posterUrl: null },
+        }));
+      })
+      .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
+      .slice(0, limit);
+    return { items };
+  },
 
-  coin: (token: string) =>
-    api.get<{
-      chainId?: number;
-      coin: Coin;
-      activity: Activity[];
-      /** The swap walk was cut short — an empty `activity` is not "no trades". */
-      activityPartial: boolean;
-      holders: Holder[];
-      /** The holder read was refused — an empty `holders` is not "no holders". */
-      holdersUnreadable: boolean;
-      /** Null when the swap history could not be read at all — not "nobody traded". */
-      crowd: Crowd | null;
-      /** The launch transaction's hash. */
-      launchTxHash?: string | null;
-    }>(`/api/juno/coins/${token.toLowerCase()}?lookup=1`).then((body) => {
-      // A lookup: the server answers "no such coin" as data, not as a 404.
-      if ((body as { notFound?: boolean }).notFound) throw new ApiError("Coin not found", 404);
-      return body;
-    }),
+  /** What a buy or sell of each size does to the price, computed from the same curve maths as the contract. */
+  depth: async (mint: string, side: "buy" | "sell" = "buy", impact?: number) => {
+    const { coin } = await juno.coin(mint);
+    const room = side === "buy" ? 800 - coin.near.curveSold : coin.near.curveSold;
+    const sizes = [1, 5, 10, 25, 50, 100, 200, 400, 800].filter((n) => n <= room);
+    const points: DepthPoint[] = sizes.map((n) => {
+      const q = quoteFor(coin, side, n);
+      return {
+        amountIn: side === "buy" ? q.amountIn : n,
+        amountOut: side === "buy" ? n : q.amountOut,
+        averagePrice: side === "buy" ? q.amountIn / n : q.amountOut / n,
+        priceImpact: q.priceImpact,
+        curveImpact: q.priceImpact,
+        fee: q.fee,
+        allowed: coin.near.phase === "curve",
+      };
+    });
+    const budget = impact ?? 0.01;
+    const within = points.filter((p) => p.curveImpact <= budget);
+    const best = within[within.length - 1];
+    return {
+      side,
+      quoteUsdRate: null as number | null,
+      points,
+      suggestion: best
+        ? { amountIn: side === "buy" ? best.amountOut : best.amountIn, curveImpact: best.curveImpact, ceilingReached: within.length === points.length }
+        : null,
+    };
+  },
 
-  portfolio: (wallet: string) => api.get<Portfolio>(`/api/juno/portfolio/${wallet}`),
-
-  /** Comments on a coin, newest first. */
-  comments: (mint: string) =>
-    api.get<{ comments: CoinComment[] }>(`/api/juno/comments?coin=${mint}`),
-
-  /**
-   * Say something about a coin — optionally alongside a trade you just made.
-   *
-   * `side` and `txHash` are what turn a comment into an announcement: the
-   * row then carries which way you went and the transaction that proves it,
-   * so the claim is checkable rather than asserted.
-   */
-  addComment: (input: {
-    coin: string;
-    wallet: string;
-    body: string;
-    side?: "buy" | "sell";
-    txHash?: string;
-  }) =>
-    authed<{ comment: CoinComment }>(
-      "POST",
-      "/api/juno/comments",
-      {
-        ...input,
-        // The stored row keeps the field name it has always had.
-        ...(input.txHash ? { signature: input.txHash } : {}),
-      },
-      input.wallet,
-    ),
-
-  /**
-   * What this curve can absorb, and the largest trade inside an impact budget.
-   *
-   * `impact` is a ratio measured on curve movement with the fee excluded —
-   * the fee does not grow with size, so including it would make the answer
-   * mostly a constant.
-   */
-  depth: (mint: string, side: "buy" | "sell" = "buy", impact?: number) =>
-    api.get<{
-      mint: string;
-      side: "buy" | "sell";
-      spot: number;
-      quoteSymbol: string;
-      quoteUsdRate: number | null;
-      max: number;
-      points: DepthPoint[];
-      suggestion:
-        | (DepthPoint & { ceilingReached: boolean })
-        | null;
-    }>(
-      `/api/juno/depth?mint=${mint}&token=${mint}&side=${side}${impact ? `&impact=${impact}` : ""}`,
-      60_000,
-    ),
-
-  posts: (limit = 30) =>
-    api.get<{ posts: Array<{ id: string; body: string; authorWallet: string; createdAt: string }> }>(
-      `/api/juno/posts?limit=${limit}`,
-    ),
-
-  createPost: (input: {
-    authorWallet: string;
-    body: string;
-    baseMint?: string | null;
-    /** Set to reply. A comment is a post with a parent. */
-    parentId?: string | null;
-  }) => authed<{ post: { id: string } }>("POST", "/api/juno/posts", { chainId: CHAIN_ID, ...input }, input.authorWallet),
-
-  post: (id: string) =>
-    api.get<{
-      post: PostDetail;
-      replies: PostDetail[];
-      replyCount: number;
-      coin: {
-        address: string;
-        name: string;
-        symbol: string;
-        priceUsd: number;
-        marketCap: number;
-        currency: string;
-        changePct: number | null;
-        progress: number;
-        graduated: boolean;
-      } | null;
-    }>(`/api/juno/posts/${id}?lookup=1`).then((body) => {
-      if ((body as { notFound?: boolean }).notFound) throw new ApiError("Post not found", 404);
-      return body;
-    }),
-
-  /**
-   * Pin a photo or video to IPFS. A video comes back with a poster frame.
-   *
-   * Multipart, so it bypasses the JSON helper. `file` is a web `File` in the
-   * browser and the `{ uri, name, type }` shape React Native's fetch uploads
-   * from on a phone.
-   */
-  upload: async (file: Blob | { uri: string; name: string; type: string }) => {
-    const form = new FormData();
-    if (file instanceof Blob) {
-      form.append("file", file);
-    } else {
-      /*
-       * Expo's fetch, which SDK 57 installs as the global on native, does not
-       * take React Native's `{ uri, name, type }` file part — it throws
-       * "Unsupported FormDataPart implementation" before any request is made,
-       * which is how posting from the phone failed as "check your connection"
-       * while every other call worked. It takes anything with `bytes()`, so
-       * the picked file is read through expo-file-system and named here.
-       */
-      const onDisk = new DeviceFile(file.uri);
-      form.append("file", {
-        name: file.name,
-        type: file.type,
-        bytes: () => onDisk.bytes(),
-      } as unknown as Blob);
-    }
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 120_000);
-    try {
-      const response = await fetch(`${API_URL}/api/juno/upload`, {
-        method: "POST",
-        body: form,
-        signal: controller.signal,
-        // Pinning is for signed-in wallets: the connected wallet's session.
-        headers: await sessionHeaders(),
+  /** Every post this account holds, priced at the curve and at the floor. */
+  portfolio: async (wallet: string): Promise<Portfolio> => {
+    const raws = await readAll();
+    const positions: Position[] = [];
+    for (const raw of raws) {
+      const held = raw.holders.find(([account]) => account === wallet);
+      const mine = raw.trades.filter((t) => t.account === wallet);
+      if (!held && mine.length === 0) continue;
+      const coin = toCoin(raw);
+      const balance = held ? Number(held[1]) : 0;
+      const spent = mine.filter((t) => t.kind === "buy" || t.kind === "auction").reduce((s, t) => s + near(t.total), 0);
+      const bought = mine.filter((t) => t.kind === "buy" || t.kind === "auction").reduce((s, t) => s + Number(t.quantity), 0);
+      const received = mine.filter((t) => t.kind === "sell" || t.kind === "redeem").reduce((s, t) => s + near(t.total), 0);
+      const soldQty = mine.filter((t) => t.kind === "sell" || t.kind === "redeem").reduce((s, t) => s + Number(t.quantity), 0);
+      const average = bought > 0 ? spent / bought : null;
+      const price = coin.priceQuote ?? 0;
+      const value = balance * price;
+      const unrealised = average === null ? null : value - average * balance;
+      positions.push({
+        baseMint: coin.address,
+        poolAddress: coin.address,
+        name: coin.name,
+        symbol: coin.symbol,
+        mediaUrl: coin.media.url,
+        mediaMime: null,
+        curvePreset: coin.curvePreset,
+        balance,
+        price,
+        value,
+        averageCost: average,
+        unrealisedPnl: unrealised,
+        unrealisedPnlPct: unrealised !== null && average ? (unrealised / (average * balance || 1)) * 100 : null,
+        realisedPnl: average === null ? 0 : received - average * soldQty,
+        currency: "NEAR",
+        graduated: coin.curve.graduated,
+        trades: mine.map((t) => ({ t: new Date(t.ms).toISOString(), side: t.kind === "sell" || t.kind === "redeem" ? "sell" : "buy", base: Number(t.quantity), price: fillPrice(t) ?? 0 })),
+        floorValue: near(redeemQuote(BigInt(raw.market.floor_vault), BigInt(raw.market.total_supply), BigInt(balance))),
+        partial: raw.trades.length >= 120,
       });
-      const body = (await response.json().catch(() => null)) as
-        | {
-            uri: string;
-            url: string;
-            mimeType: string;
-            posterUri?: string;
-            posterUrl?: string;
-            width: number | null;
-            height: number | null;
-            error?: string;
-          }
-        | null;
-      if (!response.ok || !body) {
-        throw new ApiError(body?.error ?? `Upload failed (${response.status})`, response.status);
-      }
-      return body;
-    } catch (error) {
-      if (error instanceof ApiError) throw error;
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new ApiError("The upload timed out. Try a shorter clip or a better connection.", 0);
-      }
-      throw new ApiError("Could not upload the file. Check your connection.", 0);
-    } finally {
-      clearTimeout(timer);
     }
+    const held = positions.filter((p) => p.balance > 0);
+    const totalValue = held.reduce((s, p) => s + p.value, 0);
+    const totalPnl = held.reduce((s, p) => s + (p.unrealisedPnl ?? 0), 0) + positions.reduce((s, p) => s + p.realisedPnl, 0);
+    const cost = held.reduce((s, p) => s + (p.averageCost ?? 0) * p.balance, 0);
+    return {
+      wallet,
+      positions,
+      missing: 0,
+      totalValue,
+      totalPnl,
+      totalPnlPct: cost > 0 ? (totalPnl / cost) * 100 : null,
+      currency: "NEAR",
+      partial: positions.some((p) => p.partial),
+      history: [],
+    };
   },
 
-  /**
-   * Test ETH (and Juno test USDC) for this wallet, Sepolia only.
-   *
-   * A 429 carries `retryAfterSeconds`, surfaced on the thrown error so the
-   * card can say how long to wait.
-   */
-  /** Whether `wallet` may use the faucet now, and the wait in words when it may not. */
-  faucetEligibility: (wallet: string) =>
-    api
-      .get<{
-        empty: boolean;
-        eligibility?: { eligible: true } | { eligible: false; retryAfterSeconds: number; message: string };
-      }>(`/api/juno/faucet?chainId=${CHAIN_ID}&wallet=${wallet}`)
-      .then((body) => ({ empty: body.empty, ...(body.eligibility ?? { eligible: true as const }) })),
-
-  faucet: async (wallet: string) => {
-    try {
-      return await api.post<{ eth: string; usdc: string | null }>(
-        "/api/juno/faucet",
-        { wallet, chainId: CHAIN_ID },
-        90_000,
-      );
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 429) {
-        const wait = (error.body as { retryAfterSeconds?: number } | null)?.retryAfterSeconds;
-        throw new FaucetLimited(wait ?? null);
+  /** Traders ranked by NEAR taken out (sells and redemptions) against cost, from every post's fill log. */
+  leaderboard: async (limit = 20) => {
+    const raws = await readAll();
+    const creators = new Set(raws.map((raw) => raw.market.creator));
+    const rows = new Map<string, Trader>();
+    for (const raw of raws) {
+      const coin = toCoin(raw);
+      for (const trade of raw.trades) {
+        const row = rows.get(trade.account) ?? {
+          wallet: trade.account, realised: 0, unrealised: 0, trades: 0, coins: 0, winRate: null, bestExit: null, holding: 0,
+          isCreator: creators.has(trade.account), followers: 0,
+        };
+        row.trades += 1;
+        row.realised += trade.kind === "sell" || trade.kind === "redeem" ? near(trade.total) : -near(trade.total);
+        rows.set(trade.account, row);
       }
-      if (error instanceof ApiError && error.status === 503) {
-        throw new ApiError("The faucet is empty right now. Try again later.", 503);
+      for (const [wallet, balance] of raw.holders) {
+        const row = rows.get(wallet);
+        if (!row) continue;
+        row.coins += 1;
+        row.holding += Number(balance) * (coin.priceQuote ?? 0);
       }
-      throw error;
     }
+    const traders = [...rows.values()]
+      .map((row) => ({ ...row, unrealised: row.holding }))
+      .sort((a, b) => b.realised + b.holding - (a.realised + a.holding))
+      .slice(0, limit);
+    return { traders, currency: "NEAR", partial: false, poolsRead: raws.length };
   },
 
-  /** Pin the token's metadata, which the token points at forever. */
-  pinMetadata: (input: {
-    name: string;
-    symbol: string;
-    description?: string;
-    curvePreset: string;
-    format?: "post" | "reel";
-    mediaUrl?: string;
-    mimeType?: string;
-    posterUrl?: string;
-    width?: number | null;
-    height?: number | null;
-  }) => authed<{ uri: string }>("POST", "/api/juno/metadata", input),
-
-  /** A quote, and the steps that trade it. Amounts are decimal strings in UI units. */
-  buildSwap: (
-    input: {
-      curve: string;
-      trader: string;
-      side: "buy" | "sell";
-      /** What to spend. */
-      amountIn?: string;
-      /** Or, on a buy, exactly how many tokens to receive. */
-      amountOut?: string;
-      slippageBps?: number;
-    },
-    /** Shorter than the default when the caller has a usable quote to fall back on. */
-    timeoutMs?: number,
-  ) => api.post<SwapBuild>("/api/juno/tx/swap", { chainId: CHAIN_ID, ...input }, timeoutMs),
-
-  /**
-   * A signed-in quote as the amount is typed: the steps when the trade can be
-   * made, and the curve's refusal (the band, a closed market, the balance) as
-   * an answer when it cannot.
-   */
-  quoteForWallet: (input: {
-    curve: string;
-    trader: string;
-    side: "buy" | "sell";
-    amountIn?: string;
-    amountOut?: string;
-  }) => api.post<SwapBuild | QuoteRefusal>("/api/juno/tx/swap", { chainId: CHAIN_ID, ...input, refusalAsAnswer: true }),
-
-  /**
-   * A visitor's quote: no wallet, nothing to sign. A refusal is an answer
-   * (200), so it comes back as `refusal` rather than as an error.
-   */
-  quoteSwap: (input: { curve: string; side: "buy" | "sell"; amountIn?: string; amountOut?: string }) =>
-    api.post<SwapBuild | QuoteRefusal>("/api/juno/tx/swap", { chainId: CHAIN_ID, ...input, quoteOnly: true }),
-
-  buildLaunch: (input: {
-    creator: string;
-    name: string;
-    symbol: string;
-    metadataUri: string;
-    format: "post" | "reel";
-    preset: LaunchPreset;
-    /** Deprecated: launch and then approve WIF for a separate buy. */
-    initialBuy?: string;
-  }) =>
-    api.post<TxBuild<Record<string, unknown>>>("/api/juno/tx/launch", { chainId: CHAIN_ID, ...input }),
-
-  /** Pays a coin's creator their trading fees. Only the creator's wallet can send it. */
-  buildClaim: (input: { curve: string; creator: string }) =>
-    api.post<TxBuild<{ amount?: number; quoteSymbol?: string; quoteUsdRate?: number | null }>>(
-      "/api/juno/tx/claim",
-      { chainId: CHAIN_ID, ...input },
-    ),
-
-  /** Moves a full curve into its Uniswap v3 pool. Anyone can send it. */
-  buildGraduate: (input: { curve: string; caller: string }) =>
-    api.post<TxBuild>("/api/juno/tx/graduate", { chainId: CHAIN_ID, ...input }),
-
-  /** The factory's WIF burn counter and the newest burns, read live. */
-  burns: (limit = 20) => api.get<Burns>(`/api/juno/burns?chainId=${CHAIN_ID}&limit=${limit}`),
-
-  /**
-   * `flushBurn(minWifOut)` on a stock tracker: its accrued USDG is swapped to
-   * WIF through the live pools and burned, and the caller earns the bounty.
-   * Anyone can send it. The quote is the server's simulation from this caller.
-   */
-  buildFlush: (input: { curve: string; from: string }) =>
-    api.post<TxBuild<FlushQuote>>("/api/juno/tx/flush", { chainId: CHAIN_ID, ...input }),
-  burnOracleStatus: (curve: string) =>
-    api.get<BurnOracleStatus>(`/api/juno/tx/flush?chainId=${CHAIN_ID}&curve=${encodeURIComponent(curve)}`),
-
-  /** Tell the server a transaction landed. It reads the receipt itself. */
-  recordTx: (input: { chainId: number; txHash: string }) =>
-    api.post<TxRecord>("/api/juno/tx/record", input, 60_000),
-
-  /**
-   * ETH, USDC and, with `token`, one coin. Each is null when its read failed —
-   * not zero, which would grey out a button over a network hiccup.
-   */
+  /** A NEAR balance, and optionally one post token's. */
   balances: async (wallet: string, token?: string | null): Promise<Balances> => {
-    const body = await api.get<{
-      eth?: number | null;
-      usdc?: number | null;
-      wif?: number | null;
-      usdg?: number | null;
-      token?: number | null;
-      balance?: number | null;
-      tokens?: Record<string, number> | Array<{ address: string; balance: number }> | number | null;
-    }>(
-      `/api/juno/tx/balance?wallet=${wallet.toLowerCase()}&chainId=${CHAIN_ID}${
-        token ? `&token=${token.toLowerCase()}` : ""
-      }`,
-    );
-    let held: number | null = null;
-    if (token) {
-      const key = token.toLowerCase();
-      const tokens = body.tokens;
-      if (typeof body.token === "number") held = body.token;
-      else if (typeof tokens === "number") held = tokens;
-      else if (Array.isArray(tokens)) held = tokens.find((row) => row.address.toLowerCase() === key)?.balance ?? 0;
-      else if (tokens && typeof tokens === "object") {
-        const match = Object.entries(tokens).find(([address]) => address.toLowerCase() === key);
-        held = match ? match[1] : 0;
-      } else if (typeof body.balance === "number") held = body.balance;
+    const [nearBalance, held] = await Promise.all([
+      accountBalance(wallet, RPC_URL).then(near).catch(() => null),
+      token ? balanceOf(token, wallet, RPC_URL).then(Number).catch(() => null) : Promise.resolve(null),
+    ]);
+    return { near: nearBalance, token: held };
+  },
+
+  /** A buy, sell or floor redemption, quoted against the post's live state and built as one function call. */
+  buildSwap: async (input: { curve: string; side: "buy" | "sell" | "redeem"; amountOut: number }): Promise<SwapBuild> => {
+    const { coin } = await juno.coin(input.curve);
+    const quantity = Math.floor(input.amountOut);
+    if (!(quantity > 0)) throw new ApiError("Enter a whole number of tokens", 400);
+    if (input.side !== "redeem" && coin.near.phase !== "curve") {
+      throw new ApiError(coin.near.phase === "graduated" ? "This post graduated: its curve is closed. You can still redeem against the floor." : "The curve opens when the sealed-bid auction settles.", 409);
     }
-    return { eth: body.eth ?? null, usdc: body.usdc ?? null, wif: body.wif ?? null, usdg: body.usdg ?? null, token: held };
+    if (input.side === "buy" && quantity > 800 - coin.near.curveSold) throw new ApiError(`Only ${800 - coin.near.curveSold} tokens are left on the curve`, 400);
+    if (input.side === "sell" && quantity > coin.near.curveSold) throw new ApiError(`At most ${coin.near.curveSold} can be sold back to the curve`, 400);
+    const quote = quoteFor(coin, input.side, quantity);
+    let deposit = 0n;
+    if (input.side === "buy") deposit = await quoteBuy(coin.address, BigInt(quantity), RPC_URL);
+    const label = input.side === "buy" ? "Buy" : input.side === "sell" ? "Sell" : "Redeem";
+    return {
+      quote,
+      steps: [
+        {
+          label,
+          receiverId: coin.address,
+          methodName: input.side,
+          args: { quantity: String(quantity) },
+          deposit: deposit.toString(),
+          gas: (input.side === "buy" ? 100n * TGAS : 80n * TGAS).toString(),
+        },
+      ],
+    };
+  },
+
+  /** Quote only, for a signed-out visitor or while typing. */
+  quoteSwap: async (input: { curve: string; side: "buy" | "sell" | "redeem"; amountOut: number }) => {
+    const { coin } = await juno.coin(input.curve);
+    return quoteFor(coin, input.side, Math.floor(input.amountOut));
+  },
+
+  /** Launch a post: a named sub-account of the factory with its own market. */
+  buildLaunch: (input: { slug: string; caption: string; mediaUrl: string; dare: string; dareBondNear: number }): { steps: TxStep[]; account: string } => {
+    const factory = requireFactory();
+    const bond = toYocto(input.dareBondNear);
+    return {
+      account: `${input.slug}.${factory}`,
+      steps: [
+        {
+          label: "Launch",
+          receiverId: factory,
+          methodName: "create_post",
+          args: { slug: input.slug, caption: input.caption, media_url: input.mediaUrl, dare: input.dare, dare_bond: bond.toString() },
+          deposit: (3n * YOCTO + bond).toString(),
+          gas: (150n * TGAS).toString(),
+        },
+      ],
+    };
+  },
+
+  /** A function call on a post with no deposit (settle, reveal, refunds, earnings, dare votes). */
+  call: (receiverId: string, methodName: string, label: string, args: Record<string, unknown> = {}, deposit = 0n, gas = 120n * TGAS): TxStep => ({
+    label,
+    receiverId,
+    methodName,
+    args,
+    deposit: deposit.toString(),
+    gas: gas.toString(),
+  }),
+
+  /** The creator's fee share. */
+  buildClaim: (input: { curve: string }) => ({ steps: [juno.call(input.curve, "withdraw_earnings", "Claim")] }),
+
+  /* Device-local social state (see above). */
+  likes: (coins: string[], viewer?: string | null) => {
+    const liked = localSet(`likes:${viewer ?? "anon"}`);
+    return Promise.resolve({
+      counts: Object.fromEntries(coins.map((c) => [c, { likes: liked.has(c) ? 1 : 0, comments: 0, viewerLiked: liked.has(c) }])),
+    });
+  },
+  setLike: (input: { coin: string; wallet: string; like: boolean }) => {
+    const key = `likes:${input.wallet}`;
+    const liked = localSet(key);
+    if (input.like) liked.add(input.coin);
+    else liked.delete(input.coin);
+    setLocal(key, JSON.stringify([...liked]));
+    return Promise.resolve({ likes: input.like ? 1 : 0, liked: input.like });
+  },
+  followStats: (wallet: string, viewer?: string | null) => {
+    const following = localSet(`follows:${wallet}`);
+    const viewerFollows = viewer ? localSet(`follows:${viewer}`).has(wallet) : null;
+    return Promise.resolve({ wallet, followers: viewerFollows ? 1 : 0, following: following.size, followingList: [...following], viewerFollows });
+  },
+  setFollow: (follower: string, target: string, on: boolean) => {
+    const key = `follows:${follower}`;
+    const set = localSet(key);
+    if (on) set.add(target);
+    else set.delete(target);
+    setLocal(key, JSON.stringify([...set]));
+    return Promise.resolve({ isFollowing: on, followers: on ? 1 : 0 });
   },
 
   /**
-   * A URL the native `<Image>` can actually load, or null.
-   *
-   * Null is not just "absent" here — it also covers media the platform cannot
-   * render, and the caller is expected to draw its own glyph instead. The
-   * server falls back to an identicon encoded as `data:image/svg+xml`, which
-   * renders fine in a browser and makes iOS throw "URI parsing error" out of
-   * RCTImageManager, taking the whole screen down with a redbox. SVG data URIs
-   * are therefore filtered out here rather than at each of the four call sites.
+   * A URL `<Image>` can load. The seeded posts store a path under the app's
+   * own `/art`, which resolves against the app's origin.
    */
   media: (url: string | null | undefined): string | null => {
     if (!url) return null;
     if (url.startsWith("data:image/svg")) return null;
-    return url.startsWith("http") ? url : `${API_URL}${url}`;
+    if (/^https?:\/\//.test(url)) return url;
+    return url.startsWith("/") ? `${APP_URL}${url}` : `${APP_URL}/${url}`;
   },
-
-  /**
-   * The best *still* image for a coin, for a list row or a thumbnail.
-   *
-   * Reel coins carry a video in `media.url` and a real poster frame beside it.
-   * Handing the video to `<Image>` renders nothing at all, which is why the
-   * market list showed a grey square for every reel while the coins with no
-   * media at all were fine. A still context wants the poster; only if there
-   * isn't one does the video's own url get a try, and a video url that is its
-   * own poster is refused rather than silently failing to draw.
-   */
-  still: (media: {
-    kind: "image" | "video";
-    url: string;
-    posterUrl?: string;
-  }): string | null => {
+  still: (media: { kind: "image" | "video"; url: string; posterUrl?: string }): string | null => {
     const poster = media.posterUrl && media.posterUrl !== media.url ? media.posterUrl : null;
     if (poster) return juno.media(poster);
     return media.kind === "video" ? null : juno.media(media.url);
@@ -1195,3 +888,5 @@ export const juno = {
 
   explorer: (kind: "tx" | "address" | "token", id: string) => explorer(kind, id),
 };
+
+export { formatNear };

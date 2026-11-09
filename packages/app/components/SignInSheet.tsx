@@ -1,34 +1,32 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, TextInput } from "react-native";
+import { TextInput } from "react-native";
 import styled from "styled-components/native";
 
 import { BottomSheet } from "./BottomSheet";
 import { Body, Button, Caption, Title } from "./kit";
-import type { PrivyBridge } from "../lib/privy.types";
+import type { SignInBridge } from "../lib/wallet";
 import { theme } from "../theme";
 
 /**
- * Sign in with email; Privy makes the wallet.
+ * Sign in with email; the relayer makes a NEAR testnet account.
  *
- * Three steps in one sheet: an email address, the six-digit code Privy sends
- * to it, then a short wait while the embedded Ethereum wallet is created. The
- * wallet provider closes the sheet once an address exists, so this component
- * never has to know what the caller was trying to do.
+ * Two steps in one sheet: an email address, then the six-digit code the Juno
+ * relayer sends to it. On verify this device generates the account's key and
+ * keeps it; the relayer only ever sees the public half. The wallet provider
+ * closes the sheet once the account exists, so this component never has to
+ * know what the caller was trying to do.
  *
- * In a browser there is a second door: Privy's own modal, which also offers
- * MetaMask and other browser wallets. The sheet steps aside for it.
+ * When the relayer is not configured the sheet says exactly what is missing
+ * rather than pretending a code was sent.
  */
 export function SignInSheet({
   visible,
   onClose,
-  onHandOff,
-  privy,
+  bridge,
 }: {
   visible: boolean;
   onClose: () => void;
-  /** Called when Privy's own modal takes over the sign-in. */
-  onHandOff: () => void;
-  privy: PrivyBridge;
+  bridge: SignInBridge;
 }) {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -45,13 +43,11 @@ export function SignInSheet({
     setBusy(false);
   }, [visible]);
 
-  const creating = privy.status === "creating" || privy.status === "error";
-
   const sendCode = async () => {
     setBusy(true);
     setError(null);
     try {
-      await privy.sendCode(email.trim());
+      await bridge.sendCode(email.trim());
       setStep("code");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not send the code");
@@ -64,7 +60,7 @@ export function SignInSheet({
     setBusy(true);
     setError(null);
     try {
-      await privy.loginWithCode(code.trim(), email.trim());
+      await bridge.loginWithCode(code.trim(), email.trim());
     } catch (e) {
       setError(e instanceof Error ? e.message : "That code did not work");
       setBusy(false);
@@ -76,36 +72,14 @@ export function SignInSheet({
   return (
     <BottomSheet visible={visible} onClose={onClose} dismissable={!busy}>
       <Sheet>
-        <Title>{creating ? "Creating your wallet" : "Sign in to Juno"}</Title>
+        <Title>Sign in to Juno</Title>
         <Body muted>
-          {privy.emailLogin === false
-            ? "Connect the wallet you already use in this browser. Juno never holds your keys."
-            : creating
-            ? `Privy is making a wallet for this account.`
-            : step === "email"
-              ? "Privy creates a wallet for you. No seed phrase, nothing to install."
-              : `Enter the six-digit code sent to ${email.trim()}.`}
+          {step === "email"
+            ? "Juno makes you a NEAR account. No seed phrase, nothing to install, and the key stays on this device."
+            : `Enter the six-digit code sent to ${email.trim()}.`}
         </Body>
 
-        {creating ? (
-          <Waiting>
-            {privy.error || !["creating", "connecting", "reconnecting"].includes(privy.walletStatus) ? (
-              <Button
-                label="Try again"
-                variant="ink"
-                onPress={() => void privy.retry().catch((e) => setError(e instanceof Error ? e.message : String(e)))}
-              />
-            ) : (
-              <ActivityIndicator color={theme.colors.text} />
-            )}
-            <Caption>{privy.error ?? `Wallet: ${privy.walletStatus}`}</Caption>
-          </Waiting>
-        ) : privy.emailLogin === false ? (
-          <>
-            <Button label="Connect a browser wallet" onPress={() => privy.openModal?.()} loading={privy.status === "creating"} tall />
-            <Caption>MetaMask, Rabby or any browser wallet. It signs every trade itself.</Caption>
-          </>
-        ) : step === "email" ? (
+        {step === "email" ? (
           <>
             <Field>
               <TextInput
@@ -119,22 +93,11 @@ export function SignInSheet({
                 autoComplete="email"
                 textContentType="emailAddress"
                 returnKeyType="send"
-                onSubmitEditing={() => validEmail && void sendCode()}
+                onSubmitEditing={() => validEmail && !bridge.setup && void sendCode()}
                 style={{ fontSize: theme.type.body.size, color: theme.colors.text }}
               />
             </Field>
-            <Button label="Send code" onPress={() => void sendCode()} loading={busy} disabled={!validEmail} tall />
-            {privy.openModal ? (
-              <Button
-                label="Use a browser wallet"
-                variant="quiet"
-                onPress={() => {
-                  onHandOff();
-                  privy.openModal?.();
-                }}
-                disabled={busy}
-              />
-            ) : null}
+            <Button label="Send code" onPress={() => void sendCode()} loading={busy} disabled={!validEmail || !!bridge.setup} tall />
           </>
         ) : (
           <>
@@ -159,9 +122,8 @@ export function SignInSheet({
           </>
         )}
 
-        {error ? <ErrorText>{error}</ErrorText> : null}
-        {privy.status === "loading" && !creating ? <Caption>Connecting to Privy…</Caption> : null}
-        {privy.emailLogin === false ? null : <Secured>Secured by Privy</Secured>}
+        {error ? <ErrorText>{error}</ErrorText> : bridge.setup ? <ErrorText>{bridge.setup}</ErrorText> : null}
+        <Secured>NEAR testnet · gas paid by the Juno relayer</Secured>
       </Sheet>
     </BottomSheet>
   );
@@ -179,12 +141,6 @@ const Field = styled.View`
   background-color: ${(p) => p.theme.colors.surfaceAlt};
   border-width: ${(p) => p.theme.hairline}px;
   border-color: ${(p) => p.theme.colors.lineStrong};
-`;
-
-const Waiting = styled.View`
-  padding-vertical: ${(p) => p.theme.space(5)}px;
-  align-items: center;
-  gap: ${(p) => p.theme.space(3)}px;
 `;
 
 const ErrorText = styled.Text`

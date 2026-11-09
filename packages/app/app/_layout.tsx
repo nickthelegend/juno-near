@@ -8,7 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "styled-components/native";
 
-import { BurnList, BurnPanel, FlameGlyph, useBurns } from "../components/Burn";
+import { FloorGlyph, FloorPanel } from "../components/Floor";
 import { BrandImage } from "../components/brand";
 import { JunoMark } from "../components/logo";
 import { NETWORK_LABEL } from "../lib/chain";
@@ -45,8 +45,6 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="coin/[address]" />
             <Stack.Screen name="trader/[wallet]" />
-            <Stack.Screen name="post/[id]" />
-            <Stack.Screen name="burns" />
           </Stack>
         </WalletProvider>
       </SafeAreaProvider>
@@ -102,40 +100,38 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
   useWebCss();
   if (Platform.OS !== "web") return <>{children}</>;
-  // Wide windows get rails beside the phone column: the burn counter on the
-  // right from 1000px, and the flywheel in plain words on the left from 1280px.
+  // Wide windows get rails beside the phone column: the live floor panel on
+  // the right from 1000px, and how a post works in plain words on the left
+  // from 1280px.
   const right = width >= 1000;
   const left = width >= 1280;
   return (
     <View style={frame.canvas}>
       {left ? <AboutRail /> : null}
       <View style={frame.phone}>{children}</View>
-      {right ? <BurnRail /> : null}
+      {right ? <FloorRail /> : null}
     </View>
   );
 }
 
-/** The right rail on desktop: the live burn counter and the newest burns. */
-function BurnRail() {
-  const burns = useBurns(12);
+/** The right rail on desktop: the NEAR held in post floors and the newest fills, read live from testnet. */
+function FloorRail() {
   return (
     <ScrollView style={frame.rail} contentContainerStyle={frame.railBody} showsVerticalScrollIndicator={false}>
-      <BurnPanel burns={burns} />
-      <Text style={frame.railHeading}>Newest burns</Text>
-      <BurnList burns={burns} limit={6} />
+      <FloorPanel />
     </ScrollView>
   );
 }
 
-/** The left rail on desktop: what Juno is and how $WIF burns, in plain words. Copy, not data. */
+/** The left rail on desktop: what Juno is and how a post's market runs on NEAR, in plain words. Copy, not data. */
 function AboutRail() {
   // The onboarding screen already says the headline; the rail keeps the steps.
   const intro = usePathname() !== "/";
   const steps = [
-    ["Post", "A photo or a reel launches its own token, priced in $WIF."],
-    ["Trade", "Half of every WIF fee pays the creator. Half burns in the same transaction."],
-    ["Graduate", "A full curve burns 10% of its reserve and seeds a locked Uniswap pool."],
-    ["Flush", "Tracker fees wait in USDG until anyone swaps them to WIF and burns them for a bounty."],
+    ["Post", "A photo launches as its own NEAR account: mira.juno.testnet is the coin."],
+    ["Bid", "For one minute anyone can place a sealed bid. Everyone pays the same clearing price."],
+    ["Trade", "Then the curve opens. 20% of every buy goes into a floor any holder can redeem."],
+    ["Graduate", "A full curve graduates. Dares put the creator's bond on the line."],
   ] as const;
   return (
     <ScrollView style={frame.about} contentContainerStyle={frame.aboutBody} showsVerticalScrollIndicator={false}>
@@ -143,8 +139,8 @@ function AboutRail() {
         <JunoMark size={30} color={theme.colors.text} />
         <Text style={frame.word}>juno</Text>
       </View>
-      {intro ? <Text style={frame.headline}>Every post is a $WIF market.</Text> : null}
-      {intro ? <Text style={frame.lede}>Creators earn the fees. Every trade takes a little WIF out of supply.</Text> : null}
+      {intro ? <Text style={frame.headline}>Every post is a market.</Text> : null}
+      {intro ? <Text style={frame.lede}>On NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.</Text> : null}
       <View style={frame.aboutArt}>
         <BrandImage art="postCard" alt="" size={176} float="bob" eager />
       </View>
@@ -160,7 +156,7 @@ function AboutRail() {
         ))}
       </View>
       <View style={frame.network}>
-        <FlameGlyph size={14} />
+        <FloorGlyph size={14} />
         <Text style={frame.networkText}>{NETWORK_LABEL}</Text>
       </View>
     </ScrollView>
