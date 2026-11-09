@@ -362,7 +362,7 @@ h3 {
   letter-spacing: -0.06em;
 }
 .countdown {
-  font: 700 62px "Space Grotesk";
+  font: 700 62px "Urbanist";
   letter-spacing: -0.07em;
   line-height: 1.2;
   margin: 20px 0;
@@ -390,7 +390,7 @@ h3 {
   margin-bottom: 5px;
 }
 .stats b {
-  font: 700 15px "Space Grotesk";
+  font: 700 15px "Urbanist";
 }
 .trade-panel label,
 .form-panel label {
@@ -515,7 +515,7 @@ footer {
   color: var(--muted);
 }
 footer span:first-child {
-  font: 700 19px "Space Grotesk";
+  font: 700 19px "Urbanist";
   color: var(--ink);
 }
 @media (max-width: 900px) {
