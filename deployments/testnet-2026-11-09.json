@@ -1,0 +1,343 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "posts": [
+    "sprout.juno-awkorp.testnet",
+    "pile-in.juno-awkorp.testnet",
+    "cap-toss.juno-awkorp.testnet",
+    "balloons.juno-awkorp.testnet"
+  ],
+  "transactions": [
+    {
+      "step": "registrar_create_account",
+      "signer": "engye-5d3dc3dd57.testnet",
+      "receiver": "testnet",
+      "hash": "DbZNbHe9hBMaMpkY2UAvqXsWx1T2oYajJYQYYGs4eGb8",
+      "explorer": "https://testnet.nearblocks.io/txns/DbZNbHe9hBMaMpkY2UAvqXsWx1T2oYajJYQYYGs4eGb8"
+    },
+    {
+      "step": "top_up_root_from_engye-5d3dc3dd57",
+      "signer": "engye-5d3dc3dd57.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "4sxQQdMU7spZ3Xeh4MEFzFU8xUcVHKqwroS9v6LG7CjZ",
+      "explorer": "https://testnet.nearblocks.io/txns/4sxQQdMU7spZ3Xeh4MEFzFU8xUcVHKqwroS9v6LG7CjZ"
+    },
+    {
+      "step": "top_up_root_from_engye-4f18d8544b",
+      "signer": "engye-4f18d8544b.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "9d4izNnbCsZyXPsPt2qYQjDKknrLH2c52e3Jb7HmfLxb",
+      "explorer": "https://testnet.nearblocks.io/txns/9d4izNnbCsZyXPsPt2qYQjDKknrLH2c52e3Jb7HmfLxb"
+    },
+    {
+      "step": "top_up_root_from_engye-90efb5817e",
+      "signer": "engye-90efb5817e.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "C9DQf8pWt2pn4eRwJXY3TaFjr45UEH7DuKV4kxBkLZXu",
+      "explorer": "https://testnet.nearblocks.io/txns/C9DQf8pWt2pn4eRwJXY3TaFjr45UEH7DuKV4kxBkLZXu"
+    },
+    {
+      "step": "create_player_mira",
+      "signer": "juno-awkorp.testnet",
+      "receiver": "mira.juno-awkorp.testnet",
+      "hash": "AgsntQnoaFuTXdaNrZ3BxBcAQi6L4bPB3v9HDyTedCPU",
+      "explorer": "https://testnet.nearblocks.io/txns/AgsntQnoaFuTXdaNrZ3BxBcAQi6L4bPB3v9HDyTedCPU"
+    },
+    {
+      "step": "create_player_kai",
+      "signer": "juno-awkorp.testnet",
+      "receiver": "kai.juno-awkorp.testnet",
+      "hash": "GaCz1D7riGHoac4HBp83bW4R5Wh3hXaWgUXQHeURr7CT",
+      "explorer": "https://testnet.nearblocks.io/txns/GaCz1D7riGHoac4HBp83bW4R5Wh3hXaWgUXQHeURr7CT"
+    },
+    {
+      "step": "create_player_oto",
+      "signer": "juno-awkorp.testnet",
+      "receiver": "oto.juno-awkorp.testnet",
+      "hash": "FaaHTMZJcPM3PeXys9c64PanUVuQayHEsn542ZgWkWFw",
+      "explorer": "https://testnet.nearblocks.io/txns/FaaHTMZJcPM3PeXys9c64PanUVuQayHEsn542ZgWkWFw"
+    },
+    {
+      "step": "deploy_factory",
+      "signer": "juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "HvSXP63tQhyZSPujjj3dVN1eZPFqLXRxTGD19qHMpzxx",
+      "explorer": "https://testnet.nearblocks.io/txns/HvSXP63tQhyZSPujjj3dVN1eZPFqLXRxTGD19qHMpzxx"
+    },
+    {
+      "step": "upload_token_code",
+      "signer": "juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "sweTXR5mr7fGuMYUM2mfmyYATuHA9Bag3R3MiRcX5jk",
+      "explorer": "https://testnet.nearblocks.io/txns/sweTXR5mr7fGuMYUM2mfmyYATuHA9Bag3R3MiRcX5jk"
+    },
+    {
+      "step": "create_post_sprout",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "GnmxDbdgj4wqqakwbiDjKpQZCzryyJ8NeCGdutSdgrT1",
+      "explorer": "https://testnet.nearblocks.io/txns/GnmxDbdgj4wqqakwbiDjKpQZCzryyJ8NeCGdutSdgrT1"
+    },
+    {
+      "step": "create_post_pile-in",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "BcKhu61PLii7PWvwwV4EpSBDaRgSAZ15FS74nSZfN8Mx",
+      "explorer": "https://testnet.nearblocks.io/txns/BcKhu61PLii7PWvwwV4EpSBDaRgSAZ15FS74nSZfN8Mx"
+    },
+    {
+      "step": "sprout_sealed_bid_kai",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "Gm9ccwjNFe12Nk9zmGS4vXMj9M5DJc21zSzmyxfhfbih",
+      "explorer": "https://testnet.nearblocks.io/txns/Gm9ccwjNFe12Nk9zmGS4vXMj9M5DJc21zSzmyxfhfbih"
+    },
+    {
+      "step": "sprout_sealed_bid_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "9WsPTaa5inciUT8Jkhtjy32DKie9HCcAhxc1StwTggW1",
+      "explorer": "https://testnet.nearblocks.io/txns/9WsPTaa5inciUT8Jkhtjy32DKie9HCcAhxc1StwTggW1"
+    },
+    {
+      "step": "pile-in_sealed_bid_mira",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "B3jeRaptKc78kK6xm5ypjYJu2u33eUj5f52oRMEF8GLV",
+      "explorer": "https://testnet.nearblocks.io/txns/B3jeRaptKc78kK6xm5ypjYJu2u33eUj5f52oRMEF8GLV"
+    },
+    {
+      "step": "pile-in_sealed_bid_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "FNHtQKCHvUwrG4RKUvBvVjXcyK2LNmSaxA2LgwX4qmdk",
+      "explorer": "https://testnet.nearblocks.io/txns/FNHtQKCHvUwrG4RKUvBvVjXcyK2LNmSaxA2LgwX4qmdk"
+    },
+    {
+      "step": "sprout_reveal_kai",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "2TYV1PHhkUo6JyuumEqSN7CCspfvq7JF7y6X61GrXYxM",
+      "explorer": "https://testnet.nearblocks.io/txns/2TYV1PHhkUo6JyuumEqSN7CCspfvq7JF7y6X61GrXYxM"
+    },
+    {
+      "step": "sprout_reveal_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "C4HwyZ5pCZExLSPLqCLTj9Rs84KJznhmrd8Tu7aJiwj2",
+      "explorer": "https://testnet.nearblocks.io/txns/C4HwyZ5pCZExLSPLqCLTj9Rs84KJznhmrd8Tu7aJiwj2"
+    },
+    {
+      "step": "pile-in_reveal_mira",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "56xkUVAco2Zs9wQ73CBUco4kCHB13gSUsCtyU6wQNxpm",
+      "explorer": "https://testnet.nearblocks.io/txns/56xkUVAco2Zs9wQ73CBUco4kCHB13gSUsCtyU6wQNxpm"
+    },
+    {
+      "step": "pile-in_reveal_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "DJRnNC46bRjVfLza7T484K2Zn8YAWARCquH5FmMFvAoY",
+      "explorer": "https://testnet.nearblocks.io/txns/DJRnNC46bRjVfLza7T484K2Zn8YAWARCquH5FmMFvAoY"
+    },
+    {
+      "step": "sprout_settle",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "5TvNxqnEZNnH6DHoTrvqSpuWzQKcJ2DtvwFFtuuzXAPa",
+      "explorer": "https://testnet.nearblocks.io/txns/5TvNxqnEZNnH6DHoTrvqSpuWzQKcJ2DtvwFFtuuzXAPa"
+    },
+    {
+      "step": "sprout_refund_kai",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "AMS2qEGHLhyFY7yEQguyetJrjkDnpmbW3UMd24hkat1N",
+      "explorer": "https://testnet.nearblocks.io/txns/AMS2qEGHLhyFY7yEQguyetJrjkDnpmbW3UMd24hkat1N"
+    },
+    {
+      "step": "sprout_refund_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "7ddxkpdbXkaFmgdP8g3ujCLRPLix1REeSpSzznMP78Fv",
+      "explorer": "https://testnet.nearblocks.io/txns/7ddxkpdbXkaFmgdP8g3ujCLRPLix1REeSpSzznMP78Fv"
+    },
+    {
+      "step": "sprout_buy_25",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "Gj48SeoZXw8UBiox193mifE9J8kRnP9xR6KnrmBYrosZ",
+      "explorer": "https://testnet.nearblocks.io/txns/Gj48SeoZXw8UBiox193mifE9J8kRnP9xR6KnrmBYrosZ"
+    },
+    {
+      "step": "sprout_buy_10",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "2AgeMa4QCjMAUv7Vszn2eMPSd1B5xER5NvRgdgp9AWky",
+      "explorer": "https://testnet.nearblocks.io/txns/2AgeMa4QCjMAUv7Vszn2eMPSd1B5xER5NvRgdgp9AWky"
+    },
+    {
+      "step": "sprout_sell_5",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "sprout.juno-awkorp.testnet",
+      "hash": "AkrBvHGZkxDHGU2iVyCTMqpppNAE9Qhym87iQEgVnpFj",
+      "explorer": "https://testnet.nearblocks.io/txns/AkrBvHGZkxDHGU2iVyCTMqpppNAE9Qhym87iQEgVnpFj"
+    },
+    {
+      "step": "pile-in_settle",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "EK9gCafYjaBgYjJ2YhZCHPjiXZVxnRrRhEFitJ5bmdRr",
+      "explorer": "https://testnet.nearblocks.io/txns/EK9gCafYjaBgYjJ2YhZCHPjiXZVxnRrRhEFitJ5bmdRr"
+    },
+    {
+      "step": "pile-in_refund_mira",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "8pt6i3HsMmtaWwQ4tJNcMiaVppHi3aemG6qCrDeatYRn",
+      "explorer": "https://testnet.nearblocks.io/txns/8pt6i3HsMmtaWwQ4tJNcMiaVppHi3aemG6qCrDeatYRn"
+    },
+    {
+      "step": "pile-in_refund_oto",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "3WungznfVE34GULbSPGXVuHVmySrokscbbmDq2WQmNUQ",
+      "explorer": "https://testnet.nearblocks.io/txns/3WungznfVE34GULbSPGXVuHVmySrokscbbmDq2WQmNUQ"
+    },
+    {
+      "step": "pile_in_buy_800_graduate",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "8Z7qTNe6vizN6dnAhexaP4TyCYE7FnSaZSm3WJ3JJ4LH",
+      "explorer": "https://testnet.nearblocks.io/txns/8Z7qTNe6vizN6dnAhexaP4TyCYE7FnSaZSm3WJ3JJ4LH"
+    },
+    {
+      "step": "pile_in_redeem_20_floor",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "pile-in.juno-awkorp.testnet",
+      "hash": "3y1Lcx1Xt1KSLAUMTYHxbcLZ5UGkH1czhU84ENCrFgDG",
+      "explorer": "https://testnet.nearblocks.io/txns/3y1Lcx1Xt1KSLAUMTYHxbcLZ5UGkH1czhU84ENCrFgDG"
+    },
+    {
+      "step": "top_up_root_from_engye-90efb5817e",
+      "signer": "engye-90efb5817e.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "55rAQYQMJYreeQ5mXxWzkpnHrhefTZrnJqwz7H9HuvLF",
+      "explorer": "https://testnet.nearblocks.io/txns/55rAQYQMJYreeQ5mXxWzkpnHrhefTZrnJqwz7H9HuvLF"
+    },
+    {
+      "step": "create_post_cap-toss",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "HqzVz5KTBEvNHUcaD8G54hiwzX7GLBU5dfAb9rsMNnTv",
+      "explorer": "https://testnet.nearblocks.io/txns/HqzVz5KTBEvNHUcaD8G54hiwzX7GLBU5dfAb9rsMNnTv"
+    },
+    {
+      "step": "create_post_balloons",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "Fk7jYkJ7AuCrsEcvmj5w7zdY5seFNFWe3wHQWw7wNHJB",
+      "explorer": "https://testnet.nearblocks.io/txns/Fk7jYkJ7AuCrsEcvmj5w7zdY5seFNFWe3wHQWw7wNHJB"
+    },
+    {
+      "step": "cap-toss_sealed_bid_mira",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "C5cZQdsM91R7cSrfBeLmHvPLijMuGvih2g3GRNX1u5oc",
+      "explorer": "https://testnet.nearblocks.io/txns/C5cZQdsM91R7cSrfBeLmHvPLijMuGvih2g3GRNX1u5oc"
+    },
+    {
+      "step": "cap-toss_sealed_bid_kai",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "JCYYivQCdsHcGCYj8iYKZJfJWymVuPKoUWx5QWcTJbGZ",
+      "explorer": "https://testnet.nearblocks.io/txns/JCYYivQCdsHcGCYj8iYKZJfJWymVuPKoUWx5QWcTJbGZ"
+    },
+    {
+      "step": "cap-toss_settle",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "DxqPU5gpm1CnD2TadwsJg9US6oLPgCbUQGqcgfAspPto",
+      "explorer": "https://testnet.nearblocks.io/txns/DxqPU5gpm1CnD2TadwsJg9US6oLPgCbUQGqcgfAspPto"
+    },
+    {
+      "step": "cap-toss_refund_mira",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "AoaJLDNgcJKZ2RvCJoCgsYqTAYzySSiNSbNHw99Hivwu",
+      "explorer": "https://testnet.nearblocks.io/txns/AoaJLDNgcJKZ2RvCJoCgsYqTAYzySSiNSbNHw99Hivwu"
+    },
+    {
+      "step": "cap-toss_refund_kai",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "GndJvZG6jDckgMEsHr2sNaC8cWGya8DaXkvnmMd8PxNi",
+      "explorer": "https://testnet.nearblocks.io/txns/GndJvZG6jDckgMEsHr2sNaC8cWGya8DaXkvnmMd8PxNi"
+    },
+    {
+      "step": "cap_toss_buy_40",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "6wgZR5DiVCfBDkoueY6W3cBaaGsYbGSi9wm3BMFHpr7D",
+      "explorer": "https://testnet.nearblocks.io/txns/6wgZR5DiVCfBDkoueY6W3cBaaGsYbGSi9wm3BMFHpr7D"
+    },
+    {
+      "step": "cap_toss_submit_proof",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "6sWSsRDxfeq5NxopqVwcP9u87RiCGn6hJmJN5CWAjJvE",
+      "explorer": "https://testnet.nearblocks.io/txns/6sWSsRDxfeq5NxopqVwcP9u87RiCGn6hJmJN5CWAjJvE"
+    },
+    {
+      "step": "cap_toss_vote_yes",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "F6CoijdDdFc269SEtNxJHwBgfPhruRxNZqnazeUdMwPH",
+      "explorer": "https://testnet.nearblocks.io/txns/F6CoijdDdFc269SEtNxJHwBgfPhruRxNZqnazeUdMwPH"
+    },
+    {
+      "step": "balloons_settle",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "balloons.juno-awkorp.testnet",
+      "hash": "ESi2b1oL3X3PXGggBYrkSeBCLi164UY5CtybN1Mxo6KD",
+      "explorer": "https://testnet.nearblocks.io/txns/ESi2b1oL3X3PXGggBYrkSeBCLi164UY5CtybN1Mxo6KD"
+    },
+    {
+      "step": "balloons_refund_oto_rejected_ERR_NO_BID",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "balloons.juno-awkorp.testnet",
+      "hash": "AWWXogazAWUYaLxKVVCLYfekpHkng9kmzqQ8Q89RPedK",
+      "explorer": "https://testnet.nearblocks.io/txns/AWWXogazAWUYaLxKVVCLYfekpHkng9kmzqQ8Q89RPedK",
+      "note": "Rejected on-chain as expected: oto never placed a bid on balloons (the commit window closed first)."
+    },
+    {
+      "step": "balloons_buy_60",
+      "signer": "mira.juno-awkorp.testnet",
+      "receiver": "balloons.juno-awkorp.testnet",
+      "hash": "G97kLxSJ6XfcRBRbbUxo7pHUwTfFgb1gKUcQGVHJWWMR",
+      "explorer": "https://testnet.nearblocks.io/txns/G97kLxSJ6XfcRBRbbUxo7pHUwTfFgb1gKUcQGVHJWWMR"
+    },
+    {
+      "step": "balloons_buy_30",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "balloons.juno-awkorp.testnet",
+      "hash": "H6LtScqRxoRRsko9PWHEiHqF6poi65Dxe2CWcWGqQv4H",
+      "explorer": "https://testnet.nearblocks.io/txns/H6LtScqRxoRRsko9PWHEiHqF6poi65Dxe2CWcWGqQv4H"
+    },
+    {
+      "step": "cap_toss_finalize_dare",
+      "signer": "oto.juno-awkorp.testnet",
+      "receiver": "cap-toss.juno-awkorp.testnet",
+      "hash": "5rQm2yRzXGTo1FNo6wtdxrx5XUAkqKakMevjLwvkakxz",
+      "explorer": "https://testnet.nearblocks.io/txns/5rQm2yRzXGTo1FNo6wtdxrx5XUAkqKakMevjLwvkakxz"
+    }
+  ],
+  "createdAt": "2026-11-09T15:52:33.860Z",
+  "status": "complete",
+  "factory": "juno-awkorp.testnet",
+  "players": [
+    "mira.juno-awkorp.testnet",
+    "kai.juno-awkorp.testnet",
+    "oto.juno-awkorp.testnet"
+  ]
+}
