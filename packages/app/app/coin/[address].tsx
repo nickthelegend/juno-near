@@ -209,6 +209,12 @@ export default function CoinScreen() {
               </Padded>
             ) : null}
 
+            {coin.near.phase !== "curve" && coin.near.phase !== "graduated" ? (
+              <Padded>
+                <AuctionCard coin={coin} onChanged={detail.refresh} />
+              </Padded>
+            ) : null}
+
             <PriceLine
               ticks={ticks}
               livePrice={coin.priceQuote ?? toQuote(coin.priceUsd)}
@@ -317,7 +323,7 @@ export default function CoinScreen() {
                   </Caption>
                 </View>
               </FloorRow>
-              <AuctionCard coin={coin} onChanged={detail.refresh} />
+              {coin.near.phase === "curve" || coin.near.phase === "graduated" ? <AuctionCard coin={coin} onChanged={detail.refresh} /> : null}
               <DareCard coin={coin} />
 
               {/* The creator's own payday, on their own coin. The contract
@@ -419,7 +425,7 @@ export default function CoinScreen() {
               <Button label="Redeem against the floor" variant="ink" tall onPress={() => setSheet("redeem")} style={{ flex: 1 }} />
             ) : coin.near.phase !== "curve" ? (
               <GraduatedNote>
-                {coin.near.phase === "settle" ? "Auction over — settle it above." : "Sealed-bid auction open — bid above."}
+                {coin.near.phase === "settle" ? "Auction over — settle it below." : coin.near.phase === "reveal" ? "Reveals open — see the auction below." : "Sealed-bid auction open — bid below."}
               </GraduatedNote>
             ) : (
               <Button label="Buy" variant="lime" tall onPress={() => setSheet("buy")} style={{ flex: 1 }} />

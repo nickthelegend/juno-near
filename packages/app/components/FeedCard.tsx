@@ -173,8 +173,8 @@ export function FeedCard({
         >
           <View style={styles.worth}>
             {change === null ? null : <TriangleGlyph up={change >= 0} color={tone} size={11} />}
-            <Text style={[styles.worthText, { color: tone }]}>
-              {inQuote(coin, coin.marketCapQuote, coin.marketCap)}
+            <Text style={[styles.worthText, { color: auction ? theme.colors.muted : tone }]}>
+              {auction ? "200 for sale" : shortNear(coin.marketCapQuote ?? coin.marketCap)}
             </Text>
           </View>
         </Tappable>
@@ -307,6 +307,14 @@ export function FeedCard({
   );
 }
 
+/** A market cap that fits the action row at 375pt: two significant figures under 1 NEAR. */
+function shortNear(value: number): string {
+  if (!Number.isFinite(value)) return "—";
+  if (value === 0) return "0 NEAR";
+  if (value < 1) return `${Number(value.toPrecision(2))} NEAR`;
+  return `${value < 100 ? value.toFixed(2) : Math.round(value).toLocaleString("en-US")} NEAR`;
+}
+
 /**
  * Cover art for a post that launched without media.
  *
@@ -415,7 +423,7 @@ const styles = StyleSheet.create({
   },
 
   actions: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 14, paddingTop: 8 },
-  worth: { flexDirection: "row", alignItems: "center", gap: 5, minHeight: 44, paddingRight: 4 },
+  worth: { flexDirection: "row", alignItems: "center", gap: 5, minHeight: 44, paddingRight: 2, flexShrink: 1 },
   worthText: { fontSize: 17, fontWeight: "800", letterSpacing: -0.3, fontVariant: ["tabular-nums"] },
   action: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 5, minHeight: 44, minWidth: 44 },
   actionText: { fontSize: 14, fontWeight: "700", color: theme.colors.text, fontVariant: ["tabular-nums"] },

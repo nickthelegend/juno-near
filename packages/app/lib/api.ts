@@ -188,6 +188,8 @@ export type Holder = {
 
 export type FeedItem = {
   kind: "trade";
+  /** What the contract recorded for this fill. */
+  fill: Trade["kind"];
   id: string;
   timestamp: string;
   side: "buy" | "sell";
@@ -630,6 +632,7 @@ export const juno = {
         const coin = toCoin(raw);
         return raw.trades.map((trade, i) => ({
           kind: "trade" as const,
+          fill: trade.kind,
           id: `${raw.account}:${trade.ms}:${i}`,
           timestamp: new Date(trade.ms).toISOString(),
           side: (trade.kind === "sell" || trade.kind === "redeem" ? "sell" : "buy") as "buy" | "sell",

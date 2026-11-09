@@ -231,7 +231,7 @@ export function FloorPanel() {
           <CoinGlyph seed={latest.coin.address} size={36} />
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={s.latestTitle} numberOfLines={1}>
-              {latest.side === "buy" ? "Bought" : "Sold"} {latest.amount} ${latest.coin.symbol} · {amountOf(latest.valueUsd, "NEAR")}
+              {latest.fill === "auction" ? "Won" : latest.fill === "redeem" ? "Redeemed" : latest.fill === "buy" ? "Bought" : "Sold"} {latest.amount} ${latest.coin.symbol} · {amountOf(latest.valueUsd, "NEAR")}
             </Text>
             <LatestDetail item={latest} />
           </View>
