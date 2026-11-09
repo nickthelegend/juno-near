@@ -10,6 +10,7 @@ import { useApi } from "../lib/useApi";
 import { Body, Button, Display } from "../components/kit";
 import { NETWORK_NAME } from "../lib/chain";
 import { amountOf } from "../lib/format";
+import Landing from "../components/Landing";
 
 /**
  * Onboarding.
@@ -19,7 +20,12 @@ import { amountOf } from "../lib/format";
  * arrival and the first thing anyone sees should be the product working. A
  * wallet is created later, at the moment someone actually needs one.
  */
-export default function Onboarding() {
+export default function Index() {
+  // The web build opens on the marketing landing; a phone opens on onboarding.
+  return Platform.OS === "web" ? <Landing /> : <Onboarding />;
+}
+
+function Onboarding() {
   const router = useRouter();
   const markets = useApi(() => loadMarkets(), []);
   const posts = markets.data?.posts ?? null;

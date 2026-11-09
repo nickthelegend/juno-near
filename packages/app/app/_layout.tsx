@@ -98,8 +98,11 @@ function useWebCss() {
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
+  const pathname = usePathname();
   useWebCss();
   if (Platform.OS !== "web") return <>{children}</>;
+  // The landing at `/` is a full-width web page, not a phone screen.
+  if (pathname === "/") return <View style={{ flex: 1 }}>{children}</View>;
   // Wide windows get rails beside the phone column: the live floor panel on
   // the right from 1000px, and how a post works in plain words on the left
   // from 1280px.
