@@ -1,0 +1,50 @@
+{
+  "runs": [
+    {
+      "at": "2026-11-10T09:07:07.438Z",
+      "network": "testnet",
+      "wallet": "Meteor Wallet via @near-wallet-selector 10.1.4 (local full-access key, no pop-up)",
+      "code": [
+        "packages/app/lib/browser-wallet.web.ts",
+        "packages/app/lib/wallet-actions.ts",
+        "packages/app/lib/tx-status.ts",
+        "packages/app/lib/chain.ts"
+      ],
+      "post": "sprout.juno-awkorp.testnet",
+      "balanceBefore": "50",
+      "balanceAfter": "50",
+      "transactions": [
+        {
+          "step": "wallet_buy",
+          "method": "buy",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "signer": "kai.juno-awkorp.testnet",
+          "depositYocto": "278655709565404444588",
+          "hash": "Ctgzkkpom8Vd8EA8tDPDGvCgAMGSw9fi9E91DqWfz7P8",
+          "explorer": "https://testnet.nearblocks.io/txns/Ctgzkkpom8Vd8EA8tDPDGvCgAMGSw9fi9E91DqWfz7P8",
+          "result": "success"
+        },
+        {
+          "step": "wallet_sell",
+          "method": "sell",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "signer": "kai.juno-awkorp.testnet",
+          "depositYocto": "0",
+          "hash": "FJneJpBWm9CTHraJTyCW1QRvuACtZSCXr54Qhhqh7Ccu",
+          "explorer": "https://testnet.nearblocks.io/txns/FJneJpBWm9CTHraJTyCW1QRvuACtZSCXr54Qhhqh7Ccu",
+          "result": "success"
+        },
+        {
+          "step": "wallet_buy_underpaid",
+          "method": "buy",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "signer": "kai.juno-awkorp.testnet",
+          "depositYocto": "1",
+          "hash": "5GMQ5iGkUT2eJBcBWLEk5kN668MPv7tpojondT6rKQMH",
+          "explorer": "https://testnet.nearblocks.io/txns/5GMQ5iGkUT2eJBcBWLEk5kN668MPv7tpojondT6rKQMH",
+          "result": "The price moved. Try again."
+        }
+      ]
+    }
+  ]
+}
