@@ -5,6 +5,8 @@
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",
     "@juno/sdk": "workspace:*",
+    "@near-wallet-selector/core": "10.1.4",
+    "@near-wallet-selector/meteor-wallet": "10.1.4",
     "buffer": "^6.0.3",
     "css-to-react-native": "^3.2.0",
     "expo": "~57.0.24",

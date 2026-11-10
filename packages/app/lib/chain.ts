@@ -114,13 +114,27 @@ export function describeTxError(error: unknown): TxFailure {
   }
   const text = error instanceof Error ? error.message : typeof error === "string" ? error : "The transaction failed";
   if (/cancel/i.test(text) && /sign/i.test(text)) return { message: "", cancelled: true, reason: null };
+  // A browser wallet: the person closed its window or cancelled.
+  if (/User closed the window|User cancelled|user rejected|rejected by (the )?user|didn't complete the action/i.test(text)) {
+    return { message: "", cancelled: true, reason: null };
+  }
+  if (/popup window|pop-up|Popup window blocked/i.test(text)) {
+    return { message: "Your browser blocked the wallet window. Allow pop-ups for this site, then try again.", cancelled: false, reason: null };
+  }
+  if (/No Meteor account found/i.test(text)) {
+    return { message: "Meteor Wallet has no account yet. Create or import a testnet account there, then connect again.", cancelled: false, reason: null };
+  }
+  if (/Wallet not signed in/i.test(text)) return { message: "Your NEAR wallet session ended. Sign in again.", cancelled: false, reason: null };
   const code = /ERR_[A-Z_]+/.exec(text)?.[0] ?? null;
   if (code) return { message: REASONS[code] ?? `The contract refused it (${code}).`, cancelled: false, reason: code };
-  if (/NotEnoughBalance|LackBalanceForState|not enough balance/i.test(text)) {
+  if (/NotEnoughBalance|LackBalanceForState|not enough balance|insufficient/i.test(text)) {
     return { message: "Not enough NEAR for this and its gas.", cancelled: false, reason: null };
   }
   if (/429|rate limit|too many requests|timeout|timed out|fetch failed|network/i.test(text)) {
     return { message: "The network is busy. Try again in a moment.", cancelled: false, reason: null };
   }
+  // A panic that is not one of the contract's ERR_ codes: show the panic, not the JSON around it.
+  const panic = /Smart contract panicked: ((?:\\.|[^"\\])+)/.exec(text)?.[1];
+  if (panic) return { message: `The contract refused it: ${panic.replace(/\\n/g, " ").slice(0, 180)}`, cancelled: false, reason: null };
   return { message: text.split("\n")[0]!.slice(0, 220), cancelled: false, reason: null };
 }

@@ -12,7 +12,16 @@ import {
 } from "near-api-js";
 
 import { invalidateReads, type TxStep } from "./api";
-import { describeTxError, EXPLORER_NAME, RELAYER_URL, RPC_URL, TxError } from "./chain";
+import {
+  BROWSER_WALLET,
+  connectWallet,
+  disconnectWallet,
+  preloadWallet,
+  restoreWallet,
+  sendWithWallet,
+} from "./browser-wallet";
+import { describeTxError, EXPLORER_NAME, FACTORY, RELAYER_URL, RPC_URL, TxError } from "./chain";
+import { confirmTx } from "./tx-status";
 import { SignInSheet } from "../components/SignInSheet";
 
 /**
@@ -27,6 +36,11 @@ import { SignInSheet } from "../components/SignInSheet";
  * function call, the relayer wraps it and pays the gas. Any deposit (a buy, a
  * 1 NEAR sealed-bid escrow, a launch's 3 NEAR) still comes from the player's
  * own account. The relayer only relays calls on its allowlist.
+ *
+ * On web there is a second way in: a NEAR browser wallet (Meteor Wallet on
+ * testnet, `browser-wallet.web.ts`). Then the person's own account signs each
+ * call in the wallet's window and pays its own deposit and gas, so it works on
+ * the hosted app where no relayer runs. Native builds keep the relayer only.
  */
 
 export type SendProgress = {
@@ -44,6 +58,8 @@ export type SendResult = {
 export type SignInBridge = {
   /** Null when the relayer is not configured or not ready: the text says what is missing. */
   setup: string | null;
+  /** The browser wallet on offer (web only), or null. */
+  wallet: { name: string; connect: () => Promise<void> } | null;
   sendCode: (email: string) => Promise<void>;
   loginWithCode: (code: string, email: string) => Promise<void>;
 };
@@ -54,6 +70,10 @@ export type WalletState = {
   ready: boolean;
   signing: boolean;
   emailLogin: boolean;
+  /** A browser wallet is on offer too (web). */
+  walletLogin: boolean;
+  /** How the signed-in account signs: Juno's relayer (email) or the person's own browser wallet. */
+  via: "email" | "wallet" | null;
   send: (steps: TxStep[], options?: { onProgress?: (progress: SendProgress) => void }) => Promise<SendResult>;
   connect: () => Promise<string>;
   disconnect: () => Promise<void>;
@@ -109,18 +129,26 @@ async function relayer<T>(path: string, body?: object): Promise<T> {
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [player, setPlayer] = useState<Player | null>(null);
+  const [walletAccount, setWalletAccount] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [signing, setSigning] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   const [setup, setSetup] = useState<string | null>(RELAYER_URL ? null : "Setup required: EXPO_PUBLIC_RELAYER_URL");
   const pending = useRef<{ resolve: (address: string) => void; reject: (error: Error) => void } | null>(null);
   const pendingKey = useRef<KeyPair | null>(null);
+  /**
+   * Set for a few seconds after a wallet sign-in that an action was waiting
+   * on. The browser only lets a page open a window right after a tap, and the
+   * sign-in window used that tap up, so the action asks for one more.
+   */
+  const freshWallet = useRef(0);
 
   useEffect(() => {
     let live = true;
-    loadPlayer().then((saved) => {
+    Promise.all([loadPlayer(), BROWSER_WALLET ? restoreWallet().catch(() => null) : Promise.resolve(null)]).then(([saved, account]) => {
       if (!live) return;
       setPlayer(saved);
+      setWalletAccount(saved ? null : account);
       setReady(true);
     });
     return () => {
@@ -138,7 +166,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       .catch((error: unknown) => setSetup(error instanceof Error ? error.message : String(error)));
   }, [signingIn]);
 
-  const address = player?.accountId ?? null;
+  const address = player?.accountId ?? walletAccount;
+  const via: WalletState["via"] = player ? "email" : walletAccount ? "wallet" : null;
+
+  useEffect(() => {
+    if (signingIn && BROWSER_WALLET) preloadWallet();
+  }, [signingIn]);
 
   const connect = useCallback(async () => {
     if (address) return address;
@@ -158,6 +191,27 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const bridge = useMemo<SignInBridge>(
     () => ({
       setup,
+      wallet: BROWSER_WALLET
+        ? {
+            name: BROWSER_WALLET.name,
+            connect: async () => {
+              if (!FACTORY) throw new Error("Setup required: EXPO_PUBLIC_JUNO_FACTORY");
+              const accountId = await connectWallet(FACTORY).catch((error: unknown) => {
+                const failure = describeTxError(error);
+                throw new Error(failure.cancelled ? "The wallet closed before you signed in." : failure.message);
+              });
+              if (accountId.endsWith(".near")) {
+                await disconnectWallet().catch(() => undefined);
+                throw new Error(`${accountId} is a mainnet account. Juno runs on NEAR testnet: sign in with a .testnet account.`);
+              }
+              setWalletAccount(accountId);
+              setSigningIn(false);
+              if (pending.current) freshWallet.current = Date.now();
+              pending.current?.resolve(accountId);
+              pending.current = null;
+            },
+          }
+        : null,
       sendCode: async (email) => {
         await relayer("/auth/request", { email });
       },
@@ -184,13 +238,51 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const disconnect = useCallback(async () => {
     await savePlayer(null);
     setPlayer(null);
+    await disconnectWallet().catch(() => undefined);
+    setWalletAccount(null);
   }, []);
+
+  /** The browser-wallet path: the wallet signs and submits, the app follows each call to final. */
+  const sendViaWallet = useCallback(
+    async (accountId: string, steps: TxStep[], progress: (progress: SendProgress) => void): Promise<SendResult> => {
+      // Where the browser can say whether a tap is still "live", trust it; elsewhere assume the sign-in used it up.
+      const activation = (globalThis.navigator as { userActivation?: { isActive: boolean } } | undefined)?.userActivation;
+      if (Date.now() - freshWallet.current < 8000 && !activation?.isActive) {
+        freshWallet.current = 0;
+        throw new TxError({ message: `Signed in as ${accountId}. Tap again to approve it in ${BROWSER_WALLET?.name ?? "your wallet"}.`, cancelled: false, reason: null });
+      }
+      setSigning(true);
+      const hashes: string[] = [];
+      try {
+        for (const [index, step] of steps.entries()) {
+          progress({ index, label: step.label, phase: "signing" });
+          const hash = await sendWithWallet(step).catch((error: unknown) => {
+            throw new TxError(describeTxError(error));
+          });
+          progress({ index, label: step.label, phase: "confirming", hash });
+          const failure = await confirmTx(hash, accountId).catch((error: unknown) => {
+            throw new TxError({ message: error instanceof Error ? error.message : String(error), cancelled: false, reason: null });
+          });
+          if (failure) throw new TxError(describeTxError(failure));
+          hashes.push(hash);
+          progress({ index, label: step.label, phase: "confirmed", hash });
+        }
+        invalidateReads();
+        return { hashes, confirmedAt: new Date() };
+      } finally {
+        if (hashes.length) invalidateReads();
+        setSigning(false);
+      }
+    },
+    [],
+  );
 
   const send = useCallback<WalletState["send"]>(
     async (steps, options = {}) => {
-      if (!player) throw new TxError({ message: "Sign in to continue.", cancelled: false, reason: null });
+      if (!player && !walletAccount) throw new TxError({ message: "Sign in to continue.", cancelled: false, reason: null });
       if (steps.length === 0) throw new TxError({ message: "Nothing to send.", cancelled: false, reason: null });
       const progress = options.onProgress ?? (() => undefined);
+      if (!player) return sendViaWallet(walletAccount!, steps, progress);
       const account = new Account(
         player.accountId,
         new JsonRpcProvider({ url: RPC_URL }),
@@ -235,12 +327,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         setSigning(false);
       }
     },
-    [player],
+    [player, walletAccount, sendViaWallet],
   );
 
   const value = useMemo<WalletState>(
-    () => ({ address, ready, signing, emailLogin: true, send, connect, disconnect }),
-    [address, ready, signing, send, connect, disconnect],
+    () => ({ address, ready, signing, emailLogin: true, walletLogin: !!BROWSER_WALLET, via, send, connect, disconnect }),
+    [address, ready, signing, via, send, connect, disconnect],
   );
 
   return (

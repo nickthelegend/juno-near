@@ -18,6 +18,11 @@ import { theme } from "../theme";
  *
  * When the relayer is not configured the sheet says exactly what is missing
  * rather than pretending a code was sent.
+ *
+ * On web the sheet also offers a NEAR browser wallet (Meteor Wallet): one tap
+ * opens the wallet's window, and the account that signs in there signs and
+ * pays for its own calls. That path needs no relayer, so it is the one that
+ * works on the hosted app.
  */
 export function SignInSheet({
   visible,
@@ -32,6 +37,7 @@ export function SignInSheet({
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
   const [busy, setBusy] = useState(false);
+  const [walletBusy, setWalletBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Start clean each time the sheet opens.
@@ -41,6 +47,7 @@ export function SignInSheet({
     setStep("email");
     setError(null);
     setBusy(false);
+    setWalletBusy(false);
   }, [visible]);
 
   const sendCode = async () => {
@@ -67,15 +74,30 @@ export function SignInSheet({
     }
   };
 
+  const connectWallet = async () => {
+    if (!bridge.wallet) return;
+    setWalletBusy(true);
+    setError(null);
+    try {
+      await bridge.wallet.connect();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The wallet did not sign in");
+    } finally {
+      setWalletBusy(false);
+    }
+  };
+
   const validEmail = /.+@.+\..+/.test(email.trim());
 
   return (
-    <BottomSheet visible={visible} onClose={onClose} dismissable={!busy}>
+    <BottomSheet visible={visible} onClose={onClose} dismissable={!busy && !walletBusy}>
       <Sheet>
         <Title>Sign in to Juno</Title>
         <Body muted>
           {step === "email"
-            ? "Juno makes you a NEAR account. No seed phrase, nothing to install, and the key stays on this device."
+            ? bridge.wallet && bridge.setup
+              ? `Connect a NEAR testnet wallet. You approve each trade in ${bridge.wallet.name} and pay your own gas.`
+              : "Juno makes you a NEAR account. No seed phrase, nothing to install, and the key stays on this device."
             : `Enter the six-digit code sent to ${email.trim()}.`}
         </Body>
 
@@ -98,6 +120,19 @@ export function SignInSheet({
               />
             </Field>
             <Button label="Send code" onPress={() => void sendCode()} loading={busy} disabled={!validEmail || !!bridge.setup} tall />
+            {bridge.wallet ? (
+              <>
+                <Or>or</Or>
+                <Button
+                  label="Connect NEAR wallet"
+                  variant="ink"
+                  onPress={() => void connectWallet()}
+                  loading={walletBusy}
+                  disabled={busy}
+                  tall
+                />
+              </>
+            ) : null}
           </>
         ) : (
           <>
@@ -122,8 +157,22 @@ export function SignInSheet({
           </>
         )}
 
-        {error ? <ErrorText>{error}</ErrorText> : bridge.setup ? <ErrorText>{bridge.setup}</ErrorText> : null}
-        <Secured>NEAR testnet · gas paid by the Juno relayer</Secured>
+        {error ? (
+          <ErrorText>{error}</ErrorText>
+        ) : bridge.setup ? (
+          bridge.wallet && step === "email" ? (
+            <Secured>Email sign-in · {bridge.setup}</Secured>
+          ) : (
+            <ErrorText>{bridge.setup}</ErrorText>
+          )
+        ) : null}
+        <Secured>
+          {bridge.wallet && step === "email"
+            ? bridge.setup
+              ? "NEAR testnet · test NEAR, no real money"
+              : "NEAR testnet · email: Juno pays the gas · wallet: you pay your own"
+            : "NEAR testnet · gas paid by the Juno relayer"}
+        </Secured>
       </Sheet>
     </BottomSheet>
   );
@@ -141,6 +190,12 @@ const Field = styled.View`
   background-color: ${(p) => p.theme.colors.surfaceAlt};
   border-width: ${(p) => p.theme.hairline}px;
   border-color: ${(p) => p.theme.colors.lineStrong};
+`;
+
+const Or = styled.Text`
+  text-align: center;
+  font-size: ${(p) => p.theme.type.label.size}px;
+  color: ${(p) => p.theme.colors.faint};
 `;
 
 const ErrorText = styled.Text`

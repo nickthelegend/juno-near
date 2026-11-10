@@ -1,2 +1,10 @@
 packages:
   - packages/*
+
+# Meteor Wallet's SDK (under @near-wallet-selector/meteor-wallet) peers on
+# near-api-js 6 and calls `utils.serialize`, which near-api-js 7 removed. The
+# app itself stays on 7.3.1; this gives the wallet module its own 6.x.
+packageExtensions:
+  "@near-wallet-selector/meteor-wallet@10.1.4":
+    dependencies:
+      near-api-js: 6.2.5
