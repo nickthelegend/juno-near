@@ -7,3 +7,6 @@
 5. **1Click any-chain buy:** set `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT` (and `NEAR_MAINNET_ACCOUNT`) to a real mainnet account. The trade sheet then shows a mainnet `dry: true` quote. No swap is ever sent; a real tiny swap needs Nick to fund that account and approve the amount.
 6. **Rhea pool:** graduation liquidity stays locked in the post account's escrow (no withdrawal method). Seeding a Rhea testnet pool is not implemented or claimed.
 7. **Publication and submission:** Nick fills the human fields in `HACKATHON_SUBMISSION_FORM.md`, the README's "Team and other projects", publishes the repo and posts the demo before 2026-11-14 23:59 UTC.
+
+## Hosted app (2026-11-10)
+The web app is hosted read-only at https://juno-near.vercel.app (live testnet reads). Hosting the relayer as well would put a funded testnet signing key and the email API key on a third-party server; that needs Nick's decision and the credentials above. Until then hosted sign-in shows **Setup required: EXPO_PUBLIC_RELAYER_URL**.

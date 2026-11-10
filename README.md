@@ -6,6 +6,8 @@ The app is **the original Juno app** (Expo / React Native, same feed, reels, tra
 
 **Status on 2026-11-09:** live on NEAR testnet. Factory [`juno-awkorp.testnet`](https://testnet.nearblocks.io/address/juno-awkorp.testnet) holds four seeded posts with real auctions, trades, a graduation, a floor redemption and a finalised dare: 46 transactions, all linked below. Email sign-in, live NEP-366 on testnet and 1Click quotes need credentials; see [BLOCKED.md](BLOCKED.md).
 
+**Live app (2026-11-10):** [juno-near.vercel.app](https://juno-near.vercel.app): the web export of `packages/app`, reading the live factory `juno-awkorp.testnet` over FastNEAR. Feed, reels, trade lists, coin pages, quotes and floors are live chain reads. Sign-in and trading need the relayer, which runs only locally (it holds a funded testnet key), so the hosted app shows **Setup required: EXPO_PUBLIC_RELAYER_URL** on sign-in; run the stack locally (below) to trade. Built with `EXPO_NO_DOTENV=1 EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet EXPO_PUBLIC_NEAR_RPC_URL=https://test.rpc.fastnear.com npx expo export --platform web`.
+
 ## Verify it
 
 ```bash
