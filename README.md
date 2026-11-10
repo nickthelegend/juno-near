@@ -26,7 +26,7 @@ pnpm web:serve          # http://127.0.0.1:8091
 Do this → see that:
 
 - Open `/social` → the feed of four posts read from `juno-awkorp.testnet`: market cap in NEAR, a **Floor X NEAR** chip, *Bought by* names from the on-chain fill log, and **Graduated** on `$PILE-IN`.
-- Open `/coin/pile-in.juno-awkorp.testnet` → a price chart drawn from the contract's own `trades()` log (auction clearing at 0.0006 NEAR, then the 800-token graduation buy), the graduation escrow card, holders read from `holders()`, and **Redeem against the floor**.
+- Open `/coin/pile-in.juno-awkorp.testnet` → a price chart drawn from the contract's own `trades()` log (auction clearing at 0.0005 NEAR, then the 800-token graduation buy), the graduation escrow card, holders read from `holders()`, and **Redeem against the floor**.
 - Open `/coin/cap-toss.juno-awkorp.testnet` → the opening-auction record (2 sealed bids, 0 revealed: both paid the 1% penalty) and the dare card (bond 0.5 NEAR, proof posted, final).
 - Tap **Buy** on any curve post → the trade sheet quotes from the contract (`quote_buy`, fee, *Added to the floor*, impact), has a **Redeem** side, and shows the 1Click any-chain line (Setup required until `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT` is set).
 - Tap **+** → *Post a photo* or *Post a dare*; launching calls `create_post` with 3 NEAR (+ bond), through the relayer for an email account or approved in the wallet for a wallet account.
