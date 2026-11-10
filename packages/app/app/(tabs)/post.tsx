@@ -132,9 +132,13 @@ export default function PostScreen() {
         onProgress: (at) =>
           setStatus(
             at.phase === "signing"
-              ? `${at.label}: signing on this device…`
+              ? wallet.via === "wallet"
+                ? `${at.label}: approve it in your wallet…`
+                : `${at.label}: signing on this device…`
               : at.phase === "confirming"
-                ? `${at.label}: relaying to ${NETWORK_NAME}…`
+                ? wallet.via === "wallet"
+                  ? `${at.label}: confirming on ${NETWORK_NAME}…`
+                  : `${at.label}: relaying to ${NETWORK_NAME}…`
                 : `${at.label}: final`,
           ),
       });
@@ -275,8 +279,9 @@ export default function PostScreen() {
           {!busy && missing ? <Text style={styles.missing}>{missing}</Text> : null}
           {busy && status ? <Text style={styles.missing}>{status}</Text> : null}
           <Text style={styles.footnote}>
-            One signature, relayed as a NEP-366 meta transaction: the relayer pays the gas, your account pays the 3 NEAR
-            that funds the post account&apos;s storage. Bids, buys and redemptions all land on that account.
+            {wallet.via === "wallet"
+              ? "One approval in your wallet: your account pays the gas and the 3 NEAR that funds the post account's storage. Bids, buys and redemptions all land on that account."
+              : "One signature, relayed as a NEP-366 meta transaction: the relayer pays the gas, your account pays the 3 NEAR that funds the post account's storage. Bids, buys and redemptions all land on that account."}
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>

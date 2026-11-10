@@ -365,7 +365,7 @@ export function TradeSheet({
                     ? progress
                       ? progress.at.phase === "signing"
                         ? `${progress.at.label}: signing…`
-                        : `${progress.at.label}: relaying…`
+                        : `${progress.at.label}: ${wallet.via === "wallet" ? "confirming" : "relaying"}…`
                       : "Confirming…"
                     : blocker
                       ? blocker.short

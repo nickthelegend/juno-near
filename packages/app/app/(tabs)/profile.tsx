@@ -130,7 +130,9 @@ export default function ProfileScreen() {
           art
           title="No wallet yet"
           detail={
-            wallet.emailLogin
+            wallet.walletLogin
+              ? `Sign in with your email, or connect a NEAR wallet you already have. ${NETWORK_LABEL}.`
+              : wallet.emailLogin
               ? `Sign in with your email. Juno makes you a NEAR account, with no seed phrase; the key stays on this device. ${NETWORK_LABEL}.`
               : `${NETWORK_LABEL}.`
           }
@@ -169,7 +171,7 @@ export default function ProfileScreen() {
           <Heading>
             <Handle wallet={wallet.address} />
           </Heading>
-          <Caption>Email account · {NETWORK_NAME}</Caption>
+          <Caption>{wallet.via === "wallet" ? "NEAR wallet" : "Email account"} · {NETWORK_NAME}</Caption>
         </Identity>
 
         <WalletCard address={wallet.address} />
@@ -343,7 +345,9 @@ export default function ProfileScreen() {
         ) : (
           <Card>
             <Body muted>
-              {`This is a named NEAR account on ${NETWORK_NAME}. Its key was generated on this device and stays here; the Juno relayer only submits the transactions you sign, as NEP-366 meta transactions, and pays their gas.`}
+              {wallet.via === "wallet"
+                ? `This is your own NEAR account on ${NETWORK_NAME}. You approve every call in your wallet and pay its gas and deposit; Juno never sees its key.`
+                : `This is a named NEAR account on ${NETWORK_NAME}. Its key was generated on this device and stays here; the Juno relayer only submits the transactions you sign, as NEP-366 meta transactions, and pays their gas.`}
             </Body>
             <Button
               label={`View this account on ${EXPLORER_NAME}`}
