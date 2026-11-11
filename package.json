@@ -16,7 +16,8 @@
     "testnet:wallet-path": "tsx scripts/wallet-path.ts",
     "web:export": "pnpm --filter app export:web",
     "web:serve": "pnpm --filter app serve",
-    "qa:web": "cd packages/app && node scripts/qa.mjs http://127.0.0.1:8091 ../../docs/qa"
+    "qa:web": "cd packages/app && node scripts/qa.mjs http://127.0.0.1:8091 ../../docs/qa",
+    "test:e2e": "node --import tsx scripts/qa-browser.mjs"
   },
   "dependencies": {
     "@juno/sdk": "workspace:*",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "playwright-core": "1.63.0",
     "prettier": "3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
