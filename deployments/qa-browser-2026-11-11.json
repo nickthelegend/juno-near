@@ -406,6 +406,446 @@
       "preview": "http://127.0.0.1:5383",
       "failedStage": "375: buy profile update",
       "failure": "Profile did not reflect the real buy (B4QW7rFDTK3mXMfHG2qgsAu3QyrZYPby5cXcamFRzTdj) without a reload."
+    },
+    {
+      "id": "3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1",
+      "at": "2026-11-11T18:08:36.210Z",
+      "gitHead": "53f58aeac552759cee8d40dfb5ee943a22f3b6e3",
+      "accountId": "kai.juno-awkorp.testnet",
+      "factory": "juno-awkorp.testnet",
+      "post": "sprout.juno-awkorp.testnet",
+      "rpc": "https://near-testnet.drpc.org",
+      "availableBeforeYocto": "1060901981344372249000583",
+      "status": "pass",
+      "reservations": [
+        {
+          "id": 0,
+          "width": 1440,
+          "method": "buy",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "args": {
+            "quantity": "2"
+          },
+          "depositYocto": "1051447399084757741802",
+          "gas": "100000000000000",
+          "gasPrice": "100000000",
+          "reservedYocto": "31051447399084757741802",
+          "status": "final",
+          "hash": "DAgLdhrvwdq4aKEtt36UoQrVi3uvtAVv7Cgw7qKUvyHd",
+          "explorer": "https://testnet.nearblocks.io/txns/DAgLdhrvwdq4aKEtt36UoQrVi3uvtAVv7Cgw7qKUvyHd",
+          "finalExecutionStatus": "FINAL",
+          "gasBurntYocto": "213229100278700000000",
+          "spentUpperBoundYocto": "1264676499363457741802",
+          "positionAfter": "78",
+          "profileVerified": true
+        },
+        {
+          "id": 1,
+          "width": 1440,
+          "method": "sell",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "args": {
+            "quantity": "2"
+          },
+          "depositYocto": "0",
+          "gas": "80000000000000",
+          "gasPrice": "100000000",
+          "reservedYocto": "24000000000000000000000",
+          "status": "final",
+          "hash": "775gGv4FQatKb5obQDwvpj13Wm7FekRV1a9kP76CkSbr",
+          "explorer": "https://testnet.nearblocks.io/txns/775gGv4FQatKb5obQDwvpj13Wm7FekRV1a9kP76CkSbr",
+          "finalExecutionStatus": "FINAL",
+          "gasBurntYocto": "260958760187600000000",
+          "spentUpperBoundYocto": "260958760187600000000",
+          "positionAfter": "76",
+          "profileVerified": true
+        },
+        {
+          "id": 2,
+          "width": 375,
+          "method": "buy",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "args": {
+            "quantity": "2"
+          },
+          "depositYocto": "1051447399084757741802",
+          "gas": "100000000000000",
+          "gasPrice": "100000000",
+          "reservedYocto": "31051447399084757741802",
+          "status": "final",
+          "hash": "Bua9DtCuRvzJeR8eaitxjdgibG9NyPuAJxbkWf8vrPDh",
+          "explorer": "https://testnet.nearblocks.io/txns/Bua9DtCuRvzJeR8eaitxjdgibG9NyPuAJxbkWf8vrPDh",
+          "finalExecutionStatus": "FINAL",
+          "gasBurntYocto": "215937741754000000000",
+          "spentUpperBoundYocto": "1267385140838757741802",
+          "positionAfter": "78",
+          "profileVerified": true
+        },
+        {
+          "id": 3,
+          "width": 375,
+          "method": "sell",
+          "receiver": "sprout.juno-awkorp.testnet",
+          "args": {
+            "quantity": "2"
+          },
+          "depositYocto": "0",
+          "gas": "80000000000000",
+          "gasPrice": "100000000",
+          "reservedYocto": "24000000000000000000000",
+          "status": "final",
+          "hash": "CHL87VxkMns5jcnV3NmrMR2HvpPSufHDn3qwXCg3H4Tg",
+          "explorer": "https://testnet.nearblocks.io/txns/CHL87VxkMns5jcnV3NmrMR2HvpPSufHDn3qwXCg3H4Tg",
+          "finalExecutionStatus": "FINAL",
+          "gasBurntYocto": "263667401662900000000",
+          "spentUpperBoundYocto": "263667401662900000000",
+          "positionAfter": "76",
+          "profileVerified": true
+        }
+      ],
+      "steps": [
+        {
+          "step": "landing",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-1440.png",
+          "text": "juno\nHow it works\nOpen app\n \n \n \n \nEvery post\nis a coin.\nOpen Juno\n\nA social feed on NEAR testnet, with test NEAR only.\n\nREADING TESTNET\n\nLive figures\njuno-awkorp.testnet\nPOSTS\n…\nHOLDERS\n…\nsummed across posts\nIN FLOORS\n…NEAR\nredeemable by holders\n\nHOW IT WORKS\n\nThree beats, all on chain.\n \n01 · POST\nPost a photo. It becomes a coin.\n\nPosting creates a NEAR account named after it, <name>.juno-awkorp.testnet. That account is the token, the auction and the vault.\n\nReading testnet…\n\nsha256\n02 · SEALED OPENING\nOne minute of sealed bids. One price for all.\n\nEvery bidder escrows exactly 1 NEAR and posts only a hash. After the reveal, every winner pays the same clearing price, so being first buys nothing.\n\nReading testnet…\n\n03 · FLOOR\nA floor you can always redeem.\n\n20% of every curve buy and half the auction raise go into the post's vault. Any holder can burn tokens and take their share of it, at any time.\n\nReading testnet…\n\nTHE APP\n\nA feed first. The market comes with it.\n\nScroll, like, and tap Buy. Every card reads its post's contract on NEAR testnet: the price in NEAR, who bought, how far to graduation, and the floor.\n\nFloor chip\nthe NEAR each token can redeem right now\nBought by\nnames from the contract's own fill log\nBuy\nquotes from quote_buy on the post account\nScroll the feed\nScreenshot of /social on NEAR testnet, 9 Nov 2026\n\nTHE NEAR TECH\n\nWhat runs where, plainly.\nA post is an account\n\ncreate_post on the factory creates <slug>.juno-awkorp.testnet and deploys the locked token code to it in one transaction. No pool, no registry: the account is the market.\n\nCommit, reveal, settle\n\nBids are sha256(account, amount, max price, salt) with identical 1 NEAR escrows. Reveal is open for 60 s; a bid left hidden forfeits 1% to the creator.\n\nCurve and floor vault\n\n800 tokens sell on a 16-segment curve priced in yoctoNEAR integers. redeem burns tokens for up to 99% of the holder's pro-rata vault share.\n\nNEP-141 and NEP-148\n\nEach post coin is a whole-unit fungible token with metadata, ft_transfer and ft_transfer_call, so wallets read it like any NEAR token.\n\nNEP-366 meta transactions\n\nEmail calls use a device-signed delegate action. The relayer checks receiver, method, gas and deposit caps and fronts the deposit. Web wallets sign and pay directly.\n\nAccounts\n\nFactory juno-awkorp.testnet, deployed in HvSXP6…pzxx. Charts and holder lists come from the contract's trades() and holders() views, with no indexer.\n\nPost something.\nWatch it trade.\nOpen Juno\njuno\n\nA social feed where every post is a coin, on NEAR testnet. MIT · © 2026 Nivesh Gajengi\n\nFactory on NearBlocks\n\njuno",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "signin",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nNo wallet yet\nSign in with your email, or connect a NEAR wallet you already have. NEAR testnet · test NEAR, no real money.\nSign in\nNEAR in post floors",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "connected-profile",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n…\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:05 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n14\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+6.02%\nAvg cost 0.0004 NEAR · redeems 0.0114 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor\nSign in to Juno\nConnect a NEAR testnet wallet. You approve each trade in QA signer and pay your own gas.\nSend code\nor\nConnect NEAR wallet\nEmail sign-in · Setup required: EXPO_PUBLIC_RELAYER_URL\nNEAR testnet · test NEAR, no real money\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "76"
+        },
+        {
+          "step": "connected-traders",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n14 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.95 NEAR\nOpen\n8.05 NEAR\nHolding\n0%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:05 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n14\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+6.02%\nAvg cost 0.0004 NEAR · redeems 0.0114 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "buy-quote",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0760 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0290 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago\nBuy\nSell\nRedeem\n✕\n2\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.06 NEAR\n1\n10\n50\n100\nTrading fee\n…\nAdded to the floor\n…\nPrice impact\n…\nQuoting against the contract…\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "buy-receipt",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+12.33%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0857 NEAR\nMarket cap\n0.0771 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0291 NEAR held for 193.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0186 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n2.00\n0.0011 NEAR\n3s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago\nBuy\nSell\nRedeem\n✕\nDone\nBought 2 SPROUT — final on NEAR testnet.\ntx DAgLdhrvwd…7qKUvyHd · 11:39:15 PM\nView on NearBlocks\nDone",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 408 ()"
+          ],
+          "failedRequests": [
+            {
+              "url": "https://near-testnet.drpc.org/",
+              "status": 408
+            }
+          ],
+          "recoveredRpcIssues": true,
+          "hash": "DAgLdhrvwdq4aKEtt36UoQrVi3uvtAVv7Cgw7qKUvyHd",
+          "tokenBalance": "78"
+        },
+        {
+          "step": "buy-profile",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.086 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3995 NEAR\nOpen\n0.4393 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n15 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.95 NEAR\nOpen\n8.06 NEAR\nHolding\n0%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3890 NEAR\nOpen\n0.4463 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.06 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.06 NEAR\n11/11/2026, 11:39:15 PM\n0.0100 NEAR\n8.06 NEAR\n4\nPositions\n3.95 NEAR\nP&L\n15\nTrades\nHoldings\nActivity\nAbout\nSprout\n78.00 $SPROUT\n0.0346 NEAR\n+8.35%\nAvg cost 0.0004 NEAR · redeems 0.0117 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "78"
+        },
+        {
+          "step": "sell-quote",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+12.33%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0857 NEAR\nMarket cap\n0.0771 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0291 NEAR held for 193.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0186 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n2.00\n0.0011 NEAR\n4s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago\nBuy\nSell\nRedeem\n✕\n2\nSpot 0.0004 NEAR per token\nSPROUT\nHeld: 78.00 SPROUT\n25%\n50%\n75%\n100%\nTrading fee\n—\nPrice impact\n—\n \nSell\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "sell-receipt",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0779 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0291 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n3s\nkai\nBuy\n2.00\n0.0011 NEAR\n12s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago\nBuy\nSell\nRedeem\n✕\nDone\nSold 2 SPROUT — final on NEAR testnet.\ntx 775gGv4FQa…P76CkSbr · 11:39:23 PM\nView on NearBlocks\nDone",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 408 ()"
+          ],
+          "failedRequests": [
+            {
+              "url": "https://near-testnet.drpc.org/",
+              "status": 408
+            }
+          ],
+          "recoveredRpcIssues": true,
+          "hash": "775gGv4FQatKb5obQDwvpj13Wm7FekRV1a9kP76CkSbr",
+          "tokenBalance": "76"
+        },
+        {
+          "step": "sell-profile",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n16 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.94 NEAR\nOpen\n8.05 NEAR\nHolding\n25%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:24 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n16\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+5.23%\nAvg cost 0.0004 NEAR · redeems 0.0115 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "76"
+        },
+        {
+          "step": "signed-out",
+          "width": 1440,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-1440.png",
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\njuno\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\nFollow\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n16 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.94 NEAR\nOpen\n8.05 NEAR\nHolding\n25%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nNo wallet yet\nSign in with your email, or connect a NEAR wallet you already have. NEAR testnet · test NEAR, no real money.\nSign in\nNEAR in post floors\nLive\n0.7156 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nBought 2 $SPROUT · 0.0010 NEAR\nkai · 2h ago",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "landing",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-375.png",
+          "text": "juno\nOpen app\n \n \n \n \nEvery post\nis a coin.\nOpen Juno\n\nA social feed on NEAR testnet, with test NEAR only.\n\nREADING TESTNET\n\nLive figures\njuno-awkorp.testnet\nPOSTS\n…\nHOLDERS\n…\nsummed across posts\nIN FLOORS\n…NEAR\nredeemable by holders\n\nHOW IT WORKS\n\nThree beats, all on chain.\n \n01 · POST\nPost a photo. It becomes a coin.\n\nPosting creates a NEAR account named after it, <name>.juno-awkorp.testnet. That account is the token, the auction and the vault.\n\nReading testnet…\n\nsha256\n02 · SEALED OPENING\nOne minute of sealed bids. One price for all.\n\nEvery bidder escrows exactly 1 NEAR and posts only a hash. After the reveal, every winner pays the same clearing price, so being first buys nothing.\n\nReading testnet…\n\n03 · FLOOR\nA floor you can always redeem.\n\n20% of every curve buy and half the auction raise go into the post's vault. Any holder can burn tokens and take their share of it, at any time.\n\nReading testnet…\n\nTHE APP\n\nA feed first. The market comes with it.\n\nScroll, like, and tap Buy. Every card reads its post's contract on NEAR testnet: the price in NEAR, who bought, how far to graduation, and the floor.\n\nFloor chip\nthe NEAR each token can redeem right now\nBought by\nnames from the contract's own fill log\nBuy\nquotes from quote_buy on the post account\nScroll the feed\nScreenshot of /social on NEAR testnet, 9 Nov 2026\n\nTHE NEAR TECH\n\nWhat runs where, plainly.\nA post is an account\n\ncreate_post on the factory creates <slug>.juno-awkorp.testnet and deploys the locked token code to it in one transaction. No pool, no registry: the account is the market.\n\nCommit, reveal, settle\n\nBids are sha256(account, amount, max price, salt) with identical 1 NEAR escrows. Reveal is open for 60 s; a bid left hidden forfeits 1% to the creator.\n\nCurve and floor vault\n\n800 tokens sell on a 16-segment curve priced in yoctoNEAR integers. redeem burns tokens for up to 99% of the holder's pro-rata vault share.\n\nNEP-141 and NEP-148\n\nEach post coin is a whole-unit fungible token with metadata, ft_transfer and ft_transfer_call, so wallets read it like any NEAR token.\n\nNEP-366 meta transactions\n\nEmail calls use a device-signed delegate action. The relayer checks receiver, method, gas and deposit caps and fronts the deposit. Web wallets sign and pay directly.\n\nAccounts\n\nFactory juno-awkorp.testnet, deployed in HvSXP6…pzxx. Charts and holder lists come from the contract's trades() and holders() views, with no indexer.\n\nPost something.\nWatch it trade.\nOpen Juno\njuno\n\nA social feed where every post is a coin, on NEAR testnet. MIT · © 2026 Nivesh Gajengi\n\nFactory on NearBlocks\n\njuno",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "signin",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-375.png",
+          "text": "juno\nNo wallet yet\nSign in with your email, or connect a NEAR wallet you already have. NEAR testnet · test NEAR, no real money.\nSign in",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "connected-profile",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-375.png",
+          "text": "juno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n…\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:27 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n16\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+5.23%\nAvg cost 0.0004 NEAR · redeems 0.0115 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor\nSign in to Juno\nConnect a NEAR testnet wallet. You approve each trade in QA signer and pay your own gas.\nSend code\nor\nConnect NEAR wallet\nEmail sign-in · Setup required: EXPO_PUBLIC_RELAYER_URL\nNEAR testnet · test NEAR, no real money",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "76"
+        },
+        {
+          "step": "connected-traders",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-375.png",
+          "text": "juno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n16 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.94 NEAR\nOpen\n8.05 NEAR\nHolding\n25%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:27 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n16\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+5.23%\nAvg cost 0.0004 NEAR · redeems 0.0115 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "buy-quote",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-375.png",
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0779 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0291 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n9s\nkai\nBuy\n2.00\n0.0011 NEAR\n18s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nBuy\nSell\nRedeem\n✕\n2\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.06 NEAR\n1\n10\n50\n100\nTrading fee\n—\nAdded to the floor\n—\nPrice impact\n—\n \nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "buy-receipt",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-375.png",
+          "text": "0.0004 NEAR\n+12.33%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0857 NEAR\nMarket cap\n0.0790 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 193.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0186 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n2.00\n0.0011 NEAR\n3s\nkai\nSell\n2.00\n0.0009 NEAR\n16s\nkai\nBuy\n2.00\n0.0011 NEAR\n24s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nBuy\nSell\nRedeem\n✕\nDone\nBought 2 SPROUT — final on NEAR testnet.\ntx Bua9DtCuRv…Wf8vrPDh · 11:39:36 PM\nView on NearBlocks\nDone",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 408 ()"
+          ],
+          "failedRequests": [
+            {
+              "url": "https://near-testnet.drpc.org/",
+              "status": 408
+            }
+          ],
+          "recoveredRpcIssues": true,
+          "hash": "Bua9DtCuRvzJeR8eaitxjdgibG9NyPuAJxbkWf8vrPDh",
+          "tokenBalance": "78"
+        },
+        {
+          "step": "buy-profile",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-375.png",
+          "text": "juno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.086 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3995 NEAR\nOpen\n0.4393 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n17 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.95 NEAR\nOpen\n8.06 NEAR\nHolding\n25%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3890 NEAR\nOpen\n0.4463 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.06 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.06 NEAR\n11/11/2026, 11:39:36 PM\n0.0100 NEAR\n8.06 NEAR\n4\nPositions\n3.95 NEAR\nP&L\n17\nTrades\nHoldings\nActivity\nAbout\nSprout\n78.00 $SPROUT\n0.0346 NEAR\n+7.57%\nAvg cost 0.0004 NEAR · redeems 0.0117 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "78"
+        },
+        {
+          "step": "sell-quote",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-375.png",
+          "text": "0.0004 NEAR\n+12.33%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0857 NEAR\nMarket cap\n0.0790 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 193.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0186 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n2.00\n0.0011 NEAR\n4s\nkai\nSell\n2.00\n0.0009 NEAR\n17s\nkai\nBuy\n2.00\n0.0011 NEAR\n25s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nBuy\nSell\nRedeem\n✕\n2\nSpot 0.0004 NEAR per token\nSPROUT\nHeld: 78.00 SPROUT\n25%\n50%\n75%\n100%\nTrading fee\n—\nPrice impact\n—\n \nSell\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        },
+        {
+          "step": "sell-receipt",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-375.png",
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n3s\nkai\nBuy\n2.00\n0.0011 NEAR\n11s\nkai\nSell\n2.00\n0.0009 NEAR\n24s\nkai\nBuy\n2.00\n0.0011 NEAR\n32s\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nBuy\n2.00\n0.0010 NEAR\n2h\nkai\nSell\n1.00\n0.0004 NEAR\n6h\nkai\nBuy\n1.00\n0.0005 NEAR\n6h\nkai\nBuy\n20.00\n0.0081 NEAR\n1d\noto\nBuy\n10.00\n0.0031 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\nkai\nSell\n1.00\n0.0002 NEAR\n1d\nkai\nBuy\n1.00\n0.0003 NEAR\n1d\noto\nSell\n5.00\n0.0012 NEAR\n2d\nmira\nBuy\n10.00\n0.0028 NEAR\n2d\noto\nBuy\n25.00\n0.0060 NEAR\n2d\noto\nBid\n75.00\n0.0300 NEAR\n2d\nkai\nBid\n50.00\n0.0200 NEAR\n2d\nBuy\nBuy\nSell\nRedeem\n✕\nDone\nSold 2 SPROUT — final on NEAR testnet.\ntx CHL87VxkMn…XCg3H4Tg · 11:39:44 PM\nView on NearBlocks\nDone",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 408 ()"
+          ],
+          "failedRequests": [
+            {
+              "url": "https://near-testnet.drpc.org/",
+              "status": 408
+            }
+          ],
+          "recoveredRpcIssues": true,
+          "hash": "CHL87VxkMns5jcnV3NmrMR2HvpPSufHDn3qwXCg3H4Tg",
+          "tokenBalance": "76"
+        },
+        {
+          "step": "sell-profile",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-375.png",
+          "text": "juno\nFor you\nFollowing\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n18 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.94 NEAR\nOpen\n8.05 NEAR\nHolding\n40%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nkai\nNEAR wallet · NEAR testnet\nAccount · NEAR testnet\nCopy account\nkai.juno-awkorp.testnet\n1.06\nNEAR\n4\nposts held\nGet test NEAR\nPortfolio\n8.05 NEAR\n+96.0%\nHour\nDay\nWeek\nMonth\nYear\nAll\n8.05 NEAR\n11/11/2026, 11:39:44 PM\n0.0100 NEAR\n8.05 NEAR\n4\nPositions\n3.94 NEAR\nP&L\n18\nTrades\nHoldings\nActivity\nAbout\nSprout\n76.00 $SPROUT\n0.0328 NEAR\n+4.47%\nAvg cost 0.0004 NEAR · redeems 0.0115 NEAR at the floor\nPile In\n800.00 $PILE-IN\n7.99 NEAR\n+97.25%\nAvg cost 0.0051 NEAR · redeems 0.6116 NEAR at the floor\nCap Toss\n40.00 $CAP-TOSS\n0.0113 NEAR\n+26.48%\nAvg cost 0.0002 NEAR · redeems 0.0015 NEAR at the floor\nBalloons\n30.00 $BALLOONS\n0.0176 NEAR\n-0.23%\nAvg cost 0.0006 NEAR · redeems 0.0019 NEAR at the floor",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false,
+          "tokenBalance": "76"
+        },
+        {
+          "step": "signed-out",
+          "width": 375,
+          "screenshot": "/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-375.png",
+          "text": "juno\nmira\n2d · sealed-bid curve\nFollow\n0.053 NEAR\nBuy\nBought by kai and 1 other\nBalloons $BALLOONS\nEvery post floats up on its own curve.\n11% to graduation\nFloor 0.0₄636 NEAR\noto\n2d · dare post\nFollow\n0.011 NEAR\nBuy\nBought by kai\nCap Toss $CAP-TOSS\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n5% to graduation\nFloor 0.0₄368 NEAR\nkai\n2d · sealed-bid curve\nFollow\n8.79 NEAR\nGraduated\nBought by kai and 2 others\nPile In $PILE-IN\nEveryone threw a coin at the same photo. It sold out.\nGraduated\nFloor 0.0008 NEAR\nmira\n2d · sealed-bid curve\nFollow\n0.082 NEAR\nBuy\nBought by kai and 2 others\nSprout $SPROUT\nPosted a photo, it grew a coin. First Juno post on NEAR.\n8% to graduation\nFloor 0.0002 NEAR\nTrade\nPosts\nTraders\n1\nmira\nCreator\n4 fills · 3 coins\n+0.0053 NEAR\ntaken\n0.3994 NEAR\nOpen\n0.4392 NEAR\nHolding\n100%\nWin rate\n2\nkai\nCreator\n18 fills · 4 coins\n-0.0003 NEAR\ntaken\n3.94 NEAR\nOpen\n8.05 NEAR\nHolding\n40%\nWin rate\n3\noto\nCreator\n5 fills · 2 coins\n-0.0006 NEAR\ntaken\n0.3876 NEAR\nOpen\n0.4450 NEAR\nHolding\n0%\nWin rate\nNo wallet yet\nSign in with your email, or connect a NEAR wallet you already have. NEAR testnet · test NEAR, no real money.\nSign in",
+          "overflow": 0,
+          "suspicious": false,
+          "brokenImages": [],
+          "pageErrors": [],
+          "consoleErrors": [],
+          "failedRequests": [],
+          "recoveredRpcIssues": false
+        }
+      ],
+      "productionIsolation": {
+        "javascriptFiles": 5,
+        "qaAdapterPresent": false,
+        "sha256": "538bf560bc2192a6e7cb2abdd311e6710b785a02dfb748d365d95f15c87a6454"
+      },
+      "qaIsolation": {
+        "javascriptFiles": 1,
+        "qaAdapterPresent": true,
+        "sha256": "29bb0022c8d3463e1ae055eab184349b5a15e969c1fe1d0865bd4aff662679cc"
+      },
+      "preview": "http://127.0.0.1:5383",
+      "completedAt": "2026-11-11T18:09:45.828Z",
+      "spentUpperBoundYocto": "3056687802052715483604"
     }
   ]
 }
