@@ -149,6 +149,7 @@ export default function TraderScreen() {
           </Back>
         </Nav>
         <Placeholder
+          art="empty"
           title="No such wallet"
           detail="That is not a wallet address. The link may be cut short."
           action={<Button label="Back to the feed" onPress={() => router.replace("/(tabs)/social" as never)} />}
@@ -298,6 +299,7 @@ export default function TraderScreen() {
           </Ledger>
         ) : portfolio.error ? (
           <Placeholder
+            art="warning"
             title="Could not read their holdings"
             detail={portfolio.error}
             action={<Button label="Try again" onPress={portfolio.refresh} />}

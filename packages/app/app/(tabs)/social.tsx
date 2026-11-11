@@ -145,6 +145,7 @@ export default function SocialScreen() {
           for null first kept a dead API on the skeleton forever. */}
       {markets.error && !markets.loading ? (
         <Placeholder
+          art="warning"
           title="Could not load the feed"
           detail={markets.error}
           action={<Button label="Try again" onPress={refresh} />}
@@ -178,6 +179,7 @@ export default function SocialScreen() {
         </ScrollView>
       ) : markets.error ? (
         <Placeholder
+          art="warning"
           title="Could not load the feed"
           detail={markets.error}
           action={<Button label="Try again" onPress={refresh} />}

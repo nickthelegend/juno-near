@@ -6,6 +6,7 @@ import styled from "styled-components/native";
 
 import { AreaChart, RANGES, withinRange, type Range } from "../../components/AreaChart";
 import { CoinArt, Identicon } from "../../components/art";
+import { Object3D } from "../../components/art3d";
 import { Tappable } from "../../components/Press";
 import { WalletCard } from "../../components/WalletCard";
 import { Handle } from "../../components/Handle";
@@ -276,11 +277,14 @@ export default function ProfileScreen() {
             </Card>
           ) : held.length === 0 ? (
             <Card>
-              <Body muted>
-                {data.partial
-                  ? "Some pools would not load, so whether this wallet holds anything is unknown. Pull to retry."
-                  : "Nothing held yet. Buy a coin from the Trade tab and it shows up here."}
-              </Body>
+              <Row gap={14}>
+                <Object3D art={data.partial ? "warning" : "heartCoin"} alt="" size={56} />
+                <Body muted style={{ flex: 1 }}>
+                  {data.partial
+                    ? "Some pools would not load, so whether this wallet holds anything is unknown. Pull to retry."
+                    : "Nothing held yet. Buy a coin from the Trade tab and it shows up here."}
+                </Body>
+              </Row>
             </Card>
           ) : (
             held.map((position) => (
@@ -321,7 +325,10 @@ export default function ProfileScreen() {
             p.trades.map((t) => ({ ...t, name: p.name, symbol: p.symbol, currency: p.currency })),
           ).length === 0 ? (
             <Card>
-              <Body muted>No trades yet.</Body>
+              <Row gap={14}>
+                <Object3D art="curve" alt="" size={56} />
+                <Body muted style={{ flex: 1 }}>No trades yet.</Body>
+              </Row>
             </Card>
           ) : (
             (data?.positions ?? [])

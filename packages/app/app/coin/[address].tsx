@@ -145,12 +145,14 @@ export default function CoinScreen() {
       ) : detail.errorStatus === 404 || detail.errorStatus === 400 ? (
         // Not a failure to retry: there is no such coin on this chain.
         <Placeholder
+          art="empty"
           title="No such coin"
           detail="Nothing on Juno has this address. It may be on another network, or the link is wrong."
           action={<Button label="Back to the feed" onPress={() => router.replace("/(tabs)/social" as never)} />}
         />
       ) : detail.error || !coin ? (
         <Placeholder
+          art="warning"
           title="Could not load this coin"
           detail={detail.error ?? undefined}
           action={<Button label="Try again" onPress={detail.refresh} />}

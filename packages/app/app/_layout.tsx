@@ -10,6 +10,7 @@ import { ThemeProvider } from "styled-components/native";
 
 import { FloorGlyph, FloorPanel } from "../components/Floor";
 import { BrandImage } from "../components/brand";
+import { Object3D } from "../components/art3d";
 import { JunoMark } from "../components/logo";
 import { NETWORK_LABEL } from "../lib/chain";
 import { WalletProvider } from "../lib/wallet";
@@ -79,6 +80,8 @@ const WEB_CSS = `
   .juno-float { will-change: transform; }
   .juno-float-bob { animation: juno-bob 8s ease-in-out infinite; }
   .juno-float-drift { animation: juno-drift 11s ease-in-out infinite; }
+  @keyframes juno-soft { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -4px, 0); } }
+  .juno-float-soft { animation: juno-soft 6s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) {
     .juno-float { animation: none !important; }
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
@@ -131,10 +134,10 @@ function AboutRail() {
   // The onboarding screen already says the headline; the rail keeps the steps.
   const intro = usePathname() !== "/";
   const steps = [
-    ["Post", "A photo launches as its own NEAR account, <name>.<factory>, and that account is the coin."],
-    ["Bid", "For one minute anyone can place a sealed bid. Everyone pays the same clearing price."],
-    ["Trade", "Then the curve opens. 20% of each buy's base price goes into a floor any holder can redeem."],
-    ["Graduate", "A full curve graduates. Dares put the creator's bond on the line."],
+    ["Post", "A photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.", "postCoin"],
+    ["Bid", "For one minute anyone can place a sealed bid. Everyone pays the same clearing price.", "envelope"],
+    ["Trade", "Then the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.", "vault"],
+    ["Graduate", "A full curve graduates. Dares put the creator's bond on the line.", "cap"],
   ] as const;
   return (
     <ScrollView style={frame.about} contentContainerStyle={frame.aboutBody} showsVerticalScrollIndicator={false}>
@@ -148,13 +151,14 @@ function AboutRail() {
         <BrandImage art="postCard" alt="" size={176} float="bob" eager />
       </View>
       <View style={frame.steps}>
-        {steps.map(([title, body], i) => (
+        {steps.map(([title, body, art], i) => (
           <View key={title} style={[frame.step, i > 0 ? frame.stepRule : null]}>
             <Text style={frame.stepIndex}>{String(i + 1).padStart(2, "0")}</Text>
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={frame.stepTitle}>{title}</Text>
               <Text style={frame.stepBody}>{body}</Text>
             </View>
+            <Object3D art={art} alt="" size={48} eager style={{ marginTop: -2 }} />
           </View>
         ))}
       </View>

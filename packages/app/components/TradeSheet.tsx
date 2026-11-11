@@ -4,6 +4,7 @@ import Svg, { Circle, Path } from "react-native-svg";
 import styled from "styled-components/native";
 import { dryQuote } from "@juno/sdk";
 
+import { Object3D } from "./art3d";
 import { Button, Caption, Col, ExternalGlyph, Label, Row } from "./kit";
 import { juno, toYocto, type Coin, type SwapQuote } from "../lib/api";
 import { describeTxError, explorer, EXPLORER_NAME, MAINNET_ACCOUNT, NETWORK_NAME } from "../lib/chain";
@@ -255,6 +256,7 @@ export function TradeSheet({
 
         {done ? (
           <Done>
+            <Object3D art="success" alt="" size={104} float eager />
             <DoneTitle>Done</DoneTitle>
             <Label muted style={{ textAlign: "center" }}>
               {side === "buy"

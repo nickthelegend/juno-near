@@ -4,6 +4,7 @@ import Svg, { Path } from "react-native-svg";
 import styled, { css } from "styled-components/native";
 
 import { BrandImage } from "./brand";
+import { Object3D, type ObjectArt } from "./art3d";
 import { usePressScale } from "./Press";
 import { theme } from "../theme";
 
@@ -655,13 +656,18 @@ export function Placeholder({
   detail?: string;
   action?: React.ReactNode;
   busy?: boolean;
-  /** Show the empty-slot illustration (web): for "nothing here yet", never for errors. */
-  art?: boolean;
+  /**
+   * Web art above the title. `true` is the empty-slot illustration, for
+   * "nothing here yet"; a 3D object names its own state, so an error gets the
+   * warning cone and never the empty slot.
+   */
+  art?: boolean | ObjectArt;
 }) {
   return (
     <PlaceholderBox>
       {busy ? <ActivityIndicator color={theme.colors.muted} /> : null}
-      {art ? <BrandImage art="empty" alt="" size={148} float="bob" style={{ marginBottom: 4 }} /> : null}
+      {art === true ? <BrandImage art="empty" alt="" size={148} float="bob" style={{ marginBottom: 4 }} /> : null}
+      {typeof art === "string" ? <Object3D art={art} alt="" size={132} float eager style={{ marginBottom: 4 }} /> : null}
       <PlaceholderTitle>{title}</PlaceholderTitle>
       {detail ? <PlaceholderDetail>{detail}</PlaceholderDetail> : null}
       {action ? <Spacer h={16} /> : null}

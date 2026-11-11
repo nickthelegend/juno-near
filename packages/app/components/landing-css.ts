@@ -136,6 +136,8 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
 @keyframes jl-shimmer { to { background-position: -200% 0; } }
 .jl-empty { grid-column: 1 / -1; padding: 22px; border-radius: 22px; background: var(--surface); color: var(--muted); }
 .jl-err { padding: 18px 20px; border-radius: 18px; background: ${c.negSoft}; color: ${c.neg}; font-weight: 600; overflow-wrap: anywhere; }
+.jl-empty, .jl-err { display: flex; align-items: center; gap: 16px; }
+.jl-obj { flex: none; width: 64px; height: 64px; object-fit: contain; user-select: none; pointer-events: none; }
 
 /* sections */
 .jl-sec { padding: 128px 0 0; }

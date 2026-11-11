@@ -6,6 +6,7 @@ import { base64, commitment, YOCTO } from "@juno/sdk";
 
 import { CoinGlyph } from "./art";
 import { BrandImage } from "./brand";
+import { Object3D } from "./art3d";
 import { Button, Skeleton } from "./kit";
 import { Tappable } from "./Press";
 import { juno, type Coin, type FeedItem } from "../lib/api";
@@ -339,9 +340,12 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
     if (!(n.clearingPrice > 0) && n.sealedBids === 0) return null;
     return (
       <View style={f.card}>
-        <Row>
-          <SealGlyph />
-          <Text style={f.title}>Opening auction</Text>
+        <Row justify="space-between">
+          <Row>
+            <SealGlyph />
+            <Text style={f.title}>Opening auction</Text>
+          </Row>
+          <Object3D art="envelope" alt="" size={44} style={{ margin: "-6px 0" }} />
         </Row>
         <View style={f.tiles}>
           <Tile label="Cleared at" value={n.clearingPrice > 0 ? money(n.clearingPrice, "NEAR") : "No fills"} />
@@ -490,7 +494,10 @@ export function DareCard({ coin }: { coin: Coin }) {
   if (!n.dare) return null;
   return (
     <View style={f.card}>
-      <Text style={f.kicker}>Dare</Text>
+      <Row justify="space-between">
+        <Text style={f.kicker}>Dare</Text>
+        <Object3D art="dice" alt="" size={52} float style={{ margin: "-10px 0" }} />
+      </Row>
       <Text style={f.dare}>{n.dare}</Text>
       <View style={f.tiles}>
         <Tile label="Bond" value={n.dareBond > 0 ? money(n.dareBond, "NEAR") : n.dareFinalized ? "Paid out" : "None"} on={n.dareBond > 0} />

@@ -3,6 +3,7 @@ import { TextInput } from "react-native";
 import styled from "styled-components/native";
 
 import { BottomSheet } from "./BottomSheet";
+import { Object3D } from "./art3d";
 import { Body, Button, Caption, Title } from "./kit";
 import type { SignInBridge } from "../lib/wallet";
 import { theme } from "../theme";
@@ -92,7 +93,10 @@ export function SignInSheet({
   return (
     <BottomSheet visible={visible} onClose={onClose} dismissable={!busy && !walletBusy}>
       <Sheet>
-        <Title>Sign in to Juno</Title>
+        <TitleRow>
+          <Title style={{ flexShrink: 1 }}>Sign in to Juno</Title>
+          <Object3D art="wallet" alt="" size={64} float eager style={{ margin: "-8px 0" }} />
+        </TitleRow>
         <Body muted>
           {step === "email"
             ? bridge.wallet && bridge.setup
@@ -181,6 +185,13 @@ export function SignInSheet({
 const Sheet = styled.View`
   gap: ${(p) => p.theme.space(3)}px;
   padding: ${(p) => p.theme.space(2)}px ${(p) => p.theme.space(5)}px ${(p) => p.theme.space(8)}px;
+`;
+
+const TitleRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${(p) => p.theme.space(3)}px;
 `;
 
 const Field = styled.View`

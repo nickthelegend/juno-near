@@ -104,6 +104,7 @@ export default function TradeScreen() {
       ) : markets.loading || markets.data === null ? (
         markets.error ? (
           <Placeholder
+            art="warning"
             title="Could not load the market"
             detail={markets.error}
             action={<Button label="Try again" onPress={markets.refresh} />}
@@ -128,6 +129,7 @@ export default function TradeScreen() {
         )
       ) : markets.error ? (
         <Placeholder
+          art="warning"
           title="Could not load the market"
           detail={markets.error}
           action={<Button label="Try again" onPress={markets.refresh} />}
@@ -467,6 +469,7 @@ function TraderBoard({
   if (board.error) {
     return (
       <Placeholder
+        art="warning"
         title="Could not rank traders"
         detail={board.error}
         action={<Button label="Try again" onPress={board.refresh} />}
@@ -500,6 +503,7 @@ function TraderBoard({
 
       {traders.length === 0 ? (
         <Placeholder
+          art={board.data?.partial ? "warning" : "trophy"}
           title={board.data?.partial ? "Could not read the trades" : "Nobody has traded yet"}
           detail={
             board.data?.partial

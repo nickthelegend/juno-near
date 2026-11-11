@@ -217,7 +217,7 @@ export default function Landing() {
               <div><dt>In floors</dt><dd>{stat(floors !== undefined ? nearFigure(floors) : undefined)}<small>NEAR</small></dd><span>redeemable by holders</span></div>
             </dl>
             {failed ? (
-              <p className="jl-err" role="alert">Could not read {FACTORY ?? "the factory"} on NEAR testnet: {markets.error}</p>
+              <p className="jl-err" role="alert"><img className="jl-obj" src="/art/3d/juno-3d-warning.webp" width={64} height={64} alt="" aria-hidden="true" decoding="async" draggable={false} /><span>Could not read {FACTORY ?? "the factory"} on NEAR testnet: {markets.error}</span></p>
             ) : (
               <ul className="jl-tape-row" aria-label="Posts on the factory">
                 {(posts ?? []).map((c) => (
@@ -234,7 +234,7 @@ export default function Landing() {
                   </li>
                 ))}
                 {!posts ? [0, 1, 2, 3].map((i) => <li key={i}><span className="jl-chip jl-skel" /></li>) : null}
-                {posts && posts.length === 0 ? <li className="jl-empty">No posts on the factory yet. The first photo posted opens here.</li> : null}
+                {posts && posts.length === 0 ? <li className="jl-empty"><img className="jl-obj" src="/art/3d/juno-3d-empty.webp" width={64} height={64} alt="" aria-hidden="true" decoding="async" draggable={false} /><span>No posts on the factory yet. The first photo posted opens here.</span></li> : null}
               </ul>
             )}
           </div>
