@@ -5,6 +5,8 @@ import styled from "styled-components/native";
 
 import { Caption } from "./kit";
 import { theme } from "../theme";
+import { withinSpan, type Span, type Tick } from "../lib/price-window";
+export { withinSpan, type Span, type Tick } from "../lib/price-window";
 
 /**
  * The price, as one line, at the top of the screen.
@@ -32,10 +34,6 @@ import { theme } from "../theme";
  * colourblind separation floor.
  */
 
-export type Tick = { t: string; price: number };
-
-export type Span = "1H" | "1D" | "1W" | "1M" | "ALL";
-
 export const SPANS: { id: Span; label: string }[] = [
   { id: "1H", label: "1H" },
   { id: "1D", label: "1D" },
@@ -52,29 +50,6 @@ const WINDOW_WORDS: Record<Span, string> = {
   "1M": "past month",
   ALL: "all time",
 };
-
-const WINDOW_MS: Record<Span, number> = {
-  "1H": 3_600_000,
-  "1D": 86_400_000,
-  "1W": 7 * 86_400_000,
-  "1M": 30 * 86_400_000,
-  ALL: Number.POSITIVE_INFINITY,
-};
-
-/**
- * Ticks inside the span — but never fewer than two.
- *
- * A one-point line is not a line, and a span that happens to contain one fill
- * would otherwise render as a dot in the corner. Falling back to the last two
- * is a smaller lie than an empty chart, and the span pill stays selected so it
- * is clear which window was asked for.
- */
-export function withinSpan(ticks: Tick[], span: Span, now = Date.now()): Tick[] {
-  if (span === "ALL") return ticks;
-  const cut = now - WINDOW_MS[span];
-  const inside = ticks.filter((tick) => Date.parse(tick.t) >= cut);
-  return inside.length >= 2 ? inside : ticks.slice(-2);
-}
 
 export function PriceLine({
   ticks,
@@ -256,10 +231,10 @@ export function PriceLine({
           <Empty>
             <Caption>
               {partial
-                ? "Price history could not be read — the RPC is rate-limiting."
+                ? "History is limited to the latest recorded fills."
                 : series.length === 1
-                  ? "One trade so far — not enough to draw a line."
-                  : "No trades yet."}
+                  ? span === "ALL" ? "One trade so far — not enough to draw a line." : "One fill in this period."
+                  : span === "ALL" ? "No trades yet." : "No fills in this period."}
             </Caption>
           </Empty>
         )}
