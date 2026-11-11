@@ -328,6 +328,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hash, setHash] = useState<string | null>(null);
+  const pendingBidAccount = useRef<string | null>(null);
 
   // A phase boundary passing on screen is a reason to re-read.
   useEffect(() => {
@@ -366,6 +367,14 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
       onChanged();
     } catch (caught) {
       const failure = describeTxError(caught);
+      if (label === "Bid" && pendingBidAccount.current && (failure.cancelled || /blocked the wallet window/.test(failure.message))) {
+        // A cancelled/blocked approval cannot have submitted this commitment.
+        // Keep the secret for uncertain network outcomes, where a bid may have landed.
+        try {
+          if (typeof localStorage !== "undefined") localStorage.removeItem(secretKey(coin.address, pendingBidAccount.current));
+        } catch { /* storage refused */ }
+        pendingBidAccount.current = null;
+      }
       setError(failure.cancelled ? null : failure.message || `${label} failed`);
     } finally {
       setBusy(false);
@@ -380,6 +389,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
       if (units * price > YOCTO) throw new Error("Amount × max price must fit inside the 1 NEAR escrow.");
       const salt = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
       writeSecret(coin.address, account, { amount: units.toString(), maxPrice: price.toString(), salt });
+      pendingBidAccount.current = account;
       return [juno.call(coin.address, "commit", "Sealed bid", { commitment: base64(commitment(account, units, price, salt)) }, YOCTO)];
     });
   const reveal = () =>
