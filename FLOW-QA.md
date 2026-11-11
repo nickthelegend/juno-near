@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. Baseline: `a06a34d`. Production web export, Chrome channel `chrome`, headless, at 1440×900 and 375×812. Preview: `http://127.0.0.1:5381` (port checked with `lsof`; never used 8787). Every browser launch is wrapped in the supplied `withChromeLock`; one automated browser runs at a time.
 
-Continuation checkpoint: the final route pass is complete at both widths. Interactive trader navigation and creator controls are still being checked; the interrupted harness selected an obscured mounted-tab element.
+Continuation completed: all 15 route cases and the remaining interactive trader/creator controls pass at both widths. The interrupted click was a harness locator matching an obscured mounted-tab element; visible hit-tested controls work without a product change.
 
 The existing design is preserved. Changes fix data, errors, validation, session state and factual copy; no colors, fonts, art or layout rules are changed. The whole product is **not an unqualified end-to-end PASS**: human Meteor approval, launch/bid spending, and missing refund/dare UI controls remain blocked as detailed below.
 
@@ -29,8 +29,8 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 11 | Execute real testnet actions | **PASS** | The repository wallet-path script buys 1 SPROUT, sells it, and submits an intentionally underpaid buy. All three outcomes are recorded; the token balance returns to 70. | `buy-receipt`, `buy-refused` |
 | 12 | Read result and receipt | **PASS** | A harness reply replays the real buy outcome to the browser; the app independently follows the real hash to final, shows Done and a NearBlocks receipt. The failed outcome shows The price moved. Try again. This is response-handling evidence, not a Meteor approval. | `buy-receipt`, `buy-refused` |
 | 13 | Review profile positions | **FIXED** | Holdings, Activity and About render live positions. Cost and realised/open profit are separate; NEAR values no longer use dollar signs; percentages are not scaled twice. The existing chart now has observed-fill history and a current valuation. | `profile-holdings`, `profile-activity`, `profile-about` |
-| 14 | Compare markets and traders | **FIXED** | Trade -> Posts lists live markets; Traders shows realised profit in NEAR, holding value, open P&L and observed exits. Ranking follows the profit-taken label. | `trade`, `traders` |
-| 15 | Inspect a trader | **BLOCKED** | Direct /trader/kai.juno-awkorp.testnet reads and profit fixes pass. Interactive list navigation, holding rows and Buy this yourself remain pending: the interrupted harness matched an obscured element in a mounted tab. This has not been classified as a product bug. | `trader` |
+| 14 | Compare markets and traders | **FIXED** | Trade -> Posts lists live markets; Traders shows realised profit in NEAR, holding value, open P&L and observed exits. Ranking follows the profit-taken label. | `trade`, `traders`, `nav-trade`, `nav-traders` |
+| 15 | Inspect a trader | **FIXED** | Direct reads and profit fixes pass. At both widths the trader list opens Kai, Buy this yourself opens the SPROUT sheet, and the holding row opens its detail. A visible hit-tested locator avoids the obscured label in a mounted tab. | `trader`, `trader-from-board`, `trader-buy`, `trader-holding-detail` |
 | 16 | Use following filters | **PASS** | A signed-in account with no follows gets an explicit empty state; Show everyone restores the feed. Likes and follows remain device-local. | `following-empty`, `following-reset` |
 | 17 | Browse reels | **FIXED** | Photo posts render without video-player errors. Like, sound toggle and share respond. The misleading Say/Comments action now reads View/Open post and opens the post detail. | `reels`, `reel-liked`, `reel-muted-toggle`, `reel-open-detail` |
 | 18 | Open the create chooser | **FIXED** | The existing + chooser offers a photo or dare and routes with the correct format. Its accessibility label now says dare, not reel. | `create-sheet`, `dare-form` |
@@ -50,7 +50,8 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 32 | Share fallback | **PASS** | Chrome exposes native Web Share, which cannot be completed by this headless run. With Web Share explicitly unavailable, the existing fallback copies the full post URL; both widths are checked. | `share-clipboard` |
 | 33 | Low balance | **FIXED** | A labeled zero-balance fixture shows the existing funding hint. It now distinguishes wallet deposits/gas from relayer-funded email calls. | `low-balance` |
 | 34 | Restore the feed after a failed read | **PASS** | The feed Try again control reloads live posts after simulated network failure. The desktop rail has a separate retry; the feed control is tested explicitly. | `feed-retry` |
-| 35 | Hosted release | **BLOCKED** | This pass validates the production export at localhost:5381. It does not push or redeploy the hosted site. The fixes must be republished before the hosted README demo can be treated as this tested revision. | `landing` |
+| 35 | Creator fees | **PASS** | The creator-only PILE-IN fee control opens Meteor testnet/sign with withdraw_earnings, zero deposit and 120 Tgas from kai to PILE-IN. Cancelling returns the existing control to idle. No claim is broadcast; actual approval remains a human step. | `creator-fees`, `creator-claim-request`, `creator-claim-cancel` |
+| 36 | Hosted release | **BLOCKED** | This pass validates the production export at localhost:5381. It does not push or redeploy the hosted site. The fixes must be republished before the hosted README demo can be treated as this tested revision. | `landing` |
 
 ## Evidence boundaries and spending
 
@@ -75,6 +76,8 @@ The hosted deployment is not republished by this task. Use the README local-expo
 ## Validation
 
 - Production export succeeds with dotenv loading disabled and explicit public testnet configuration.
+- Final route pass: 30 captures (15 cases × 2 widths). Final provider/interaction continuation: 28 captures. Both passes have zero page errors, console errors, failed requests, broken images, suspicious raw text or horizontal overflow.
+- All browsers launched for this QA are closed. The preview server on 5381 is stopped after verification.
 - App and SDK TypeScript checks pass.
 - `pnpm --filter app test`: 7 pure data tests, covering cost accounting, transfers/capped records, observed-fill history and chart windows.
 - `pnpm --filter @juno/sdk test`: 8 tests, including a local HTTP transport fixture that preserves missing-account and contract error detail.
@@ -83,7 +86,7 @@ The hosted deployment is not republished by this task. Use the README local-expo
 
 ## Screenshot and diagnostic index
 
-`initial.json` and `interactions.json` contain the before pass. `routes-final.json` contains the final production route pass. `interactions-final.json` contains the broad interaction confirmation pass. `edges-before.json` / `edges-after.json` cover auction, share, follow and low-balance branches; `logout-before.json` / `logout-after.json` cover session persistence and feed retry. `provider-final.json` currently holds a partial final-provider pass (desktop wallet request, profile chart and receipt link passed before the navigation harness stopped). It will be completed during continuation. Diagnostic rows retain visible text, console/page errors, failed requests, overflow and screenshot filenames. Deliberately aborted RPC calls and Meteor's headless Cloudflare page are separated from ordinary app requests. Some early harness attempts are marked script failures (the mobile How it works link is intentionally hidden, and an initial transaction-decoder import was corrected); they are not product crashes.
+`initial.json` and `interactions.json` contain the before pass. `routes-final.json` contains the final production route pass. `interactions-final.json` contains the broad interaction confirmation pass. `edges-before.json` / `edges-after.json` cover auction, share, follow and low-balance branches; `logout-before.json` / `logout-after.json` cover session persistence and feed retry. `provider-final.json` contains 28 completed captures across both widths: final-provider wallet requests, profile history, real-outcome receipt replay and explorer link, tab/list/trader navigation, creator-fee request/cancellation and sign-out persistence. The interrupted partial record is preserved as `provider-incomplete-checkpoint.json`. Diagnostic rows retain visible text, console/page errors, failed requests, overflow and screenshot filenames. Deliberately aborted RPC calls and Meteor's headless Cloudflare page are separated from ordinary app requests. Some early harness attempts are marked script failures (the mobile How it works link is intentionally hidden, and an initial transaction-decoder import was corrected, and a later locator selected a label behind the active tab); they are not product crashes.
 
 Before/after screenshots use the same approved components and viewport sizes. Each UI fix has both widths in the matching evidence:
 
