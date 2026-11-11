@@ -1,6 +1,6 @@
 # Testing evidence
 
-CI-equivalent command: `pnpm test` after `pnpm run setup`. Contract tests run the compiled WASM on a real local nearcore 2.14 sandbox through near-workspaces with signed transactions. No RPC or chain response is substituted anywhere.
+CI-equivalent command: `pnpm test` after `pnpm run setup`. Contract tests run the compiled WASM on a real local nearcore 2.14 sandbox through near-workspaces with signed transactions. Contract and live transaction evidence uses real chain responses. Separate UI error/empty-state fixtures used in the November 11 flow pass are labeled in FLOW-QA.md; they are not transaction evidence.
 
 | Suite | Passed | Failed | Skipped | What it checks |
 | --- | ---: | ---: | ---: | --- |
@@ -63,3 +63,9 @@ An earlier run of the same script that day also landed a buy ([3w2q7cSL…](http
 Other checks: `tsc --noEmit` passes for the app. The web export splits the wallet code into its own chunk (`index-*.js`, 938 KB), loaded only when a sign-in sheet opens or a returning wallet session is restored; the entry bundle stays 2.8 MB. MyNearWallet was tried first and dropped: its testnet pop-up answered "MyNearWallet can't connect to apps anymore". An iOS export needs a `util` shim for a failure that predates this work (BLOCKED.md item 8); with it, the iOS bundle builds and contains no wallet-selector code.
 
 Screenshots: `docs/qa/near-signin-wallet-1440.png`, `docs/qa/near-signin-wallet-375.png`, `docs/qa/near-profile-wallet-375.png` (live site).
+
+## Full-flow QA (2026-11-11)
+
+See [FLOW-QA.md](FLOW-QA.md) for the production export walkthrough at 1440×900 and 375×812, before/after screenshot paths, wallet pop-up checks, receipt replay boundaries and remaining blockers. This pass runs `pnpm --filter app test` (7 pure data tests), `pnpm --filter @juno/sdk test` (8 tests, including one transport test using a local HTTP fixture), and TypeScript checks for the app and SDK. The historical 20-test result above is from November 9; the full contract/sandbox suite was not repeated in this flow pass.
+
+`pnpm testnet:wallet-path` ran three real transactions on November 11, recorded in [deployments/wallet-path-2026-11-11.json](deployments/wallet-path-2026-11-11.json): buy 1 SPROUT, sell 1 SPROUT, and an intentionally underpaid buy rejected with `ERR_PAYMENT`. The conservative spend ceiling, including all attached deposits and all gas without subtracting sale proceeds/refunds, was 0.00111142 testnet NEAR (budget: 0.3). Keys were read only by file path and never printed. Browser sessions for signed-in UI checks use an ephemeral key that is not on chain; Meteor's own approval screens still need a human.

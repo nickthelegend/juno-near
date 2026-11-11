@@ -9,10 +9,10 @@ Meme coin launches reward whoever gets the first transaction in. Holders can als
 1. Open [the hosted feed](https://juno-near.vercel.app/social) - see four seeded posts with prices and floor balances read from NEAR testnet. Browsing needs no sign-in.
 2. Open [PILE-IN](https://juno-near.vercel.app/coin/pile-in.juno-awkorp.testnet) - see its trade chart, holders, graduation escrow and **Redeem against the floor** button.
 3. Open [CAP-TOSS](https://juno-near.vercel.app/coin/cap-toss.juno-awkorp.testnet) - see the settled opening auction and finalized dare record.
-4. Open [SPROUT](https://juno-near.vercel.app/coin/sprout.juno-awkorp.testnet) and tap **Buy** - see a quote in NEAR, the fee and the amount added to the floor. No transaction is sent by opening the sheet.
-5. To trade, open [Profile](https://juno-near.vercel.app/profile), tap **Sign in**, then **Connect NEAR wallet** with a funded Meteor testnet wallet - see the wallet connection request. After signing in, return to SPROUT and approve a buy in the wallet - the app follows the transaction and shows its explorer link.
+4. Open [SPROUT](https://juno-near.vercel.app/coin/sprout.juno-awkorp.testnet), tap **Buy**, then enter **1** token - see a quote in NEAR, the fee and the amount added to the floor. No transaction is sent by opening the sheet.
+5. To trade, open [Profile](https://juno-near.vercel.app/profile), tap **Sign in**, then **Connect NEAR wallet** with a funded Meteor testnet wallet - see the wallet connection request. After signing in, return to SPROUT, tap **Buy**, enter a token quantity and approve the buy in the wallet - the app follows the transaction and shows its explorer link.
 
-The wallet call path has recorded testnet buys and sells. A human click-through of Meteor's own sign-in and approval screens is still pending; see [TESTING.md](TESTING.md#web-wallet-sign-in-2026-11-10). Email sign-in needs a configured relayer. The any-chain quote needs a mainnet account setting; no cross-chain swap is implemented. These limits do not block browsing.
+The wallet call path has recorded testnet buys and sells. A human click-through of Meteor's own sign-in and approval screens is still pending; see [TESTING.md](TESTING.md#web-wallet-sign-in-2026-11-10). Email sign-in needs a configured relayer. The any-chain quote needs a mainnet account setting; no cross-chain swap is implemented. Auction refunds and dare proof/voting/finalization have contract methods but no web controls yet. These limits do not block browsing.
 
 ## Live on NEAR testnet
 
@@ -43,7 +43,7 @@ Run the same app locally against testnet (Node.js and pnpm 10.29.2 required):
 
 ```bash
 pnpm run setup
-EXPO_NO_DOTENV=1 EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet EXPO_PUBLIC_NEAR_RPC_URL=https://test.rpc.fastnear.com pnpm web:export
+EXPO_NO_DOTENV=1 EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet EXPO_PUBLIC_NEAR_RPC_URL=https://near-testnet.drpc.org pnpm web:export
 pnpm web:serve
 ```
 
@@ -51,7 +51,7 @@ Open `http://127.0.0.1:8091/social` - see the live feed. Use the same `/coin/<ac
 
 The `setup`, `test`, `web:export` and `web:serve` commands are defined in [package.json](package.json). The export command sets public testnet configuration directly and disables dotenv loading. Email sign-in and the mainnet quote remain unconfigured in this local path.
 
-Screenshots of every route at 390 and 1440 px are in [docs/qa](docs/qa).
+Screenshots of the earlier route pass at 390 and 1440 px are in [docs/qa](docs/qa). The November 11 flow pass, fixes, 375/1440 screenshots and remaining wallet/demo limits are in [FLOW-QA.md](FLOW-QA.md).
 
 ## Deployment and evidence
 
