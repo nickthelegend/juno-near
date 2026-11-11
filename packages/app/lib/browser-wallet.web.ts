@@ -71,7 +71,18 @@ export async function connectWallet(contractId: string): Promise<string> {
 
 export async function disconnectWallet(): Promise<void> {
   if (typeof localStorage === "undefined" || !localStorage.getItem("near-wallet-selector:selectedWalletId")) return;
-  await (await wallet()).signOut();
+  const s = await selector();
+  const accountId = s.store.getState().accounts.find((account) => account.active)?.accountId;
+  try {
+    await (await wallet()).signOut();
+  } finally {
+    // Cancelling Meteor's key-revocation window still ends this app's local session.
+    localStorage.removeItem("default_meteor_wallet_auth_key");
+    if (accountId) localStorage.removeItem(`_meteor_wallet${accountId}:testnet`);
+    localStorage.removeItem("near-wallet-selector:selectedWalletId");
+    localStorage.removeItem("near-wallet-selector:contract");
+    selectorPromise = null;
+  }
 }
 
 /**
