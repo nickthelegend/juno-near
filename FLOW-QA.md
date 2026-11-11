@@ -105,3 +105,7 @@ Before/after screenshots use the same approved components and viewport sizes. Ea
 The `before` files are local QA evidence only. The old route proof under `docs/qa` is unchanged. No QA screenshots are added to the repository.
 
 Before/after attachments: [open the screenshot comparison gallery](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/screenshot-index.html). It links the original PNGs at both widths for each UI fix.
+
+## Remaining mobile readability observation
+
+**BLOCKED by the approved-UI rule (minor):** at 375 px the opening-auction tile ellipsizes the clearing-price text (`0.000…`). The complete price is available under **Details → Auction cleared**. Evidence: `creator-claim-cancel-375-after.png` beside `creator-claim-cancel-1440-after.png` in the screenshot directory above. Showing the full value in that tile would require changing its font sizing or wrapping, so no further visual change was made.
