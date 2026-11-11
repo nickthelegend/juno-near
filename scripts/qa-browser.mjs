@@ -26,6 +26,9 @@ const keyFile = resolve(repo, process.env.JUNO_QA_PLAYER_FILE || '.near-credenti
 const lockFile = process.env.CHROME_LOCK_MODULE || join(scratch, 'chrome-lock.mjs');
 const date = new Date().toISOString().slice(0, 10);
 const evidenceFile = join(repo, 'deployments', `qa-browser-${date}.json`);
+// Playwright debug logging can serialize init-script arguments; it must never see credentials.
+delete process.env.DEBUG;
+delete process.env.PWDEBUG;
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_CORE || 'playwright-core');
 let server, activePage, player, currentRun, expectedCall, ledger;
@@ -35,11 +38,18 @@ const clean = value => String(value).replace(/ed25519:[1-9A-HJ-NP-Za-km-z]+/g, '
 const say = value => process.stdout.write(`${clean(value)}\n`);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function rpc(method, params) {
-  const response = await fetch(rpcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 'qa-browser', method, params }), signal: AbortSignal.timeout(15000) });
-  if (!response.ok) throw Error(`Testnet RPC HTTP ${response.status}`);
-  const json = await response.json();
-  if (json.error) throw Error(`Testnet RPC failed (${json.error.cause?.name || json.error.name || 'unknown'})`);
-  return json.result;
+  const endpoints=[...new Set([rpcUrl,'https://test.rpc.fastnear.com','https://rpc.testnet.near.org'])];
+  let last='unavailable';
+  for(let attempt=0;attempt<endpoints.length+1;attempt++){
+    try{
+      const response=await fetch(endpoints[attempt%endpoints.length],{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:'qa-browser',method,params}),signal:AbortSignal.timeout(15000)});
+      if(!response.ok)throw Error(`HTTP ${response.status}`);
+      const json=await response.json();
+      if(json.error)throw Error(json.error.cause?.name||json.error.name||'RPC error');
+      return json.result;
+    }catch(error){last=clean(error instanceof Error?error.message:'network error');if(attempt<endpoints.length)await sleep(500*(attempt+1));}
+  }
+  throw Error(`Testnet read failed after retries (${last}).`);
 }
 async function available() {
   const [account, protocol] = await Promise.all([rpc('query', {request_type:'view_account',finality:'final',account_id:player.id}), rpc('EXPERIMENTAL_protocol_config', {finality:'final'})]);
