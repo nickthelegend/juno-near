@@ -225,7 +225,9 @@ export default function ProfileScreen() {
               emptyLabel={
                 data?.partial
                   ? "Some pools would not load — history unknown."
-                  : undefined
+                  : data?.positions.length && data.history.length === 0
+                    ? "Historical values are unavailable for transferred or capped records."
+                    : undefined
               }
             />
           </Entry>

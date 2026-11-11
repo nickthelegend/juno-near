@@ -46,7 +46,8 @@
     "web": "expo start --web --port 8091",
     "export:web": "expo export --platform web && node scripts/web-meta.mjs && cp vercel.web.json dist/vercel.json",
     "serve": "node scripts/serve.mjs",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
   },
   "private": true
 }

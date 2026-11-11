@@ -230,13 +230,13 @@ export default function TraderScreen() {
             <Row justify="space-between" align="flex-end">
               <Col gap={2}>
                 <Caption>Profit taken</Caption>
-                <Taken $tone={row.realised > 0 ? "pos" : row.realised < 0 ? "neg" : "flat"}>
-                  {row.realised > 0 ? "+" : ""}
-                  {money(row.realised, "USD", { compact: false })}
+                <Taken $tone={(row.realised ?? 0) > 0 ? "pos" : (row.realised ?? 0) < 0 ? "neg" : "flat"}>
+                  {(row.realised ?? 0) > 0 ? "+" : ""}
+                  {money(row.realised, "NEAR", { compact: false })}
                 </Taken>
               </Col>
               <Col gap={2} style={{ alignItems: "flex-end" }}>
-                <Mono muted>{row.unrealised === null ? "—" : money(row.unrealised, "USD")}</Mono>
+                <Mono muted>{row.unrealised === null ? "—" : money(row.unrealised, "NEAR")}</Mono>
                 <Caption>Still open</Caption>
               </Col>
             </Row>
@@ -249,7 +249,7 @@ export default function TraderScreen() {
                 label="Win rate"
               />
               <Stat
-                value={row.bestExit === null ? "—" : money(row.bestExit, "USD")}
+                value={row.bestExit === null ? "—" : money(row.bestExit, "NEAR")}
                 label="Best exit"
               />
               <Stat value={String(row.trades)} label="Fills" />

@@ -532,15 +532,15 @@ function TraderBoard({
                     <Mono
                       style={{
                         color:
-                          trader.realised > 0
+                          (trader.realised ?? 0) > 0
                             ? theme.colors.pos
-                            : trader.realised < 0
+                            : (trader.realised ?? 0) < 0
                               ? theme.colors.neg
                               : theme.colors.text,
                       }}
                     >
-                      {trader.realised > 0 ? "+" : ""}
-                      {money(trader.realised, "USD")}
+                      {(trader.realised ?? 0) > 0 ? "+" : ""}
+                      {money(trader.realised, "NEAR")}
                     </Mono>
                     <Caption>taken</Caption>
                   </Col>
@@ -549,12 +549,12 @@ function TraderBoard({
                 <Row gap={16} style={{ marginTop: 12 }}>
                   <Col gap={2} style={{ flex: 1 }}>
                     <Mono muted>
-                      {trader.unrealised === null ? "—" : money(trader.unrealised, "USD")}
+                      {trader.unrealised === null ? "—" : money(trader.unrealised, "NEAR")}
                     </Mono>
                     <Caption>Open</Caption>
                   </Col>
                   <Col gap={2} style={{ flex: 1 }}>
-                    <Mono muted>{money(trader.holding, "USD")}</Mono>
+                    <Mono muted>{money(trader.holding, "NEAR")}</Mono>
                     <Caption>Holding</Caption>
                   </Col>
                   <Col gap={2} style={{ flex: 1 }}>

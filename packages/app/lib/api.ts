@@ -19,6 +19,7 @@ import {
 import { Platform } from "react-native";
 
 import { explorer, FACTORY, RPC_URLS } from "./chain";
+import { portfolioHistory, positionAccounting } from "./accounting";
 
 /**
  * The Juno client, on NEAR.
@@ -219,7 +220,7 @@ export type Position = {
   averageCost: number | null;
   unrealisedPnl: number | null;
   unrealisedPnlPct: number | null;
-  realisedPnl: number;
+  realisedPnl: number | null;
   currency: string;
   graduated: boolean;
   trades: PositionTrade[];
@@ -296,7 +297,7 @@ export type Balances = {
 
 export type Trader = {
   wallet: string;
-  realised: number;
+  realised: number | null;
   unrealised: number | null;
   trades: number;
   coins: number;
@@ -711,14 +712,9 @@ export const juno = {
       if (!held && mine.length === 0) continue;
       const coin = toCoin(raw);
       const balance = held ? Number(held[1]) : 0;
-      const spent = mine.filter((t) => t.kind === "buy" || t.kind === "auction").reduce((s, t) => s + near(t.total), 0);
-      const bought = mine.filter((t) => t.kind === "buy" || t.kind === "auction").reduce((s, t) => s + Number(t.quantity), 0);
-      const received = mine.filter((t) => t.kind === "sell" || t.kind === "redeem").reduce((s, t) => s + near(t.total), 0);
-      const soldQty = mine.filter((t) => t.kind === "sell" || t.kind === "redeem").reduce((s, t) => s + Number(t.quantity), 0);
-      const average = bought > 0 ? spent / bought : null;
       const price = coin.priceQuote ?? 0;
       const value = balance * price;
-      const unrealised = average === null ? null : value - average * balance;
+      const accounting = positionAccounting(mine, balance, price, raw.trades.length >= 120);
       positions.push({
         baseMint: coin.address,
         poolAddress: coin.address,
@@ -730,10 +726,10 @@ export const juno = {
         balance,
         price,
         value,
-        averageCost: average,
-        unrealisedPnl: unrealised,
-        unrealisedPnlPct: unrealised !== null && average ? (unrealised / (average * balance || 1)) * 100 : null,
-        realisedPnl: average === null ? 0 : received - average * soldQty,
+        averageCost: accounting.averageCost,
+        unrealisedPnl: accounting.unrealised,
+        unrealisedPnlPct: accounting.unrealisedPct,
+        realisedPnl: accounting.realised,
         currency: "NEAR",
         graduated: coin.curve.graduated,
         trades: mine.map((t) => ({ t: new Date(t.ms).toISOString(), side: t.kind === "sell" || t.kind === "redeem" ? "sell" : "buy", base: Number(t.quantity), price: fillPrice(t) ?? 0 })),
@@ -743,7 +739,9 @@ export const juno = {
     }
     const held = positions.filter((p) => p.balance > 0);
     const totalValue = held.reduce((s, p) => s + p.value, 0);
-    const totalPnl = held.reduce((s, p) => s + (p.unrealisedPnl ?? 0), 0) + positions.reduce((s, p) => s + p.realisedPnl, 0);
+    const totalPnl = positions.some((p) => p.realisedPnl === null || p.unrealisedPnl === null)
+      ? null
+      : positions.reduce((s, p) => s + p.realisedPnl! + p.unrealisedPnl!, 0);
     const cost = held.reduce((s, p) => s + (p.averageCost ?? 0) * p.balance, 0);
     return {
       wallet,
@@ -751,41 +749,51 @@ export const juno = {
       missing: 0,
       totalValue,
       totalPnl,
-      totalPnlPct: cost > 0 ? (totalPnl / cost) * 100 : null,
+      totalPnlPct: cost > 0 && totalPnl !== null ? totalPnl / cost : null,
       currency: "NEAR",
       partial: positions.some((p) => p.partial),
-      history: [],
+      history: positions.some((p) => p.realisedPnl === null || p.partial) ? [] : [
+        ...portfolioHistory(raws.flatMap((raw) => raw.trades.map((trade) => ({
+          market: raw.account, account: trade.account, ms: trade.ms, kind: trade.kind,
+          quantity: Number(trade.quantity), price: fillPrice(trade),
+        }))), wallet),
+        ...(positions.length ? [{ t: new Date().toISOString(), value: totalValue }] : []),
+      ],
     };
   },
 
-  /** Traders ranked by NEAR taken out (sells and redemptions) against cost, from every post's fill log. */
+  /** Traders ranked by realised NEAR profit, with open cost shown separately. Gas is excluded. */
   leaderboard: async (limit = 20) => {
     const raws = await readAll();
     const creators = new Set(raws.map((raw) => raw.market.creator));
     const rows = new Map<string, Trader>();
+    const exits = new Map<string, number[]>();
     for (const raw of raws) {
       const coin = toCoin(raw);
-      for (const trade of raw.trades) {
-        const row = rows.get(trade.account) ?? {
-          wallet: trade.account, realised: 0, unrealised: 0, trades: 0, coins: 0, winRate: null, bestExit: null, holding: 0,
-          isCreator: creators.has(trade.account), followers: 0,
+      const accounts = new Set([...raw.trades.map((t) => t.account), ...raw.holders.map(([id]) => id)]);
+      for (const account of accounts) {
+        const mine = raw.trades.filter((t) => t.account === account);
+        const balance = Number(raw.holders.find(([id]) => id === account)?.[1] ?? 0);
+        const accounting = positionAccounting(mine, balance, coin.priceQuote ?? 0, raw.trades.length >= 120);
+        const row = rows.get(account) ?? {
+          wallet: account, realised: 0, unrealised: 0, trades: 0, coins: 0, winRate: null, bestExit: null, holding: 0,
+          isCreator: creators.has(account), followers: 0,
         };
-        row.trades += 1;
-        row.realised += trade.kind === "sell" || trade.kind === "redeem" ? near(trade.total) : -near(trade.total);
-        rows.set(trade.account, row);
-      }
-      for (const [wallet, balance] of raw.holders) {
-        const row = rows.get(wallet);
-        if (!row) continue;
+        row.trades += mine.length;
         row.coins += 1;
-        row.holding += Number(balance) * (coin.priceQuote ?? 0);
+        row.holding += balance * (coin.priceQuote ?? 0);
+        row.realised = row.realised === null || accounting.realised === null ? null : row.realised + accounting.realised;
+        row.unrealised = row.unrealised === null || accounting.unrealised === null ? null : row.unrealised + accounting.unrealised;
+        if (accounting.exits) exits.set(account, [...(exits.get(account) ?? []), ...accounting.exits]);
+        rows.set(account, row);
       }
     }
-    const traders = [...rows.values()]
-      .map((row) => ({ ...row, unrealised: row.holding }))
-      .sort((a, b) => b.realised + b.holding - (a.realised + a.holding))
-      .slice(0, limit);
-    return { traders, currency: "NEAR", partial: false, poolsRead: raws.length };
+    const traders = [...rows.values()].map((row) => {
+      const closed = exits.get(row.wallet) ?? [];
+      return { ...row, winRate: row.realised !== null && closed.length ? closed.filter((pnl) => pnl > 0).length / closed.length : null,
+        bestExit: row.realised !== null && closed.length ? Math.max(...closed) : null };
+    }).sort((a, b) => (b.realised ?? -Infinity) - (a.realised ?? -Infinity)).slice(0, limit);
+    return { traders, currency: "NEAR", partial: raws.some((raw) => raw.trades.length >= 120), poolsRead: raws.length };
   },
 
   /** A NEAR balance, and optionally one post token's. */
