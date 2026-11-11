@@ -467,8 +467,8 @@ async function readAll(fresh = false): Promise<Raw[]> {
   const value = (async () => {
     const factory = requireFactory();
     const accounts = await guard(retry((rpc) => readPosts(factory, rpc)));
-    const settled = await Promise.allSettled(accounts.map((account) => readOne(account)));
-    return settled.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
+    // Portfolio and rankings must not turn failed market reads into empty wallets.
+    return guard(Promise.all(accounts.map((account) => readOne(account))));
   })();
   shared = { at: Date.now(), value };
   value.catch(() => {

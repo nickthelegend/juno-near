@@ -76,11 +76,24 @@ export function base64(bytes: Uint8Array): string {
   return btoa(String.fromCharCode(...bytes));
 }
 async function rpc(body: object, endpoint = TESTNET_RPC): Promise<any> {
-  const response = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({jsonrpc:'2.0', id:'juno', ...body}) });
-  if (!response.ok) throw Error(`RPC HTTP ${response.status}`);
-  const data = await response.json();
-  if (data.error) throw Error(data.error.message ?? JSON.stringify(data.error));
-  return data.result;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({jsonrpc:'2.0', id:'juno', ...body}), signal: controller.signal });
+    if (!response.ok) throw Error(`RPC HTTP ${response.status}`);
+    const data = await response.json();
+    if (data.error) {
+      // NEAR puts UNKNOWN_ACCOUNT and contract panics behind the generic "Server error".
+      const detail = typeof data.error.data === 'string' ? data.error.data : JSON.stringify(data.error.data ?? {});
+      throw Error([data.error.cause?.name, data.error.message, detail].filter(Boolean).join(': '));
+    }
+    return data.result;
+  } catch (error) {
+    if (controller.signal.aborted) throw Error('NEAR testnet RPC timed out');
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 export async function view<T>(account: string, method: string, args: object = {}, endpoint = TESTNET_RPC): Promise<T> {
   const result = await rpc({method:'query', params:{request_type:'call_function', finality:'final', account_id:account, method_name:method, args_base64:base64(new TextEncoder().encode(JSON.stringify(args)))}}, endpoint);
