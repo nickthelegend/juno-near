@@ -20,6 +20,8 @@ const rpcUrl = testnetRpc(process.env.JUNO_QA_RPC || 'https://near-testnet.drpc.
 const factory = process.env.JUNO_QA_FACTORY || 'juno-awkorp.testnet';
 const post = `${process.env.JUNO_QA_POST || 'sprout'}.${factory}`;
 const playerName = process.env.JUNO_QA_PLAYER || 'kai';
+const widths=(process.env.JUNO_QA_WIDTHS || '1440,375').split(',').map(Number);
+assert.ok(widths.length>0 && widths.every(w=>[1440,375].includes(w)) && new Set(widths).size===widths.length,'QA widths must be 1440, 375, or both.');
 const keyFile = resolve(repo, process.env.JUNO_QA_PLAYER_FILE || '.near-credentials/seed.json');
 const lockFile = process.env.CHROME_LOCK_MODULE || join(scratch, 'chrome-lock.mjs');
 const date = new Date().toISOString().slice(0, 10);
@@ -144,7 +146,7 @@ async function screenshot(page,name,width,diagnostics,extra={}) {
 async function runBrowser(base) {
   const {withChromeLock}=await import(pathToFileURL(lockFile).href);
   await withChromeLock(async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
-    for(const width of [1440,375]){
+    for(const width of widths){
       stage=`${width}: startup`;
       const context=await browser.newContext({viewport:{width,height:width===1440?900:812},deviceScaleFactor:1});
       await context.exposeFunction('__JUNO_QA_AUTHORIZE__',authorize);await context.exposeFunction('__JUNO_QA_REPORT__',report);
@@ -166,6 +168,7 @@ async function runBrowser(base) {
       assert.equal(await page.evaluate(()=>Object.keys(localStorage).some(k=>/ed25519:/.test(localStorage.getItem(k)||''))),false,'QA key persisted in localStorage');
       await page.getByText(`${Number(baseline).toFixed(2)} $${process.env.JUNO_QA_POST?.toUpperCase()||'SPROUT'}`,{exact:true}).waitFor();
       await screenshot(page,'connected-profile',width,diagnostics,{tokenBalance:baseline.toString()});
+      await page.getByRole('tab',{name:'Trade',exact:true}).click();await page.getByText('Traders',{exact:true}).click();await page.waitForTimeout(1800);await screenshot(page,'connected-traders',width,diagnostics);await page.getByRole('tab',{name:'Profile',exact:true}).click();
       for(const [method,quantity,delta] of [['buy',2,2n],['sell',1,1n],['redeem',1,0n]]){
         stage=`${width}: ${method}`;
         await page.getByRole('tab',{name:'Social',exact:true}).click();await page.waitForURL('**/social');
