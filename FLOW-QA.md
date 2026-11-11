@@ -109,3 +109,9 @@ Before/after attachments: [open the screenshot comparison gallery](/private/tmp/
 ## Remaining mobile readability observation
 
 **BLOCKED by the approved-UI rule (minor):** at 375 px the opening-auction tile ellipsizes the clearing-price text (`0.000…`). The complete price is available under **Details → Auction cleared**. Evidence: `creator-claim-cancel-375-after.png` beside `creator-claim-cancel-1440-after.png` in the screenshot directory above. Showing the full value in that tile would require changing its font sizing or wrapping, so no further visual change was made.
+
+## QA signer — implementation checkpoint
+
+A QA-only web wallet is selected by Metro only when `EXPO_PUBLIC_QA_SIGNER=1`. Normal web exports use the existing Meteor adapter. The first production export was checked across every JavaScript chunk: no `qa-signer`, `JUNO_QA_SIGNER_BUILD_ONLY`, injection hook or QA wallet label is present. App TypeScript checks and 10 pure data/policy tests pass. The policy rejects non-`.testnet` accounts, non-testnet RPCs, other factories, non-function-call actions and spending beyond 0.3 NEAR.
+
+The real browser transaction run is still pending at this checkpoint. Existing receipt-replay results above remain historical evidence until that run completes. Production sign-in baselines at both widths are saved under the screenshot directory's `qa-signer/before-signin-{1440,375}.png`. No approved screen's styling is changed.
