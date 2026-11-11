@@ -10,7 +10,7 @@ import { useSyncExternalStore } from "react";
  * that almost never changed.
  *
  * So the refetch is tied to the one thing that definitely changed it: this
- * device posting. A counter, bumped on write, read as a dependency.
+ * device confirming an on-chain write. A counter, bumped on write, read as a dependency.
  */
 let revision = 0;
 const listeners = new Set<() => void>();

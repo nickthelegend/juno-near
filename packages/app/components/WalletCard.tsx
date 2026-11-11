@@ -7,6 +7,7 @@ import { Button } from "./kit";
 import { juno } from "../lib/api";
 import { displayAddress, explorer, NETWORK_NAME } from "../lib/chain";
 import { useApi } from "../lib/useApi";
+import { useFeedRevision } from "../lib/refresh";
 import { theme } from "../theme";
 
 /**
@@ -22,8 +23,9 @@ import { theme } from "../theme";
 const FAUCET_URL = "https://near-faucet.io/";
 
 export function WalletCard({ address }: { address: string }) {
-  const balances = useApi(() => juno.balances(address), [address]);
-  const held = useApi(() => juno.portfolio(address).then((p) => p.positions.filter((x) => x.balance > 0).length), [address]);
+  const revision = useFeedRevision();
+  const balances = useApi(() => juno.balances(address), [address, revision]);
+  const held = useApi(() => juno.portfolio(address).then((p) => p.positions.filter((x) => x.balance > 0).length), [address, revision]);
   const [copied, setCopied] = useState(false);
   const shown = displayAddress(address);
 

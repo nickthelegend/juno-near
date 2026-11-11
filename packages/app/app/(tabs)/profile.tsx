@@ -37,6 +37,7 @@ import { useLinkedState } from "../../lib/linked";
 import { money, tokens, useApi } from "../../lib/useApi";
 import { explorer, EXPLORER_NAME, NETWORK_LABEL, NETWORK_NAME } from "../../lib/chain";
 import { useWallet } from "../../lib/wallet";
+import { useFeedRevision } from "../../lib/refresh";
 import { theme } from "../../theme";
 
 type Tab = "holdings" | "activity" | "about";
@@ -63,6 +64,7 @@ const TABS = [
 export default function ProfileScreen() {
   const wallet = useWallet();
   const router = useRouter();
+  const revision = useFeedRevision();
   /* Addressable, for the same reason the market list's segment is: a link, a
      share and a demo all want to land on a view rather than on a tap. */
   const [tab, setTab] = useLinkedState<Tab>(
@@ -75,7 +77,7 @@ export default function ProfileScreen() {
 
   const portfolio = useApi(
     async () => (wallet.address ? juno.portfolio(wallet.address) : null),
-    [wallet.address],
+    [wallet.address, revision],
   );
 
   const data = portfolio.data;

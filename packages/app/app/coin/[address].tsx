@@ -45,6 +45,7 @@ import {
 import { money, since, tokens, useApi } from "../../lib/useApi";
 import { shareCoin } from "../../lib/social";
 import { useWallet } from "../../lib/wallet";
+import { useFeedRevision } from "../../lib/refresh";
 import { theme } from "../../theme";
 
 /**
@@ -79,21 +80,21 @@ export default function CoinScreen() {
   const [tab, setTab] = useState<Tab>("activity");
   const [copied, setCopied] = useState(false);
   const wallet = useWallet();
+  const revision = useFeedRevision();
   // A link that is not an address is answered here, as the server would
   // answer it (400 → "No such coin"), without asking the server.
   const wellFormed = validAddress(mint);
   const notAnAddress = () => Promise.reject(new ApiError("That is not a NEAR account.", 400));
-  const detail = useApi(() => (wellFormed ? juno.coin(mint) : notAnAddress()), [mint]);
+  const detail = useApi(() => (wellFormed ? juno.coin(mint) : notAnAddress()), [mint, revision]);
   const coin = detail.data?.coin;
 
   /*
-   * What this wallet holds: the coin, for the sell side; ETH and USDC, for the
+   * What this wallet holds: the coin, for the sell side; NEAR, for the
    * buy side and for gas. One read, re-read after each trade.
    */
-  const [tradeRevision, setTradeRevision] = useState(0);
   const balances = useApi(
     async () => (wallet.address ? juno.balances(wallet.address, mint) : null),
-    [wallet.address, mint, tradeRevision],
+    [wallet.address, mint, revision],
   );
   const holding = balances.data?.token ?? null;
   const quoteBalance = balances.data?.near ?? null;
@@ -126,7 +127,7 @@ export default function CoinScreen() {
         <NavGrow />
       </Nav>
 
-      {detail.loading ? (
+      {detail.loading && (!coin || coin.address !== mint) ? (
         /* Shaped like the screen it precedes — a chart, an identity row, a
            stats band — rather than one big block over an empty screen. A coin
            read can take fifteen seconds against the public endpoint, which is
@@ -334,7 +335,6 @@ export default function CoinScreen() {
                   rewards={coin.creatorFeesQuote ?? toQuote(coin.creatorRewards)}
                   currency={unit}
                   onClaimed={() => {
-                    setTradeRevision((n) => n + 1);
                     detail.refresh();
                   }}
                 />
@@ -441,7 +441,6 @@ export default function CoinScreen() {
               onClose={() => setSheet(null)}
               onDone={() => {
                 setSheet(null);
-                setTradeRevision((n) => n + 1);
                 detail.refresh();
               }}
             />

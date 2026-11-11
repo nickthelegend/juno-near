@@ -31,6 +31,7 @@ import { useLinkedState } from "../../lib/linked";
 import { count, inQuote, invalidateMarkets, loadMarkets, progressLabel } from "../../lib/markets";
 import { money, useApi } from "../../lib/useApi";
 import { useViewerOnce } from "../../lib/social";
+import { useFeedRevision } from "../../lib/refresh";
 import { theme } from "../../theme";
 
 type Sort = "memes" | "traders";
@@ -52,6 +53,7 @@ const SORTS = [
  */
 export default function TradeScreen() {
   const router = useRouter();
+  const revision = useFeedRevision();
   // Addressable, so a deep link or a demo can land on a specific list.
   const [sort, setSort] = useLinkedState<Sort>(
     "sort",
@@ -64,9 +66,9 @@ export default function TradeScreen() {
   const once = useViewerOnce();
   const markets = useApi(
     () => (sort !== "memes" || !once.ready ? Promise.resolve(null) : loadMarkets(once.viewer())),
-    [sort, once.ready],
+    [sort, once.ready, revision],
   );
-  const board = useApi(() => (onTraders ? juno.leaderboard(25) : Promise.resolve(null)), [onTraders]);
+  const board = useApi(() => (onTraders ? juno.leaderboard(25) : Promise.resolve(null)), [onTraders, revision]);
   const [trade, setTrade] = useState<{ coin: Coin; side: "buy" | "sell" | "redeem" } | null>(null);
 
   const refresh = () => {

@@ -32,6 +32,7 @@ import { juno, type Coin, type Position, type Trader } from "../../lib/api";
 import { money, tokens, useApi } from "../../lib/useApi";
 import { sameAddress, validAddress } from "../../lib/chain";
 import { useWallet } from "../../lib/wallet";
+import { useFeedRevision } from "../../lib/refresh";
 import { theme } from "../../theme";
 
 /**
@@ -66,6 +67,7 @@ export default function TraderScreen() {
   const { wallet: target } = useLocalSearchParams<{ wallet: string }>();
   const router = useRouter();
   const me = useWallet();
+  const revision = useFeedRevision();
 
   const [copying, setCopying] = useState<Coin | null>(null);
 
@@ -76,7 +78,7 @@ export default function TraderScreen() {
     () => (valid ? juno.followStats(target, me.address) : Promise.resolve(null)),
     [target, me.address, valid],
   );
-  const portfolio = useApi(() => (valid ? juno.portfolio(target) : Promise.resolve(null)), [target, valid]);
+  const portfolio = useApi(() => (valid ? juno.portfolio(target) : Promise.resolve(null)), [target, valid, revision]);
   /*
    * The board is read whole and this wallet picked out of it.
    *
@@ -85,7 +87,7 @@ export default function TraderScreen() {
    * pool anyway. The server caches the board for ninety seconds, so arriving
    * here from the board costs nothing.
    */
-  const board = useApi(() => juno.leaderboard(50), []);
+  const board = useApi(() => juno.leaderboard(50), [revision]);
   const row = board.data?.traders.find((entry) => sameAddress(entry.wallet, target)) ?? null;
   const rank = board.data?.traders.findIndex((entry) => sameAddress(entry.wallet, target)) ?? -1;
 

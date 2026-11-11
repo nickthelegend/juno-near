@@ -11,7 +11,9 @@ import {
   type KeyPairString,
 } from "near-api-js";
 
-import { invalidateReads, type TxStep } from "./api";
+import type { TxStep } from "./api";
+import { invalidateMarkets } from "./markets";
+import { feedChanged } from "./refresh";
 import {
   BROWSER_WALLET,
   connectWallet,
@@ -267,10 +269,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           hashes.push(hash);
           progress({ index, label: step.label, phase: "confirmed", hash });
         }
-        invalidateReads();
         return { hashes, confirmedAt: new Date() };
       } finally {
-        if (hashes.length) invalidateReads();
+        if (hashes.length) {
+          invalidateMarkets();
+          feedChanged();
+        }
         setSigning(false);
       }
     },
@@ -314,7 +318,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           hashes.push(hash);
           progress({ index, label: step.label, phase: "confirmed", hash });
         }
-        invalidateReads();
         return { hashes, confirmedAt: new Date() };
       } catch (error) {
         if (error instanceof TxError) throw error;
@@ -324,6 +327,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           reason: null,
         });
       } finally {
+        if (hashes.length) {
+          invalidateMarkets();
+          feedChanged();
+        }
         setSigning(false);
       }
     },
