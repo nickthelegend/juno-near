@@ -133,7 +133,7 @@ function AboutRail() {
   const steps = [
     ["Post", "A photo launches as its own NEAR account, <name>.<factory>, and that account is the coin."],
     ["Bid", "For one minute anyone can place a sealed bid. Everyone pays the same clearing price."],
-    ["Trade", "Then the curve opens. 20% of every buy goes into a floor any holder can redeem."],
+    ["Trade", "Then the curve opens. 20% of each buy's base price goes into a floor any holder can redeem."],
     ["Graduate", "A full curve graduates. Dares put the creator's bond on the line."],
   ] as const;
   return (

@@ -216,7 +216,7 @@ export default function PostScreen() {
 
           <Text style={styles.sectionTitle}>Kind</Text>
           <Text style={styles.sectionLede}>
-            Every post uses the same sixteen-segment weighted curve, priced in NEAR. 20% of every buy goes into the floor.
+            Every post uses the same sixteen-segment weighted curve, priced in NEAR. 20% of each buy's base price goes into the floor.
           </Text>
 
           <View style={styles.presets}>
@@ -282,7 +282,7 @@ export default function PostScreen() {
           <Text style={styles.footnote}>
             {wallet.via === "wallet"
               ? "One approval in your wallet: your account pays the gas and the 3 NEAR that funds the post account's storage. Bids, buys and redemptions all land on that account."
-              : "One signature, relayed as a NEP-366 meta transaction: the relayer pays the gas, your account pays the 3 NEAR that funds the post account's storage. Bids, buys and redemptions all land on that account."}
+              : "One signature, relayed as a NEP-366 meta transaction: the relayer fronts the gas and the 3 NEAR that funds the post account's storage. Bids, buys and redemptions all land on that account."}
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>

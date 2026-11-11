@@ -323,7 +323,7 @@ export default function Landing() {
               </article>
               <article>
                 <h3>NEP-366 meta transactions</h3>
-                <p>The app signs each call as a delegate action with a key made on the device. The relayer checks an allowlist of receiver, method, gas and deposit caps, then submits it.</p>
+                <p>Email calls use a device-signed delegate action. The relayer checks receiver, method, gas and deposit caps and fronts the deposit. Web wallets sign and pay directly.</p>
               </article>
               <article>
                 <h3>Accounts</h3>

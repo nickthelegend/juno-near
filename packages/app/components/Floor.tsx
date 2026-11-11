@@ -211,7 +211,7 @@ export function FloorPanel() {
         </View>
       </View>
       <Text style={s.panelDetail}>
-        Any holder can redeem against a post's floor at any time. 20% of every buy and half the auction proceeds go in. NEAR testnet.
+        Any holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.
       </Text>
 
       <View style={s.split}>

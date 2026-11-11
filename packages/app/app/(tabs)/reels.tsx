@@ -383,8 +383,8 @@ function Reel({
         </RailButton>
 
         <RailButton
-          label={comments > 0 ? count(comments) : "Say"}
-          accessibilityLabel="Comments"
+          label={comments > 0 ? count(comments) : "View"}
+          accessibilityLabel="Open post"
           onPress={onComments}
         >
           <ReplyBubble size={30} />

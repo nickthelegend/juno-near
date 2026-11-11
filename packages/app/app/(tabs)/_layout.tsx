@@ -188,7 +188,7 @@ function PostSlot({ open, night = false, onPress }: { open: boolean; night?: boo
       onPressOut={onPressOut}
       accessibilityRole="button"
       accessibilityState={{ expanded: open }}
-      accessibilityLabel={open ? "Close" : "Create — a photo or a reel"}
+      accessibilityLabel={open ? "Close" : "Create — a photo or a dare"}
     >
       <Animated.View style={{ transform: [{ scale }] }}>
         <PostDisc $night={night}>
