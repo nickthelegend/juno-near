@@ -82,9 +82,10 @@ export default function PostScreen() {
 
   const slug = name.trim().toLowerCase();
   const slugOk = /^[a-z0-9-]{2,32}$/.test(slug) && !slug.startsWith("-") && !slug.endsWith("-");
-  const captionOk = caption.trim().length <= MAX_CAPTION;
+  const captionBytes = new TextEncoder().encode(caption.trim()).length;
+  const captionOk = captionBytes <= MAX_CAPTION;
   const bondNear = Number(bond);
-  const dareOk = kind === "plain" || (dare.trim().length > 0 && dare.trim().length <= 300 && bondNear > 0 && bondNear <= 2);
+  const dareOk = kind === "plain" || (dare.trim().length > 0 && new TextEncoder().encode(dare.trim()).length <= 300 && bondNear > 0 && bondNear <= 2);
   const chosen = media ?? (/^https:\/\/\S{6,290}$/.test(mediaUrl.trim()) ? mediaUrl.trim() : null);
   const canLaunch = !!chosen && slugOk && captionOk && dareOk && !busy && !!FACTORY;
   const missing = !FACTORY
@@ -200,7 +201,7 @@ export default function PostScreen() {
               />
             </Field>
 
-            <Field label="Caption" hint={!captionOk ? `${caption.trim().length - MAX_CAPTION} over the limit` : undefined}>
+            <Field label="Caption" hint={!captionOk ? `${captionBytes - MAX_CAPTION} bytes over the limit` : undefined}>
               <TextInput
                 value={caption}
                 onChangeText={setCaption}
