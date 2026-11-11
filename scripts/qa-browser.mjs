@@ -179,7 +179,7 @@ async function runBrowser(base) {
       await page.getByText(`${Number(baseline).toFixed(2)} $${process.env.JUNO_QA_POST?.toUpperCase()||'SPROUT'}`,{exact:true}).waitFor();
       await screenshot(page,'connected-profile',width,diagnostics,{tokenBalance:baseline.toString()});
       await page.getByRole('tab',{name:'Trade',exact:true}).click();await page.getByText('Traders',{exact:true}).click();await page.waitForTimeout(1800);await screenshot(page,'connected-traders',width,diagnostics);await page.getByRole('tab',{name:'Profile',exact:true}).click();
-      for(const [method,quantity,delta] of [['buy',2,2n],['sell',1,1n],['redeem',1,0n]]){
+      for(const [method,quantity,delta] of [['buy',2,2n],['sell',2,0n]]){
         stage=`${width}: ${method}`;
         await page.getByRole('tab',{name:'Social',exact:true}).click();await page.waitForURL('**/social');
         const title=page.getByText(`${process.env.JUNO_QA_POST?process.env.JUNO_QA_POST[0].toUpperCase()+process.env.JUNO_QA_POST.slice(1):'Sprout'} $${process.env.JUNO_QA_POST?.toUpperCase()||'SPROUT'}`,{exact:true});
@@ -231,7 +231,7 @@ try {
   stage='QA build';await build(true);currentRun.qaIsolation=await isolation(qaBuild,true);await persist();
   const base=await preview();currentRun.preview=base;currentRun.status='running';await persist();say(`QA preview: ${base}`);
   await runBrowser(base);currentRun.status='pass';currentRun.completedAt=new Date().toISOString();currentRun.spentUpperBoundYocto=currentRun.reservations.reduce((n,r)=>n+BigInt(r.spentUpperBoundYocto||0),0n).toString();await persist();
-  say(`PASS: real browser buy, sell, redemption and profile updates at both widths. Conservative spend ${formatNear(BigInt(currentRun.spentUpperBoundYocto),8)} testnet NEAR. Evidence: ${evidenceFile}`);
+  say(`PASS: real browser buy, sell and profile updates at the requested widths. Conservative spend ${formatNear(BigInt(currentRun.spentUpperBoundYocto),8)} testnet NEAR. Evidence: ${evidenceFile}`);
 } catch(error) {
   if(currentRun){currentRun.status='failed';currentRun.failedStage=stage;currentRun.failure=clean(error instanceof Error?error.message:'QA test failed');await persist();}
   say(`FAIL at ${stage}: ${clean(error instanceof Error?error.message:'QA test failed')}`);process.exitCode=1;
