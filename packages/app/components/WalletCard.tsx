@@ -75,7 +75,7 @@ export function WalletCard({ address }: { address: string }) {
       </View>
 
       {empty ? (
-        <Text style={styles.hint}>Bids, buys and launches spend NEAR (the relayer pays the gas). Fund this account to start.</Text>
+        <Text style={styles.hint}>Wallet trades need NEAR for deposits and gas. Email calls need a funded relayer.</Text>
       ) : null}
 
       <Button

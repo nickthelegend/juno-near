@@ -430,7 +430,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
           ? "Bids are hashes with 1 NEAR escrowed: nobody can see a price until the reveal. Everyone who clears pays the same price."
           : n.phase === "reveal"
             ? "Bidders reveal amount, max price and salt. A bid that is never revealed is refunded minus 1%."
-            : "Bidding and reveals are over. Anyone can settle: winners get tokens at one price, the rest is refunded."}
+            : "Bidding and reveals are over. Anyone can settle: winners get tokens at one price. Unused escrow is claimed separately."}
       </Text>
 
       {n.phase === "commit" ? (
