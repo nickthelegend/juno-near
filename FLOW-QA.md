@@ -4,7 +4,7 @@ Date: 2026-11-11. Baseline: `a06a34d`. Production web export, Chrome channel `ch
 
 Continuation completed: all 15 route cases and the remaining interactive trader/creator controls pass at both widths. The interrupted click was a harness locator matching an obscured mounted-tab element; visible hit-tested controls work without a product change.
 
-The existing design is preserved. Changes fix data, errors, validation, session state and factual copy; no colors, fonts, art or layout rules are changed. The whole product is **not an unqualified end-to-end PASS**: human Meteor approval, launch/bid spending, and missing refund/dare UI controls remain blocked as detailed below.
+The existing design is preserved. Changes fix data, errors, validation, session state and factual copy; no colors, fonts, art or layout rules are changed. The QA-signer browser buy/sell flow now passes end to end with real testnet transactions. Launch/bid spending and missing refund/dare UI controls remain blocked as detailed below.
 
 ## Ordered user flow
 
@@ -24,11 +24,11 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 6 | Quote the main action | **PASS** | Tap Buy, enter 1, inspect fee and floor contribution. Sell and Redeem quote without sending anything. README now includes the amount-entry step. | `buy-quote`, `sell-quote`, `redeem-quote` |
 | 7 | Connect a wallet | **PASS** | Profile -> Sign in -> Connect NEAR wallet opens Meteor testnet login for juno-awkorp.testnet, ALL_METHODS. | `signin`, `wallet-open` |
 | 8 | Cancel or block wallet connection | **PASS** | Closing the wallet produces the closed-window message. Blocking window.open produces the allow-pop-ups message and a usable retry. | `wallet-closed`, `wallet-blocked` |
-| 9 | Complete Meteor approval | **BLOCKED** | A human must sign in and approve in Meteor. No actual human wallet sign-in is claimed by the harness. | `meteor` |
+| 9 | Approve browser transactions | **PASS** | QA signer connects through the existing sheet and signs real testnet calls in Chrome at both widths. See the QA-signer evidence below. | QA-signer `signin`, `connected-profile` |
 | 10 | Check the buy request | **PASS** | A display-only account with an ephemeral key opens Meteor testnet/sign. Decoded call: buy quantity 1, SPROUT receiver, kai signer, 100 Tgas, live quote deposit. The pop-up is cancelled. | `buy-wallet-request`, `buy-wallet-cancel` |
-| 11 | Execute real testnet actions | **PASS** | The repository wallet-path script buys 1 SPROUT, sells it, and submits an intentionally underpaid buy. All three outcomes are recorded; the token balance returns to 70. | `buy-receipt`, `buy-refused` |
-| 12 | Read result and receipt | **PASS** | A harness reply replays the real buy outcome to the browser; the app independently follows the real hash to final, shows Done and a NearBlocks receipt. The failed outcome shows The price moved. Try again. This is response-handling evidence, not a Meteor approval. | `buy-receipt`, `buy-refused` |
-| 13 | Review profile positions | **FIXED** | Holdings, Activity and About render live positions. Cost and realised/open profit are separate; NEAR values no longer use dollar signs; percentages are not scaled twice. The existing chart now has observed-fill history and a current valuation. | `profile-holdings`, `profile-activity`, `profile-about` |
+| 11 | Execute real testnet actions | **PASS** | QA signer buys 2 SPROUT then sells 2 in the browser at each width. All four calls reach FINAL; each round trip returns the holding to 76. Earlier underpayment evidence remains in the wallet-path record. | QA-signer `buy-receipt`, `sell-receipt` |
+| 12 | Read result and receipt | **PASS** | Real browser calls show Done and a NearBlocks receipt matching each submitted hash. Both the app and an independent Node read confirm FINAL. No receipt replay is used in the QA-signer run. The earlier refused-buy replay remains historical failure-message coverage. | QA-signer `buy-receipt`, `sell-receipt`; historical `buy-refused` |
+| 13 | Review profile positions | **FIXED** | Holdings, Activity and About render live positions. Cost and realised/open profit are separate; NEAR values no longer use dollar signs; percentages are not scaled twice. The existing chart now has observed-fill history and a current valuation. Confirmed writes now refresh mounted holdings without reloading; real buy/sell positions match the chain at both widths. | `profile-holdings`, `profile-activity`, `profile-about`; QA-signer `buy-profile`, `sell-profile` |
 | 14 | Compare markets and traders | **FIXED** | Trade -> Posts lists live markets; Traders shows realised profit in NEAR, holding value, open P&L and observed exits. Ranking follows the profit-taken label. | `trade`, `traders`, `nav-trade`, `nav-traders` |
 | 15 | Inspect a trader | **FIXED** | Direct reads and profit fixes pass. At both widths the trader list opens Kai, Buy this yourself opens the SPROUT sheet, and the holding row opens its detail. A visible hit-tested locator avoids the obscured label in a mounted tab. | `trader`, `trader-from-board`, `trader-buy`, `trader-holding-detail` |
 | 16 | Use following filters | **PASS** | A signed-in account with no follows gets an explicit empty state; Show everyone restores the feed. Likes and follows remain device-local. | `following-empty`, `following-reset` |
@@ -50,14 +50,14 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 32 | Share fallback | **PASS** | Chrome exposes native Web Share, which cannot be completed by this headless run. With Web Share explicitly unavailable, the existing fallback copies the full post URL; both widths are checked. | `share-clipboard` |
 | 33 | Low balance | **FIXED** | A labeled zero-balance fixture shows the existing funding hint. It now distinguishes wallet deposits/gas from relayer-funded email calls. | `low-balance` |
 | 34 | Restore the feed after a failed read | **PASS** | The feed Try again control reloads live posts after simulated network failure. The desktop rail has a separate retry; the feed control is tested explicitly. | `feed-retry` |
-| 35 | Creator fees | **PASS** | The creator-only PILE-IN fee control opens Meteor testnet/sign with withdraw_earnings, zero deposit and 120 Tgas from kai to PILE-IN. Cancelling returns the existing control to idle. No claim is broadcast; actual approval remains a human step. | `creator-fees`, `creator-claim-request`, `creator-claim-cancel` |
+| 35 | Creator fees | **PASS** | The creator-only PILE-IN fee control opens Meteor testnet/sign with withdraw_earnings, zero deposit and 120 Tgas from kai to PILE-IN. Cancelling returns the existing control to idle. No creator-fee claim is broadcast in this request/cancellation check. | `creator-fees`, `creator-claim-request`, `creator-claim-cancel` |
 | 36 | Hosted release | **BLOCKED** | This pass validates the production export at localhost:5381. It does not push or redeploy the hosted site. The fixes must be republished before the hosted README demo can be treated as this tested revision. | `landing` |
 
 ## Evidence boundaries and spending
 
-Live browsing uses the deployed factory `juno-awkorp.testnet`. Signed-in display/request checks use an ephemeral, off-chain key, never a user's real browser wallet key. Only `pnpm testnet:wallet-path` reads the seeded player key by file path; no key or `.env` contents are printed. No mainnet action is made.
+Live browsing uses the deployed factory `juno-awkorp.testnet`. The original display/request checks use an ephemeral, off-chain key. The wallet-path script and the new `pnpm test:e2e` read the existing seeded testnet player key privately in Node. The new test injects it only in memory through Playwright `addInitScript`; the QA adapter deletes the injection global on connection and keeps the key out of browser storage. No key or `.env` contents are printed or copied to another file. No mainnet action is made.
 
-The receipt checks replay real QA outcomes as the wallet's reply, then let the app poll the real chain. They verify the result/receipt UI and failure mapping, not a human Meteor sign-in or approval. Empty-collection, failed-network, low-balance and active-auction fixtures are explicitly labeled in the evidence JSON and are not deployment evidence.
+The original receipt checks replay real QA outcomes as the wallet's reply, then let the app poll the real chain. Those historical checks cover failure mapping. The QA-signer run below supersedes the successful receipt/profile coverage with newly signed browser transactions. Empty-collection, failed-network, low-balance and active-auction fixtures are explicitly labeled in the evidence JSON and are not deployment evidence.
 
 Three real transactions are recorded in [deployments/wallet-path-2026-11-11.json](deployments/wallet-path-2026-11-11.json):
 
@@ -65,7 +65,7 @@ Three real transactions are recorded in [deployments/wallet-path-2026-11-11.json
 - Sell: `DawGThvsCrD9cX9QfSxgAjfVVqbFAj7WpedXoAk8jVig`.
 - Underpayment rejected: `aeTacsWbcWXS6FySgutResdjtsfXFh8ZXrQfak6DSVb`.
 
-RPC outcomes report 633071518855700000000 yoctoNEAR gas burnt. Attached deposits total 478348476081531864202 yoctoNEAR. Their sum is a conservative **0.001111419994937232 NEAR** upper bound, below the **0.3 NEAR** budget; sale proceeds and refunds are not subtracted. There are no other broadcast transactions in this QA. Kai's SPROUT balance is 70 before and after.
+RPC outcomes report 633071518855700000000 yoctoNEAR gas burnt. Attached deposits total 478348476081531864202 yoctoNEAR. Their sum is a conservative **0.001111419994937232 NEAR** upper bound, below the **0.3 NEAR** budget; sale proceeds and refunds are not subtracted. That original wallet-path run leaves Kai's SPROUT balance at 70. The subsequent QA-signer probes and final browser run are recorded separately below; they are included in the combined cost ceiling.
 
 ## RPC and hosting limits
 
@@ -110,18 +110,73 @@ Before/after attachments: [open the screenshot comparison gallery](/private/tmp/
 
 **BLOCKED by the approved-UI rule (minor):** at 375 px the opening-auction tile ellipsizes the clearing-price text (`0.000…`). The complete price is available under **Details → Auction cleared**. Evidence: `creator-claim-cancel-375-after.png` beside `creator-claim-cancel-1440-after.png` in the screenshot directory above. Showing the full value in that tile would require changing its font sizing or wrapping, so no further visual change was made.
 
-## QA signer — implementation checkpoint
+## QA signer — real browser results
 
-A QA-only web wallet is selected by Metro only when `EXPO_PUBLIC_QA_SIGNER=1`. Normal web exports use the existing Meteor adapter. The first production export was checked across every JavaScript chunk: no `qa-signer`, `JUNO_QA_SIGNER_BUILD_ONLY`, injection hook or QA wallet label is present. App TypeScript checks and 10 pure data/policy tests pass. The policy rejects non-`.testnet` accounts, non-testnet RPCs, other factories, non-function-call actions and spending beyond 0.3 NEAR.
+**PASS — `pnpm test:e2e`, 2026-11-11.** Tested source: `53f58ae`. Run: `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1`. Chrome channel `chrome`, headless, under the shared lock, on local port 5383. Swap free was 1401.44 MB before both exports. Browser and preview server closed after completion.
 
-The real browser transaction run is still pending at this checkpoint. Existing receipt-replay results above remain historical evidence until that run completes. Production sign-in baselines at both widths are saved under the screenshot directory's `qa-signer/before-signin-{1440,375}.png`. No approved screen's styling is changed.
+The normal export forces `EXPO_PUBLIC_QA_SIGNER=0`. Metro selects the QA adapter only for the flagged web export and rejects QA imports in production. All 5 production JavaScript chunks were scanned: no QA module name, marker, injection hook, session key or wallet label was found. The separate QA export contains the adapter. Bundle fingerprints are in [the public transaction ledger](deployments/qa-browser-2026-11-11.json). App TypeScript and all 10 data/policy tests pass, including mainnet/RPC/action rejection and the shared spending limit.
 
-First real browser transaction: buy 2 SPROUT, hash `4yhGYB6dCYjeFySb9GeXicrQXdV1tn1H9gcnn4SbrJdS`, reached FINAL and the app showed its receipt. The harness stopped on a recovered public-RPC HTTP 408 diagnostic before checking the profile; it is retained in `deployments/qa-browser-2026-11-11.json`. The runner now retains recovered testnet RPC transport diagnostics as warnings while still failing page errors, raw error text, broken assets and unrecovered request errors. No wallet response is replayed in this run.
+The real key is read in Node from the existing gitignored testnet file and passed to the browser only in memory. Playwright debug logging is disabled; no trace, HAR, browser video or storage-state file is produced. The QA wallet requires localhost/127.0.0.1 on ports 5300–5999, named `.testnet` accounts, an allowlisted testnet RPC and Juno function calls. A Node guard checks available balance before spending and reserves deposits plus three times maximum gas. Public hashes are persisted before broadcast; uncertain calls retain their reservation. The 0.3 NEAR cap includes failed QA-browser runs across dates.
 
-Real-profile checkpoint: a second browser buy, `FjKHepKSxM15DqmNEfYqRiJTnH6zBwziiYz7khRaqYi8`, finalized at 1440 px and changed the on-chain holding from 72 to 74. The existing mounted Profile tab still showed its prior holding. Its stale-state screenshot and the real receipt are in the QA-browser ledger; this is a functional cache/subscription defect, not a wallet approval blocker. A 375 px reproduction is pending before the refresh fix.
+Manual integration note: Meteor's own human sign-in/approval remains untested. The QA signer proves the app's transaction, confirmation, receipt and position flow; it does not prove Meteor's account grant or key revocation screens.
 
-Refresh-fix checkpoint: confirmed wallet writes now invalidate market/read caches and notify mounted Profile, Wallet, Trade, Trader and Coin readers. Coin detail retains its existing content while refreshing so the transaction receipt is not unmounted. No styles or layout rules change. App TypeScript and all 10 data/policy tests pass; the mobile before run still holds the pre-fix export while waiting for the shared Chrome lock. Real-browser confirmation of the fix remains pending.
+### Ordered real browser flow
 
-The pre-fix 375 px reproduction also finalized a real buy (`B4QW7rFDTK3mXMfHG2qgsAu3QyrZYPby5cXcamFRzTdj`) and retained the stale mounted Profile screenshot. The refresh fix is committed as `d848a8d`. The final QA signer run now uses buy 2 → sell 2 at each width, as requested; new launches and bids are excluded. Before screenshots at both widths are recorded in the QA-browser ledger. Confirmation of the fixed export is next.
+Each step passed at **1440×900 and 375×812**:
 
-Final QA-signer checkpoint: `pnpm test:e2e` passed at 1440×900 and 375×812 on `53f58ae`. All four buy/sell transactions reached FINAL, their real receipt hashes matched, and Profile updated without reload (76 → 78 → 76 SPROUT per width). Run `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1` records all 22 screenshots/diagnostic steps and production exclusion. The total browser-run ceiling including failed probes is 6664799550672602701431 yoctoNEAR (0.006664799550672603 NEAR), below 0.3. The preview on 5383 and Chrome were closed. Full evidence summary below will replace the implementation checkpoints.
+1. Open `/`, read the landing page, then Open app → `/social`.
+2. Profile → Sign in → Connect NEAR wallet. QA signer connects `kai.juno-awkorp.testnet`; the injection global is removed and no key is stored in localStorage.
+3. Read the 76-SPROUT starting position. Mount Trade → Traders, then return to Profile.
+4. Social → Sprout → Buy → quantity 2 → Buy. The browser signs and sends to `sprout.juno-awkorp.testnet`.
+5. Wait for FINAL and Done. Match the on-screen receipt hash to the submitted hash; independently verify the successful chain outcome and balance 78.
+6. Done → back to Social → Profile. The existing mounted position shows 78 SPROUT without a page reload.
+7. Social → Sprout → Buy → Sell → quantity 2 → Sell. Wait for FINAL and the matching receipt; independently verify balance 76.
+8. Return to Profile without reload. The position shows 76 SPROUT again. About → Sign out shows No wallet yet.
+
+| Width | Call | Transaction | SPROUT after | Result |
+| --- | --- | --- | --- | --- |
+| 1440 | buy 2 | [DAgLdhrvwdq4aKEtt36UoQrVi3uvtAVv7Cgw7qKUvyHd](https://testnet.nearblocks.io/txns/DAgLdhrvwdq4aKEtt36UoQrVi3uvtAVv7Cgw7qKUvyHd) | 78 | FINAL; receipt and Profile verified |
+| 1440 | sell 2 | [775gGv4FQatKb5obQDwvpj13Wm7FekRV1a9kP76CkSbr](https://testnet.nearblocks.io/txns/775gGv4FQatKb5obQDwvpj13Wm7FekRV1a9kP76CkSbr) | 76 | FINAL; receipt and Profile verified |
+| 375 | buy 2 | [Bua9DtCuRvzJeR8eaitxjdgibG9NyPuAJxbkWf8vrPDh](https://testnet.nearblocks.io/txns/Bua9DtCuRvzJeR8eaitxjdgibG9NyPuAJxbkWf8vrPDh) | 78 | FINAL; receipt and Profile verified |
+| 375 | sell 2 | [CHL87VxkMns5jcnV3NmrMR2HvpPSufHDn3qwXCg3H4Tg](https://testnet.nearblocks.io/txns/CHL87VxkMns5jcnV3NmrMR2HvpPSufHDn3qwXCg3H4Tg) | 76 | FINAL; receipt and Profile verified |
+
+All 22 captured steps have no page errors, horizontal overflow, broken images or raw error text. Four public dRPC HTTP 408 responses (one per receipt step) recovered; their console/network diagnostics remain in the ledger. Real finality, receipts and profile assertions still passed. Other request errors and JavaScript errors fail the test.
+
+### Functional fix and probe accounting
+
+Two pre-fix browser buys reached FINAL but left the mounted Profile tab stale: `FjKHepKSxM15DqmNEfYqRiJTnH6zBwziiYz7khRaqYi8` at 1440 and `B4QW7rFDTK3mXMfHG2qgsAu3QyrZYPby5cXcamFRzTdj` at 375. Fix `d848a8d` invalidates shared caches and notifies mounted Profile, Wallet, Trade, Trader and Coin readers after confirmed writes. Coin content stays mounted during the refresh so the receipt sheet survives. Styles, layout, colors, fonts and art are unchanged.
+
+The first probe, `4yhGYB6dCYjeFySb9GeXicrQXdV1tn1H9gcnn4SbrJdS`, reached a real receipt but the harness stopped on a recovered HTTP 408. The three probe buys remain real purchases: they increased Kai's holding from 70 to 76. They were not rolled back or replayed. The successful final run starts and ends at 76 at each width.
+
+All seven QA-browser transactions, including failed probes: **6664799550672602701431 yoctoNEAR**, below **0.006665 NEAR**, conservatively counting attached deposits and all receipt gas without subtracting sale proceeds/refunds. Combined with the earlier wallet-path run, the full November 11 QA ceiling is below **0.007777 NEAR**, within 0.3. No launch or bid is broadcast.
+
+### Screenshot attachments
+
+[Before/after gallery at both widths](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/screenshot-index.html) includes the original sign-in baselines, stale pre-fix Profile captures, final receipts and refreshed positions. Profile position captures scroll to the holding row. No screenshots are committed to the repo.
+
+The QA-signer screenshots use the following exact paths, rather than the earlier `-after.png` naming convention:
+
+| Width | Step | Screenshot |
+| --- | --- | --- |
+| 1440 | landing | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-1440.png) |
+| 1440 | signin | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-1440.png) |
+| 1440 | connected-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-1440.png) |
+| 1440 | connected-traders | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-1440.png) |
+| 1440 | buy-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-1440.png) |
+| 1440 | buy-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-1440.png) |
+| 1440 | buy-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-1440.png) |
+| 1440 | sell-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-1440.png) |
+| 1440 | sell-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-1440.png) |
+| 1440 | sell-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-1440.png) |
+| 1440 | signed-out | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-1440.png) |
+| 375 | landing | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-375.png) |
+| 375 | signin | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-375.png) |
+| 375 | connected-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-375.png) |
+| 375 | connected-traders | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-375.png) |
+| 375 | buy-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-375.png) |
+| 375 | buy-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-375.png) |
+| 375 | buy-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-375.png) |
+| 375 | sell-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-375.png) |
+| 375 | sell-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-375.png) |
+| 375 | sell-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-375.png) |
+| 375 | signed-out | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-375.png) |
