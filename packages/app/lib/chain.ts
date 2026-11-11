@@ -9,7 +9,7 @@
  */
 import { TESTNET_RPC } from "@juno/sdk";
 
-export const RPC_URL = process.env.EXPO_PUBLIC_NEAR_RPC_URL || TESTNET_RPC;
+export const RPC_URL = process.env.EXPO_PUBLIC_NEAR_RPC_URL || "https://near-testnet.drpc.org";
 /**
  * Public testnet RPCs tried in order when one throttles (FastNEAR answers a
  * burst with a 429 that carries no CORS header, which a browser reports as a
