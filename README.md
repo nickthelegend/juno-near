@@ -1,38 +1,55 @@
 # Juno on NEAR
 
-Every post is a coin. Juno is a social feed where posting a photo launches a market: the post becomes its own NEAR account (`<name>.<factory>`) holding a token, a one-minute **sealed-bid opening auction** with one clearing price, a 16-segment **bonding curve** priced in NEAR, a **redeemable NEAR floor** every holder can cash against, and optional **dare bonds**. The problem it answers: launch sniping (first transaction wins) and meme coins with no exit value.
+Juno turns photo posts into NEAR tokens with a sealed-bid launch, trading curve and redeemable NEAR floor.
 
-The app is **the original Juno app** (Expo / React Native, same feed, reels, trade sheet, coin pages, tab bar, sign-in sheet, theme and art) with only its chain layer swapped from EVM to NEAR. See [Prior work](#prior-work).
+Meme coin launches reward whoever gets the first transaction in. Holders can also be left with no buyer when they want to exit. Juno opens each post market at one auction clearing price and lets holders burn tokens for a share of its NEAR floor vault.
 
-**Status on 2026-11-09:** live on NEAR testnet. Factory [`juno-awkorp.testnet`](https://testnet.nearblocks.io/address/juno-awkorp.testnet) holds four seeded posts with real auctions, trades, a graduation, a floor redemption and a finalised dare: 46 transactions, all linked below. Email sign-in, live NEP-366 on testnet and 1Click quotes need credentials; see [BLOCKED.md](BLOCKED.md).
+## Try it
 
-**Live app (2026-11-10):** [juno-near.vercel.app](https://juno-near.vercel.app): the web export of `packages/app`, reading the live factory `juno-awkorp.testnet` over FastNEAR. Feed, reels, trade lists, coin pages, quotes and floors are live chain reads. **Anyone with a NEAR testnet wallet can trade there:** Sign in → **Connect NEAR wallet** signs in with [Meteor Wallet](https://wallet.meteorwallet.app) (testnet), and every bid, reveal, buy, sell, redemption and launch is then approved in the wallet and paid (deposit and gas) by the person's own account. Email sign-in still needs the relayer, which runs only locally, so on the hosted app it shows a quiet **Setup required: EXPO_PUBLIC_RELAYER_URL** under the wallet button. Built with `EXPO_NO_DOTENV=1 EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet EXPO_PUBLIC_NEAR_RPC_URL=https://test.rpc.fastnear.com pnpm web:export` (`npx expo export --platform web`, plus the page meta and `vercel.json`), no relayer URL.
+1. Open [the hosted feed](https://juno-near.vercel.app/social) - see four seeded posts with prices and floor balances read from NEAR testnet. Browsing needs no sign-in.
+2. Open [PILE-IN](https://juno-near.vercel.app/coin/pile-in.juno-awkorp.testnet) - see its trade chart, holders, graduation escrow and **Redeem against the floor** button.
+3. Open [CAP-TOSS](https://juno-near.vercel.app/coin/cap-toss.juno-awkorp.testnet) - see the settled opening auction and finalized dare record.
+4. Open [SPROUT](https://juno-near.vercel.app/coin/sprout.juno-awkorp.testnet) and tap **Buy** - see a quote in NEAR, the fee and the amount added to the floor. No transaction is sent by opening the sheet.
+5. To trade, open [Profile](https://juno-near.vercel.app/profile), tap **Sign in**, then **Connect NEAR wallet** with a funded Meteor testnet wallet - see the wallet connection request. After signing in, return to SPROUT and approve a buy in the wallet - the app follows the transaction and shows its explorer link.
+
+The wallet call path has recorded testnet buys and sells. A human click-through of Meteor's own sign-in and approval screens is still pending; see [TESTING.md](TESTING.md#web-wallet-sign-in-2026-11-10). Email sign-in needs a configured relayer. The any-chain quote needs a mainnet account setting; no cross-chain swap is implemented. These limits do not block browsing.
+
+## Live on NEAR testnet
+
+Factory: [`juno-awkorp.testnet`](https://testnet.nearblocks.io/address/juno-awkorp.testnet).
+
+Post contracts: `sprout.juno-awkorp.testnet`, `pile-in.juno-awkorp.testnet`, `cap-toss.juno-awkorp.testnet`, `balloons.juno-awkorp.testnet`.
+
+These transaction links are copied from [the deployment record](deployments/testnet-2026-11-09.json):
+
+| Action | Transaction |
+| --- | --- |
+| Deploy factory | [HvSXP63tQhyZSPujjj3dVN1eZPFqLXRxTGD19qHMpzxx](https://testnet.nearblocks.io/txns/HvSXP63tQhyZSPujjj3dVN1eZPFqLXRxTGD19qHMpzxx) |
+| Settle SPROUT auction | [5TvNxqnEZNnH6DHoTrvqSpuWzQKcJ2DtvwFFtuuzXAPa](https://testnet.nearblocks.io/txns/5TvNxqnEZNnH6DHoTrvqSpuWzQKcJ2DtvwFFtuuzXAPa) |
+| Graduate PILE-IN | [8Z7qTNe6vizN6dnAhexaP4TyCYE7FnSaZSm3WJ3JJ4LH](https://testnet.nearblocks.io/txns/8Z7qTNe6vizN6dnAhexaP4TyCYE7FnSaZSm3WJ3JJ4LH) |
+| Redeem PILE-IN against its floor | [3y1Lcx1Xt1KSLAUMTYHxbcLZ5UGkH1czhU84ENCrFgDG](https://testnet.nearblocks.io/txns/3y1Lcx1Xt1KSLAUMTYHxbcLZ5UGkH1czhU84ENCrFgDG) |
+| Finalize CAP-TOSS dare | [5rQm2yRzXGTo1FNo6wtdxrx5XUAkqKakMevjLwvkakxz](https://testnet.nearblocks.io/txns/5rQm2yRzXGTo1FNo6wtdxrx5XUAkqKakMevjLwvkakxz) |
+
+The original Juno Expo app is reused from the Robinhood Chain edition. See [Prior work](#prior-work) and [Hackathon disclosures](#hackathon-disclosures).
 
 ## Verify it
 
 ```bash
 pnpm run setup          # packages, Rust 1.95 + cargo-near, NEAR sandbox binary in .tools/
-pnpm test               # 20 tests on a real local NEAR sandbox; see TESTING.md
+pnpm test               # recorded 20-test suite, including NEAR sandbox tests; see TESTING.md
 ```
 
-See the live app against testnet:
+Run the same app locally against testnet (Node.js and pnpm 10.29.2 required):
 
 ```bash
-cp packages/app/.env.example packages/app/.env.local   # set EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet
-pnpm web:export         # expo export --platform web → packages/app/dist
-pnpm web:serve          # http://127.0.0.1:8091
+pnpm run setup
+EXPO_NO_DOTENV=1 EXPO_PUBLIC_JUNO_FACTORY=juno-awkorp.testnet EXPO_PUBLIC_NEAR_RPC_URL=https://test.rpc.fastnear.com pnpm web:export
+pnpm web:serve
 ```
 
-Do this → see that:
+Open `http://127.0.0.1:8091/social` - see the live feed. Use the same `/coin/<account>` and `/profile` routes from **Try it** on that local address. Stop the server with Ctrl-C.
 
-- Open `/social` → the feed of four posts read from `juno-awkorp.testnet`: market cap in NEAR, a **Floor X NEAR** chip, *Bought by* names from the on-chain fill log, and **Graduated** on `$PILE-IN`.
-- Open `/coin/pile-in.juno-awkorp.testnet` → a price chart drawn from the contract's own `trades()` log (auction clearing at 0.0005 NEAR, then the 800-token graduation buy), the graduation escrow card, holders read from `holders()`, and **Redeem against the floor**.
-- Open `/coin/cap-toss.juno-awkorp.testnet` → the opening-auction record (2 sealed bids, 0 revealed: both paid the 1% penalty) and the dare card (bond 0.5 NEAR, proof posted, final).
-- Tap **Buy** on any curve post → the trade sheet quotes from the contract (`quote_buy`, fee, *Added to the floor*, impact), has a **Redeem** side, and shows the 1Click any-chain line (Setup required until `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT` is set).
-- Tap **+** → *Post a photo* or *Post a dare*; launching calls `create_post` with 3 NEAR (+ bond), through the relayer for an email account or approved in the wallet for a wallet account.
-- On [juno-near.vercel.app](https://juno-near.vercel.app), tap **Sign in** → the sheet offers **Connect NEAR wallet**, which opens Meteor Wallet's testnet sign-in (`wallet.meteorwallet.app/connect/testnet/login`) for a function-call key on `juno-awkorp.testnet`. Once signed in, **Buy** on a curve post opens Meteor's approval with `buy {"quantity":"N"}`, 100 Tgas and the live `quote_buy` deposit; the trade sheet shows the NearBlocks link when it is final.
-- Run `pnpm testnet:wallet-path` → the web wallet module itself (Wallet Selector + Meteor module, `sendWithWallet`, `confirmTx`) signs a buy, a sell and an underpaid buy as a seeded player and prints the three hashes (the last refused with `ERR_PAYMENT` → "The price moved. Try again.").
-- Run `pnpm testnet:seed --wave 1` against a fresh account (delete `.near-credentials/seed.json` first) → a new factory, players and posts; while a post is in its first minute the feed card shows **Bidding · 0:42** and the coin page shows the live sealed-bid card with a countdown.
+The `setup`, `test`, `web:export` and `web:serve` commands are defined in [package.json](package.json). The export command sets public testnet configuration directly and disables dotenv loading. Email sign-in and the mainnet quote remain unconfigured in this local path.
 
 Screenshots of every route at 390 and 1440 px are in [docs/qa](docs/qa).
 
@@ -113,7 +130,7 @@ Factory: [juno-awkorp.testnet](https://testnet.nearblocks.io/address/juno-awkorp
 6. At 800 curve units sold, `graduated` becomes true and buys close. Graduation funds remain locked on the token account. Rhea testnet pool seeding is not claimed; the escrow is a documented fallback with no withdrawal method.
 7. For a dare, the creator posts proof within five minutes; token holders vote once each. After five minutes, a failed or absent proof distributes the bond in proportion to balances at finalization. A successful proof returns the bond to the creator.
 
-The token implements the NEP-141 core methods `ft_total_supply`, `ft_balance_of`, `ft_transfer`, `ft_transfer_call` with failed receiver refund, and NEP-148 `ft_metadata`. It has 0 decimals and 1,000 maximum initial sale units. `create_post` is capped at 64 auction bidders. The factory locks its uploaded token code after one upload.
+The token implements the NEP-141 core methods `ft_total_supply`, `ft_balance_of`, `ft_transfer`, `ft_transfer_call` with failed receiver refund, and NEP-148 `ft_metadata`. It has 0 decimals and 1,000 maximum initial sale units. Each post auction is capped at 64 bidders. The factory locks its uploaded token code after one upload.
 
 The contract also keeps a capped 120-entry fill log (`trades()`, one entry per auction allocation, buy, sell and redemption, each with a NEP-297 style `EVENT_JSON` log) and a `holders()` view, so the app draws charts and holder lists from the chain without an indexer.
 
@@ -121,9 +138,9 @@ The contract also keeps a capped 120-entry fill log (`trades()`, one entry per a
 
 - **Named sub-accounts:** each post is its own token and vault account under the factory (`sprout.juno-awkorp.testnet`). The intended production namespace is `<slug>.juno.testnet`, which needs the key for the existing `juno.testnet`.
 - **NEP-141 / NEP-148:** transferable whole-unit post coins with metadata and transfer callbacks.
-- **NEP-366 meta transactions:** the app signs every call as a delegate action with a key generated on the device; the relayer checks it against an allowlist (receiver, method, gas, deposit caps) and submits it. Finding from the testnet run: the **relayer fronts both gas and any attached deposit** of the delegated action (a sealed bid attaches 1 NEAR, a launch 3 NEAR), so the policy's deposit caps bound the relayer's exposure.
+- **NEP-366 meta transactions (email accounts):** the app signs calls as delegate actions with a key generated on the device; the relayer checks it against an allowlist (receiver, method, gas, deposit caps) and submits it. Finding from the testnet run: the **relayer fronts both gas and any attached deposit** of the delegated action (a sealed bid attaches 1 NEAR, a launch 3 NEAR), so the policy's deposit caps bound the relayer's exposure.
 - **NEAR Wallet Selector (web):** `@near-wallet-selector/core` 10.1.4 with the Meteor Wallet module. Sign-in adds a function-call key for the factory; each Juno call is one `FunctionCall` action with the step's deposit and gas, sent by the wallet from the person's own account, then followed to final over RPC. MyNearWallet was tried first: on 2026-11-10 its testnet pop-up answered "MyNearWallet can't connect to apps anymore" and points users to Meteor.
-- **NEAR Intents 1Click:** the trade sheet requests a mainnet `dry: true` EXACT_OUTPUT quote (USDC on Base → the NEAR a buy costs). There is no Intents testnet, and no swap is ever sent.
+- **NEAR Intents 1Click (requires configuration):** with a mainnet account configured, the trade sheet requests a mainnet `dry: true` EXACT_OUTPUT quote (USDC on Base → the NEAR a buy costs). There is no Intents testnet, and no swap is ever sent.
 
 ## The app (`packages/app`)
 
@@ -145,12 +162,34 @@ The relayer emails a six-digit code (Resend), creates and funds a named testnet 
 
 ## Prior work
 
-Juno already exists: the sibling local project `juno-wif` is Juno on Robinhood Chain. **`packages/app` is that Juno Expo app, imported verbatim in commit `00251dd`** and then changed only in its chain layer (`lib/api.ts`, `lib/wallet.tsx`, `lib/chain.ts`, `lib/markets.ts`) and in the components that show NEAR-only state; its screens, components, theme, logo, icons, fonts and artwork (`public/art`, `public/brand`) are reused. The curve weights are ported from Juno's earlier Rust curve. Built during the hackathon window for this NEAR edition: the factory and post contract (sealed auction, vault floor, dare bond, trade log), the SDK, the relayer, the MCP server, the NEAR data and signing layer of the app, and the testnet deployment. The Robinhood repository is not a remote of this one. The LICENSE carries the same reuse notice.
+The sibling project `juno-wif` is the earlier Juno on Robinhood Chain. Its git history has the Expo app, EVM contracts, server and Rust curve before November 1, 2026; its last pre-November commit is `2ebfd26` (October 30). That product and curve are baseline work. This repository starts at `da0ff11` on November 9, so its first commit date does not make the reused app new work.
 
-## Team and other projects
+`packages/app` was imported from `juno-wif/app` in commit `00251dd` on November 9. Its screens, components, theme, logo, fonts and art are reused. The source project also added art on November 9 (`b6231bf`, `4badda1`); that reused art is not claimed as new NEAR work. The curve weights are ported from the earlier Rust curve. Both [LICENSE](LICENSE) and [packages/app/LICENSE](packages/app/LICENSE) retain the reuse and Expo MIT notices. There is no separate NOTICE file in this repo. The Robinhood repository is not a remote of this one.
+
+NEAR work built in the November 1-14 window, recorded here on November 9-10: the factory and post contracts (sealed auction, floor vault, dare bond and trade log), SDK, email relayer with NEP-366 policy, read-only MCP server, NEAR data and signing integration, browser wallet support, web landing page and testnet deployment. Only this NEAR work is offered for judging. Live email sign-in, testnet relayed deposits, cross-chain swaps and Rhea pool seeding are not claimed as complete; see [BLOCKED.md](BLOCKED.md).
+
+To inspect the NEAR changes separately from the imported app and initial scaffold:
+
+```bash
+git show --stat 00251dd
+git diff 00251dd..2114106 -- packages/app
+git diff da0ff11..2114106 -- packages/contract packages/sdk packages/relayer packages/mcp scripts
+```
+
+These ranges end at the last implementation/evidence revision before this submission pack. They include the NEAR app changes and landing page, while excluding the app import itself.
+
+## Hackathon disclosures
+
+Built for NEAR HACKATHON 2026 (Nov 1-14).
+
+Prior work: the original Juno app and earlier curve are baseline. The imported art is reused too. The dates, source commits and NEAR work built in the window are listed in [Prior work](#prior-work).
+
+AI-assisted code: Built with AI coding agents (Claude Code, Codex) under human direction; all code reviewed and tested by the team.
+
+### Other projects by the same team in this hackathon
 
 Lead: <TBD by Nick>
 
-Other project disclosed under Q-015: <TBD by Nick>. One person may submit at most two independent projects. Nick must fill the lead and other-project disclosure before publishing/submitting.
+### License
 
-MIT License · Copyright (c) 2026 Nivesh Gajengi.
+MIT. Copyright (c) 2026 Nivesh Gajengi. See [LICENSE](LICENSE).

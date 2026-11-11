@@ -6,7 +6,7 @@
 4. **More testnet NEAR:** the funder file (`../engye/.near-credentials/accounts-v2-parent.json`, entries 1–3; entry 0 is engye's contract and was not touched) was drawn down to about 1 NEAR per account for this deployment. Another post, a live-open auction for a demo, or the relayer above needs more testnet NEAR (the helper faucet returned HTTP 429 earlier today).
 5. **1Click any-chain buy:** set `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT` (and `NEAR_MAINNET_ACCOUNT`) to a real mainnet account. The trade sheet then shows a mainnet `dry: true` quote. No swap is ever sent; a real tiny swap needs Nick to fund that account and approve the amount.
 6. **Rhea pool:** graduation liquidity stays locked in the post account's escrow (no withdrawal method). Seeding a Rhea testnet pool is not implemented or claimed.
-7. **Publication and submission:** Nick fills the human fields in `HACKATHON_SUBMISSION_FORM.md`, the README's "Team and other projects", publishes the repo and posts the demo before 2026-11-14 23:59 UTC.
+7. **Publication and submission:** Nick fills the human fields in `HACKATHON_SUBMISSION_FORM.md`, the README's "Hackathon disclosures", publishes the repo and posts the demo before 2026-11-14 23:59 UTC.
 8. **Native builds and `util`:** `expo export --platform ios` fails to resolve Node's `util` (needed by `near-api-js` 7.3.1 → `is-my-json-valid` → `generate-function`). This predates the wallet work (same failure on 8310be7). With a temporary `util` shim the iOS bundle builds and contains no wallet-selector code; the shim is not committed.
 
 ## Hosted app (2026-11-10)
