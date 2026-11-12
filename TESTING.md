@@ -91,3 +91,13 @@ Recovered HTTP 408/429/5xx or network failures from the allowlisted testnet RPCs
 November 11 result: `pnpm test:e2e` passed at both widths on `53f58ae`: four real buys/sells reached FINAL, receipts matched, and mounted Profile positions followed 76 → 78 → 76 without reload. The run exposed and verified a fix for stale mounted views after confirmed writes. All seven browser transactions including diagnostic probes cost less than 0.006665 testnet NEAR conservatively; details and hashes are in FLOW-QA.md. The final production scan found no QA adapter in any of its five JavaScript chunks. App TypeScript and all 10 app data/policy tests pass.
 
 Screenshots were captured locally during QA and are not committed.
+
+## Judging R3 — checkpoint
+
+Run `pnpm test:lifecycle` for the four app call builders on a real local sandbox (existing contract WASM required; sandbox RPC defaults to port 5385 and stops on exit). The executed run passes all four methods with 12 local transactions. App/SDK TypeScript, 12 app tests and 8 SDK tests pass.
+
+Run `pnpm test:r3` for the production/QA exports and browser checks. It uses the shared orchestration Chrome lock and the orchestration screenshot directory's `juno-near/r3` folder. It checks the four existing posts for all three demo accounts at 1440 and 375. Writes are restricted to already-eligible lifecycle methods with zero deposit, balance checks and a shared 0.3 NEAR reserve. No launch or bid is sent. Sealed evidence is preserved on repeat runs.
+
+The functional browser pass completed 24 account/post checks and 70 captures, with no eligible testnet write and 0 NEAR spent. A repeat capture waiting for decoded artwork is in progress. Existing results and local method hashes are preserved in `deployments/r3-2026-11-12.json`. The hosted app needs Nick's redeploy.
+
+Screenshots were captured locally during QA and are not committed.
