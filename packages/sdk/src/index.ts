@@ -137,3 +137,16 @@ export async function dryQuote(input: {originAsset:string; destinationAsset:stri
   if (!response.ok) throw Error(`1Click quote ${response.status}: ${JSON.stringify(data)}`);
   return data;
 }
+
+export { decodeLifecycle, type LifecycleSnapshot } from './lifecycle.js';
+/** Read public post state at one final block, including per-account refund and vote eligibility. */
+export async function lifecycle(account: string, viewer: string | null, endpoint = TESTNET_RPC) {
+  const { decodeLifecycle } = await import('./lifecycle.js');
+  const state = await rpc({ method: 'query', params: { request_type: 'view_state', account_id: account, prefix_base64: base64(new TextEncoder().encode('STATE')), finality: 'final' } }, endpoint);
+  const entry = state.values.find((v: { key: string }) => v.key === 'U1RBVEU=');
+  if (!entry) throw Error('Juno lifecycle state is unavailable.');
+  const block = await rpc({ method: 'block', params: { block_id: state.block_hash } }, endpoint);
+  const B = (globalThis as { Buffer?: { from(s: string, encoding: string): Uint8Array } }).Buffer;
+  const bytes = B ? B.from(entry.value, 'base64') : Uint8Array.from(atob(entry.value), c => c.charCodeAt(0));
+  return decodeLifecycle(bytes, viewer, Number(BigInt(block.header.timestamp_nanosec) / 1_000_000n));
+}

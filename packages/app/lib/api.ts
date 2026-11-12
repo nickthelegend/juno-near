@@ -1,5 +1,6 @@
 import {
   accountBalance,
+  lifecycle as readLifecycle,
   balanceOf,
   buyQuote,
   curveCost,
@@ -615,6 +616,8 @@ function localSet(key: string): Set<string> {
 /* ------------------------------------------------------------------ */
 
 export const juno = {
+  lifecycle: (post: string, account: string | null) => guard(retry((rpc) => readLifecycle(post, account, rpc))),
+
   /** Every post on the factory, as markets. `missing` counts posts whose read failed. */
   coins: async (_limit?: number, opts: { viewer?: string | null; fresh?: boolean } = {}) => {
     const factory = requireFactory();
