@@ -163,21 +163,32 @@ The relayer emails a six-digit code (Resend), creates and funds a named testnet 
 
 ## Prior work
 
+Juno predates this hackathon. Earlier editions by the same team, checked against GitHub under `nickthelegend` on November 12, 2026:
+
+- [juno](https://github.com/nickthelegend/juno) — the original Solana STOCKLANA app, with Meteora post curves and stock/pre-IPO trackers.
+- [juno-arbitrum](https://github.com/nickthelegend/juno-arbitrum) — the Arbitrum edition, with Stylus curve maths, Chainlink stock trackers and Uniswap v3 graduation.
+- [juno-monad](https://github.com/nickthelegend/juno-monad) — the Monad Metropolis edition, with creator-coin curves and Uniswap v2/Kuru graduation.
+- [juno-clockin](https://github.com/nickthelegend/juno-clockin) — the Solana Mobile CLOCK IN edition, with Seeker wallet integration, daily clock-in and devnet SKR rewards/boosts.
+- [juno-arc](https://github.com/nickthelegend/juno-arc) — the Arc edition, with USDC post curves, gasless buys, CCIP tokens and CCTP creator payouts.
+- [juno-wif](https://github.com/nickthelegend/juno-wif) — the Robinhood Chain/World is Flat edition, with WIF post markets and fee burning; the direct source of this repo's imported app.
+
+The public [GitHub repository listing](https://api.github.com/users/nickthelegend/repos?per_page=100&sort=full_name) was checked across all pages by name and description. It exposes the first five editions above. The `juno-wif` URL currently returns 404 to an unauthenticated request; its reuse is documented by the local sibling history, import commit and license notices below. All code written before November 1 is baseline, and reused work from other editions is not claimed as new NEAR work.
+
 The sibling project `juno-wif` is the earlier Juno on Robinhood Chain. Its git history has the Expo app, EVM contracts, server and Rust curve before November 1, 2026; its last pre-November commit is `2ebfd26` (October 30). That product and curve are baseline work. This repository starts at `da0ff11` on November 9, so its first commit date does not make the reused app new work.
 
 `packages/app` was imported from `juno-wif/app` in commit `00251dd` on November 9. Its screens, components, theme, logo, fonts and art are reused. The source project also added art on November 9 (`b6231bf`, `4badda1`); that reused art is not claimed as new NEAR work. The curve weights are ported from the earlier Rust curve. Both [LICENSE](LICENSE) and [packages/app/LICENSE](packages/app/LICENSE) retain the reuse and Expo MIT notices. There is no separate NOTICE file in this repo. The Robinhood repository is not a remote of this one.
 
-NEAR work built in the November 1-14 window, recorded here on November 9-10: the factory and post contracts (sealed auction, floor vault, dare bond and trade log), SDK, email relayer with NEP-366 policy, read-only MCP server, NEAR data and signing integration, browser wallet support, web landing page and testnet deployment. Only this NEAR work is offered for judging. Live email sign-in, testnet relayed deposits, cross-chain swaps and Rhea pool seeding are not claimed as complete; see [BLOCKED.md](BLOCKED.md).
+NEAR work built in the November 1-14 window, recorded here on November 9-12: the factory and post contracts (sealed auction, floor vault, dare bond and trade log), SDK, email relayer with NEP-366 policy, read-only MCP server, NEAR data and signing integration, browser wallet support, web landing page and testnet deployment. The window also includes the flow fixes, testnet-only QA signer and real browser buy/sell evidence, plus the new [3D object kit](docs/ART-3D.md) generated with ChatGPT. Only the NEAR-specific changes are offered for judging; the earlier product, imported app and reused art remain disclosed baseline. Live email sign-in, testnet relayed deposits, cross-chain swaps and Rhea pool seeding are not claimed as complete; see [BLOCKED.md](BLOCKED.md).
 
 To inspect the NEAR changes separately from the imported app and initial scaffold:
 
 ```bash
 git show --stat 00251dd
-git diff 00251dd..2114106 -- packages/app
-git diff da0ff11..2114106 -- packages/contract packages/sdk packages/relayer packages/mcp scripts
+git diff 00251dd..6e37a99 -- packages/app
+git diff da0ff11..6e37a99 -- packages/contract packages/sdk packages/relayer packages/mcp scripts
 ```
 
-These ranges end at the last implementation/evidence revision before this submission pack. They include the NEAR app changes and landing page, while excluding the app import itself.
+These ranges end at the November 12 3D art integration. They include the NEAR app changes, landing page and QA signer, while excluding the app import itself from the app diff.
 
 ## Hackathon disclosures
 
