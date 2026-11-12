@@ -10,9 +10,7 @@ The existing design is preserved. Changes fix data, errors, validation, session 
 
 Every screenshot stem below has `-1440-after.png` and `-375-after.png` under this directory unless the evidence appendix says otherwise:
 
-```text
-/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near
-```
+`juno-near`
 
 | Step | User flow | Result | Evidence and reason | Screenshot stems |
 | ---: | --- | --- | --- | --- |
@@ -52,6 +50,8 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 34 | Restore the feed after a failed read | **PASS** | The feed Try again control reloads live posts after simulated network failure. The desktop rail has a separate retry; the feed control is tested explicitly. | `feed-retry` |
 | 35 | Creator fees | **PASS** | The creator-only PILE-IN fee control opens Meteor testnet/sign with withdraw_earnings, zero deposit and 120 Tgas from kai to PILE-IN. Cancelling returns the existing control to idle. No creator-fee claim is broadcast in this request/cancellation check. | `creator-fees`, `creator-claim-request`, `creator-claim-cancel` |
 | 36 | Hosted release | **BLOCKED** | This pass validates the production export at localhost:5381. It does not push or redeploy the hosted site. The fixes must be republished before the hosted README demo can be treated as this tested revision. | `landing` |
+
+Screenshots were captured locally during QA and are not committed.
 
 ## Evidence boundaries and spending
 
@@ -104,7 +104,9 @@ Before/after screenshots use the same approved components and viewport sizes. Ea
 
 The `before` files are local QA evidence only. The old route proof under `docs/qa` is unchanged. No QA screenshots are added to the repository.
 
-Before/after attachments: [open the screenshot comparison gallery](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/screenshot-index.html). It links the original PNGs at both widths for each UI fix.
+Before/after attachments: `screenshot-index.html`. It links the original PNGs at both widths for each UI fix.
+
+Screenshots were captured locally during QA and are not committed.
 
 ## Remaining mobile readability observation
 
@@ -152,31 +154,33 @@ All seven QA-browser transactions, including failed probes: **666479955067260270
 
 ### Screenshot attachments
 
-[Before/after gallery at both widths](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/screenshot-index.html) includes the original sign-in baselines, stale pre-fix Profile captures, final receipts and refreshed positions. Profile position captures scroll to the holding row. No screenshots are committed to the repo.
+`screenshot-index.html` includes the original sign-in baselines, stale pre-fix Profile captures, final receipts and refreshed positions. Profile position captures scroll to the holding row. No screenshots are committed to the repo.
 
 The QA-signer screenshots use the following exact paths, rather than the earlier `-after.png` naming convention:
 
 | Width | Step | Screenshot |
 | --- | --- | --- |
-| 1440 | landing | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-1440.png) |
-| 1440 | signin | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-1440.png) |
-| 1440 | connected-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-1440.png) |
-| 1440 | connected-traders | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-1440.png) |
-| 1440 | buy-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-1440.png) |
-| 1440 | buy-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-1440.png) |
-| 1440 | buy-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-1440.png) |
-| 1440 | sell-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-1440.png) |
-| 1440 | sell-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-1440.png) |
-| 1440 | sell-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-1440.png) |
-| 1440 | signed-out | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-1440.png) |
-| 375 | landing | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-375.png) |
-| 375 | signin | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-375.png) |
-| 375 | connected-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-375.png) |
-| 375 | connected-traders | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-375.png) |
-| 375 | buy-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-375.png) |
-| 375 | buy-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-375.png) |
-| 375 | buy-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-375.png) |
-| 375 | sell-quote | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-375.png) |
-| 375 | sell-receipt | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-375.png) |
-| 375 | sell-profile | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-375.png) |
-| 375 | signed-out | [PNG](/private/tmp/claude-501/-Volumes-Extreme-SSD-Projects-grokbot/0f121b7c-0081-4ec0-81a9-0ccb4f7f8b48/scratchpad/flow-qa/juno-near/qa-signer/3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-375.png) |
+| 1440 | landing | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-1440.png` |
+| 1440 | signin | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-1440.png` |
+| 1440 | connected-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-1440.png` |
+| 1440 | connected-traders | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-1440.png` |
+| 1440 | buy-quote | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-1440.png` |
+| 1440 | buy-receipt | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-1440.png` |
+| 1440 | buy-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-1440.png` |
+| 1440 | sell-quote | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-1440.png` |
+| 1440 | sell-receipt | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-1440.png` |
+| 1440 | sell-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-1440.png` |
+| 1440 | signed-out | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-1440.png` |
+| 375 | landing | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-landing-375.png` |
+| 375 | signin | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signin-375.png` |
+| 375 | connected-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-profile-375.png` |
+| 375 | connected-traders | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-connected-traders-375.png` |
+| 375 | buy-quote | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-quote-375.png` |
+| 375 | buy-receipt | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-receipt-375.png` |
+| 375 | buy-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-buy-profile-375.png` |
+| 375 | sell-quote | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-quote-375.png` |
+| 375 | sell-receipt | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-receipt-375.png` |
+| 375 | sell-profile | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-sell-profile-375.png` |
+| 375 | signed-out | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-375.png` |
+
+Screenshots were captured locally during QA and are not committed.
