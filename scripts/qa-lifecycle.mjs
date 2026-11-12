@@ -59,6 +59,10 @@ try{
  await context.addInitScript(data=>Object.defineProperty(window,'__JUNO_QA_SIGNER__',{value:data,configurable:true,writable:true}),{accountId:who.id,secretKey:who.secretKey,rpcUrl:rpc,factory});
  const page=await context.newPage(),diag={pageErrors:[],errors:[],failed:[]};page.setDefaultTimeout(60000);
  page.on('pageerror',e=>diag.pageErrors.push(clean(e.message)));page.on('console',m=>{if(m.type()==='error')diag.errors.push(clean(m.text()))});page.on('requestfailed',r=>diag.failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText}));page.on('response',r=>{if(r.status()>=400)diag.failed.push({url:r.url().split('?')[0],status:r.status()})});
+ if(name==='kai'){
+ await page.goto(`${base}/coin/sprout.${factory}`);await page.getByRole('button',{name:'Buy',exact:true}).click();await page.getByRole('button',{name:'1',exact:true}).click();await page.getByText('Setup required: NEAR_MAINNET_ACCOUNT',{exact:true}).waitFor();await shot(page,'signed-out-buy-quote',width,diag);
+ await page.goto(`${base}/coin/cap-toss.${factory}`);await page.getByText('This dare is already final.',{exact:true}).waitFor();await page.getByTestId('finalize_dare-reason').scrollIntoViewIfNeeded();await shot(page,'signed-out-dare',width,diag);
+ }
  await page.goto(`${base}/profile`);await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByRole('button',{name:'Connect NEAR wallet',exact:true}).click();await page.getByText(who.id,{exact:true}).first().waitFor();
  assert.ok(await page.evaluate(()=>window.__JUNO_QA_SIGNER__===undefined&&!Object.keys(localStorage).some(k=>/ed25519:/.test(localStorage.getItem(k)||''))))
  for(const post of accounts){
