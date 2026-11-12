@@ -1,0 +1,507 @@
+{
+  "at": "2026-11-12T10:32:29.583Z",
+  "network": "testnet",
+  "factory": "juno-awkorp.testnet",
+  "budgetNEAR": "0.3",
+  "spentUpperBoundYocto": "0",
+  "transactions": [],
+  "inventory": [
+    {
+      "post": "sprout.juno-awkorp.testnet",
+      "player": "kai",
+      "snapshot": {
+        "accountId": "kai.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239898126,
+        "nowMs": 1794479538944,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "76",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "sprout.juno-awkorp.testnet",
+      "player": "mira",
+      "snapshot": {
+        "accountId": "mira.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239898126,
+        "nowMs": 1794479540187,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "10",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "sprout.juno-awkorp.testnet",
+      "player": "oto",
+      "snapshot": {
+        "accountId": "oto.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239898126,
+        "nowMs": 1794479540187,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "105",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "pile-in.juno-awkorp.testnet",
+      "player": "kai",
+      "snapshot": {
+        "accountId": "kai.juno-awkorp.testnet",
+        "creator": "kai.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239903063,
+        "nowMs": 1794479541290,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "800",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "pile-in.juno-awkorp.testnet",
+      "player": "mira",
+      "snapshot": {
+        "accountId": "mira.juno-awkorp.testnet",
+        "creator": "kai.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239903063,
+        "nowMs": 1794479541834,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "40",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "pile-in.juno-awkorp.testnet",
+      "player": "oto",
+      "snapshot": {
+        "accountId": "oto.juno-awkorp.testnet",
+        "creator": "kai.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794239903063,
+        "nowMs": 1794479542434,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "40",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "cap-toss.juno-awkorp.testnet",
+      "player": "kai",
+      "snapshot": {
+        "accountId": "kai.juno-awkorp.testnet",
+        "creator": "oto.juno-awkorp.testnet",
+        "dare": "Post a graduation photo from the roof before Friday",
+        "proof": "/art/juno-onboard-2.webp",
+        "settled": true,
+        "finalized": true,
+        "deadlineMs": 1794240103411,
+        "nowMs": 1794479543139,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "40",
+        "voted": true
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "Proof submission closed."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "Voting closed."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This dare is already final."
+        }
+      }
+    },
+    {
+      "post": "cap-toss.juno-awkorp.testnet",
+      "player": "mira",
+      "snapshot": {
+        "accountId": "mira.juno-awkorp.testnet",
+        "creator": "oto.juno-awkorp.testnet",
+        "dare": "Post a graduation photo from the roof before Friday",
+        "proof": "/art/juno-onboard-2.webp",
+        "settled": true,
+        "finalized": true,
+        "deadlineMs": 1794240103411,
+        "nowMs": 1794479543689,
+        "hasBid": true,
+        "refundYocto": "0",
+        "holding": "0",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "No unclaimed auction refund for this account."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "Proof submission closed."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "Voting closed."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This dare is already final."
+        }
+      }
+    },
+    {
+      "post": "cap-toss.juno-awkorp.testnet",
+      "player": "oto",
+      "snapshot": {
+        "accountId": "oto.juno-awkorp.testnet",
+        "creator": "oto.juno-awkorp.testnet",
+        "dare": "Post a graduation photo from the roof before Friday",
+        "proof": "/art/juno-onboard-2.webp",
+        "settled": true,
+        "finalized": true,
+        "deadlineMs": 1794240103411,
+        "nowMs": 1794479544241,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "0",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "Proof submission closed."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "Voting closed."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This dare is already final."
+        }
+      }
+    },
+    {
+      "post": "balloons.juno-awkorp.testnet",
+      "player": "kai",
+      "snapshot": {
+        "accountId": "kai.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794240107883,
+        "nowMs": 1794479545462,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "30",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "balloons.juno-awkorp.testnet",
+      "player": "mira",
+      "snapshot": {
+        "accountId": "mira.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794240107883,
+        "nowMs": 1794479546092,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "60",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    },
+    {
+      "post": "balloons.juno-awkorp.testnet",
+      "player": "oto",
+      "snapshot": {
+        "accountId": "oto.juno-awkorp.testnet",
+        "creator": "mira.juno-awkorp.testnet",
+        "dare": "",
+        "proof": "",
+        "settled": true,
+        "finalized": false,
+        "deadlineMs": 1794240107883,
+        "nowMs": 1794479546770,
+        "hasBid": false,
+        "refundYocto": "0",
+        "holding": "0",
+        "voted": false
+      },
+      "eligibility": {
+        "claim_refund": {
+          "eligible": false,
+          "reason": "This account did not bid in this auction."
+        },
+        "submit_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "vote_proof": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        },
+        "finalize_dare": {
+          "eligible": false,
+          "reason": "This post has no dare."
+        }
+      }
+    }
+  ],
+  "sandbox": {
+    "network": "local sandbox",
+    "test": "App lifecycle builders against the real contract",
+    "passedMethods": [
+      "submit_proof",
+      "claim_refund",
+      "vote_proof",
+      "finalize_dare"
+    ],
+    "factory": "r3.test.near",
+    "post": "proof.r3.test.near",
+    "transactions": [
+      {
+        "step": "deploy factory",
+        "hash": "8m7GEoX5NyUHog4YRkVYU9BkyqMXkBsqvuxwzrTV1UKK"
+      },
+      {
+        "step": "upload code",
+        "hash": "F7FmwxxHRqbmz4FSgawCo37G6PziFHABxagFs15gKe9b"
+      },
+      {
+        "step": "create creator",
+        "hash": "DKDC9wyLLekLSe7fNdkRm8r8AWQ83YkRFXfkNMQQnwKv"
+      },
+      {
+        "step": "create voter",
+        "hash": "uufqm2LVweQn1zJyxFUY8jJQ2owJktZ1E3m3bnzjcx3"
+      },
+      {
+        "step": "launch local dare",
+        "hash": "G2vMqHWcMtAsziVbTn96y1e7yAbKB3x3xjnZV5PRUnaG"
+      },
+      {
+        "step": "submit_proof",
+        "hash": "FNkwbTDYmF6HCjfoDqZg9dn7e5arp2h6TM2jsb5xAx9q"
+      },
+      {
+        "step": "local sealed bid",
+        "hash": "H2d1jPb4nUBUagpwb7quWt5rcD6ctyrR6HRpFAEdvAUw"
+      },
+      {
+        "step": "local reveal",
+        "hash": "FdZypSQhP14mL2CTnYgqewSJtSSfMqkxTzUpd8o5zSWQ"
+      },
+      {
+        "step": "local settle",
+        "hash": "9uYEoLEP1zKxPev2zvH6xK4u34LB7gRRCZgbsrjmuYk9"
+      },
+      {
+        "step": "claim_refund",
+        "hash": "5FJN3kxfRNpmSbAW5YC4GUW7yewBBUX1zRonsPAAJBo"
+      },
+      {
+        "step": "vote_proof",
+        "hash": "F3WGqizJbSy9usatGjd1p3ja4PgSxvkZQxSBkK9cBsHc"
+      },
+      {
+        "step": "finalize_dare",
+        "hash": "82K3RZ92wLDsUHmYrNDdFtrCPQixEtKTNpedFST6tWMq"
+      }
+    ],
+    "at": "2026-11-12T10:31:07.595Z"
+  },
+  "runs": [],
+  "sealed": false
+}
