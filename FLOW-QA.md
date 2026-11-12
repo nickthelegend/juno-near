@@ -184,3 +184,9 @@ The QA-signer screenshots use the following exact paths, rather than the earlier
 | 375 | signed-out | `3a3dd6c0-6797-4e8b-aa05-4e5a42dd3fe1-signed-out-375.png` |
 
 Screenshots were captured locally during QA and are not committed.
+
+## Judging R3 — checkpoint
+
+The local-link acceptance grep is clean; historical result rows are unchanged. Public-state reads checked all four posts for kai, mira and oto (12 account/post pairs): there are no unclaimed auction refunds, CAP-TOSS is finalized, and the other posts have no dare. No testnet write has been sent in R3. The exact app call builders pass all four methods on a real local sandbox (12 local transactions), recorded in `deployments/r3-2026-11-12.json`. App TypeScript and 12 data/policy tests pass. Eligibility-gated controls and the NEAR-only funding line are implemented in existing components. Browser confirmation at both widths is next.
+
+Screenshots were captured locally during QA and are not committed.

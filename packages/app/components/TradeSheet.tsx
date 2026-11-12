@@ -2,12 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Linking, Modal, Platform } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import styled from "styled-components/native";
-import { dryQuote } from "@juno/sdk";
 
 import { Object3D } from "./art3d";
 import { Button, Caption, Col, ExternalGlyph, Label, Row } from "./kit";
-import { juno, toYocto, type Coin, type SwapQuote } from "../lib/api";
-import { describeTxError, explorer, EXPLORER_NAME, MAINNET_ACCOUNT, NETWORK_NAME } from "../lib/chain";
+import { juno, type Coin, type SwapQuote } from "../lib/api";
+import { describeTxError, explorer, EXPLORER_NAME, NETWORK_NAME } from "../lib/chain";
 import { money, tokens } from "../lib/useApi";
 import { useWallet, type SendProgress } from "../lib/wallet";
 import { theme } from "../theme";
@@ -32,14 +31,13 @@ import { theme } from "../theme";
  * - **Redeem** burns tokens against the floor at any time — even after
  *   graduation — minus 1% that stays for the remaining holders.
  *
- * The 1Click line under a buy is a mainnet `dry: true` quote: what the same
- * NEAR would cost in USDC on Base through NEAR Intents. No swap is sent.
+ * Mainnet funding is unconfigured. The buy sheet shows a NEAR-only setup line;
+ * this testnet app does not request a quote or send a mainnet swap.
  */
 
 type Side = "buy" | "sell" | "redeem";
 const QUICK_BUY = [1, 10, 50, 100];
 const QUICK_SHARE = [0.25, 0.5, 0.75, 1];
-const BASE_USDC = "nep141:base-0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.omft.near";
 
 type Stage = "entry" | "confirming" | "done";
 
@@ -76,7 +74,6 @@ export function TradeSheet({
   const [txHash, setTxHash] = useState<string | null>(null);
   const [progress, setProgress] = useState<{ labels: string[]; at: SendProgress } | null>(null);
   const [landedAt, setLandedAt] = useState<Date | null>(null);
-  const [intents, setIntents] = useState<{ text: string; tone: "ok" | "setup" | "error" } | null>(null);
 
   const value = Number(amount || "0");
   const valid = Number.isInteger(value) && value > 0;
@@ -126,46 +123,6 @@ export function TradeSheet({
       clearTimeout(timer);
     };
   }, [valid, value, room, side, curveOpen, coin.address]);
-
-  // The any-chain line: a 1Click dry quote for the NEAR this buy costs.
-  useEffect(() => {
-    setIntents(null);
-    if (side !== "buy" || !quote || !(quote.amountIn > 0)) return;
-    const recipient = MAINNET_ACCOUNT;
-    if (!recipient) {
-      setIntents({ text: "Setup required: EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT", tone: "setup" });
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      try {
-        const result = (await dryQuote({
-          originAsset: BASE_USDC,
-          destinationAsset: "nep141:wrap.near",
-          amount: toYocto(quote.amountIn).toString(),
-          swapType: "EXACT_OUTPUT",
-          recipient,
-          recipientType: "INTENTS",
-          refundTo: recipient,
-          refundType: "INTENTS",
-        })) as { quote?: { amountInFormatted?: string; timeEstimate?: number } };
-        const paid = result.quote?.amountInFormatted;
-        if (!cancelled) {
-          setIntents(
-            paid
-              ? { text: `≈ ${Number(paid).toFixed(2)} USDC on Base via 1Click${result.quote?.timeEstimate ? ` · ~${result.quote.timeEstimate}s` : ""}`, tone: "ok" }
-              : { text: "1Click returned no amount", tone: "error" },
-          );
-        }
-      } catch (caught) {
-        if (!cancelled) setIntents({ text: caught instanceof Error ? caught.message.slice(0, 120) : "1Click quote failed", tone: "error" });
-      }
-    }, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [side, quote]);
 
   const press = useCallback((key: string) => {
     setError(null);
@@ -337,13 +294,13 @@ export function TradeSheet({
 
             <Receive>{quoting ? "Quoting against the contract…" : (receiving ?? " ")}</Receive>
 
-            {side === "buy" && intents ? (
+            {side === "buy" && quote ? (
               <Depth>
                 <Col gap={2} style={{ flex: 1 }}>
-                  <Label style={{ fontWeight: "700", color: intents.tone === "ok" ? theme.colors.text : intents.tone === "setup" ? theme.colors.muted : theme.colors.neg }}>
-                    {intents.text}
+                  <Label style={{ fontWeight: "700", color: theme.colors.muted }}>
+                    Setup required: NEAR_MAINNET_ACCOUNT
                   </Label>
-                  <Caption>Any-chain buy · NEAR Intents mainnet dry quote, nothing is sent</Caption>
+                  <Caption>NEAR mainnet funding is not configured. Trading uses NEAR testnet.</Caption>
                 </Col>
               </Depth>
             ) : null}
@@ -714,3 +671,21 @@ const ErrorText = styled.Text`
   color: ${(p) => p.theme.colors.neg};
   text-align: center;
 `;
+
+/** Lifecycle actions reuse the trade sheet's existing frame, progress and receipt components. */
+export function TransactionSheet({ title, busy, onClose, children }: { title: string; busy: boolean; onClose: () => void; children: React.ReactNode }) {
+  return <Modal visible animationType="slide" transparent onRequestClose={() => { if (!busy) onClose(); }}>
+    <Scrim onPress={() => { if (!busy) onClose(); }} />
+    <Sheet><Grabber /><Row justify="space-between" align="center"><Label>{title}</Label>
+      <Close disabled={busy} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close"><CloseMark>✕</CloseMark></Close>
+    </Row>{children}</Sheet>
+  </Modal>;
+}
+export function TransactionReceipt({ hash, label, onDone }: { hash: string; label: string; onDone: () => void }) {
+  return <Done><DoneTitle>Done</DoneTitle><Label muted>{label} — final on {NETWORK_NAME}.</Label>
+    <Receipt>tx {hash.slice(0, 10)}…{hash.slice(-8)}</Receipt>
+    <LinkTap accessibilityRole="link" onPress={() => Linking.openURL(explorer("tx", hash))}><LinkText>View on {EXPLORER_NAME}</LinkText><ExternalGlyph /></LinkTap>
+    <Button label="Done" onPress={onDone} />
+  </Done>;
+}
+export { Steps as TransactionProgress };

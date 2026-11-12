@@ -12,7 +12,7 @@ Meme coin launches reward whoever gets the first transaction in. Holders can als
 4. Open [SPROUT](https://juno-near.vercel.app/coin/sprout.juno-awkorp.testnet), tap **Buy**, then enter **1** token - see a quote in NEAR, the fee and the amount added to the floor. No transaction is sent by opening the sheet.
 5. To trade, open [Profile](https://juno-near.vercel.app/profile), tap **Sign in**, then **Connect NEAR wallet** with a funded Meteor testnet wallet - see the wallet connection request. After signing in, return to SPROUT, tap **Buy**, enter a token quantity and approve the buy in the wallet - the app follows the transaction and shows its explorer link.
 
-The wallet call path has recorded testnet buys and sells. A human click-through of Meteor's own sign-in and approval screens is still pending; see [TESTING.md](TESTING.md#web-wallet-sign-in-2026-11-10). Email sign-in needs a configured relayer. The any-chain quote needs a mainnet account setting; no cross-chain swap is implemented. Auction refunds and dare proof/voting/finalization have contract methods but no web controls yet. These limits do not block browsing.
+The wallet call path has recorded testnet buys and sells. A human click-through of Meteor's own sign-in and approval screens is still pending; see [TESTING.md](TESTING.md#web-wallet-sign-in-2026-11-10). Email sign-in needs a configured relayer. The buy sheet shows **Setup required: NEAR_MAINNET_ACCOUNT**; mainnet funding is not implemented. Auction refunds and dare proof/voting/finalization have contract methods but no web controls yet. These limits do not block browsing.
 
 ## Live on NEAR testnet
 
@@ -63,7 +63,7 @@ Screenshots of the earlier route pass at 390 and 1440 px are in [docs/qa](docs/q
 | NEAR testnet | Web wallet path (Meteor Wallet via Wallet Selector): buy, sell, refused underpaid buy | [deployments/wallet-path-2026-11-10.json](deployments/wallet-path-2026-11-10.json), `pnpm testnet:wallet-path` | **PASS** (3 txs: [buy](https://testnet.nearblocks.io/txns/Ctgzkkpom8Vd8EA8tDPDGvCgAMGSw9fi9E91DqWfz7P8), [sell](https://testnet.nearblocks.io/txns/FJneJpBWm9CTHraJTyCW1QRvuACtZSCXr54Qhhqh7Ccu), [`ERR_PAYMENT`](https://testnet.nearblocks.io/txns/5GMQ5iGkUT2eJBcBWLEk5kN668MPv7tpojondT6rKQMH)); the wallet's own approval screen was not clicked through, see TESTING.md |
 | NEAR testnet | NEP-366 relayed bid | attempted in `testnet:seed`; the relayer account lacked the 1 NEAR the delegate action attaches | **BLOCKED:** funds, see BLOCKED.md |
 | NEAR testnet | Required namespace `<slug>.juno.testnet` | `pnpm testnet:run` | **BLOCKED:** `NEAR_TESTNET_KEY_FILE` for `juno.testnet` |
-| NEAR mainnet 1Click | `dry: true` quote in the trade sheet | [1Click API](https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart) | **BLOCKED:** `EXPO_PUBLIC_NEAR_MAINNET_ACCOUNT`; no swap ever sent |
+| NEAR mainnet funding | Setup required: NEAR_MAINNET_ACCOUNT | Trade sheet | **BLOCKED:** mainnet funding is not configured or implemented; trades use NEAR testnet |
 
 Funding: `juno-awkorp.testnet` was created with `create_account` on the `testnet` registrar (8 NEAR) and topped up by transfer from a funded testnet account file read in code only (`JUNO_FUNDER_FILE`).
 
@@ -140,7 +140,7 @@ The contract also keeps a capped 120-entry fill log (`trades()`, one entry per a
 - **NEP-141 / NEP-148:** transferable whole-unit post coins with metadata and transfer callbacks.
 - **NEP-366 meta transactions (email accounts):** the app signs calls as delegate actions with a key generated on the device; the relayer checks it against an allowlist (receiver, method, gas, deposit caps) and submits it. Finding from the testnet run: the **relayer fronts both gas and any attached deposit** of the delegated action (a sealed bid attaches 1 NEAR, a launch 3 NEAR), so the policy's deposit caps bound the relayer's exposure.
 - **NEAR Wallet Selector (web):** `@near-wallet-selector/core` 10.1.4 with the Meteor Wallet module. Sign-in adds a function-call key for the factory; each Juno call is one `FunctionCall` action with the step's deposit and gas, sent by the wallet from the person's own account, then followed to final over RPC. MyNearWallet was tried first: on 2026-11-10 its testnet pop-up answered "MyNearWallet can't connect to apps anymore" and points users to Meteor.
-- **NEAR Intents 1Click (requires configuration):** with a mainnet account configured, the trade sheet requests a mainnet `dry: true` EXACT_OUTPUT quote (USDC on Base → the NEAR a buy costs). There is no Intents testnet, and no swap is ever sent.
+- **NEAR mainnet funding (unconfigured):** the buy sheet shows **Setup required: NEAR_MAINNET_ACCOUNT**. Trades use NEAR testnet; the app requests no mainnet quote and sends no mainnet swap.
 
 ## The app (`packages/app`)
 

@@ -5,6 +5,10 @@ import Svg, { Circle, Path, Rect } from "react-native-svg";
 import { base64, commitment, YOCTO } from "@juno/sdk";
 
 import { CoinGlyph } from "./art";
+import { TransactionSheet, TransactionReceipt, TransactionProgress } from "./TradeSheet";
+import { buildLifecycle, lifecycleOptions, type LifecycleMethod } from "../lib/lifecycle";
+import type { LifecycleRead } from "../lib/useLifecycle";
+import type { SendProgress } from "../lib/wallet";
 import { BrandImage } from "./brand";
 import { Object3D } from "./art3d";
 import { Button, Skeleton } from "./kit";
@@ -319,7 +323,7 @@ function writeSecret(token: string, account: string, secret: BidSecret) {
  * Then anyone settles it: everyone who cleared pays the same price, the rest
  * is refunded, and half the proceeds seed the floor.
  */
-export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => void }) {
+export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChanged: () => void; lifecycle: LifecycleRead }) {
   const wallet = useWallet();
   const n = coin.near;
   const commitLeft = useCountdown(n.phase === "commit" ? n.commitEndMs : null);
@@ -337,7 +341,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
   }, [commitLeft, revealLeft, onChanged]);
 
   if (n.phase === "curve" || n.phase === "graduated") {
-    if (!(n.clearingPrice > 0) && n.sealedBids === 0) return null;
+    if (!(n.clearingPrice > 0) && n.sealedBids === 0) return <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />;
     return (
       <View style={f.card}>
         <Row justify="space-between">
@@ -355,6 +359,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
         <Text style={f.body}>
           Every winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.
         </Text>
+        <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />
       </View>
     );
   }
@@ -456,6 +461,7 @@ export function AuctionCard({ coin, onChanged }: { coin: Coin; onChanged: () => 
       )}
       {error ? <Text style={f.error}>{error}</Text> : null}
       {hash ? <TxLink hash={hash} /> : null}
+      <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />
     </View>
   );
 }
@@ -489,9 +495,9 @@ export function GraduationMoment({ coin }: { coin: Coin }) {
 }
 
 /** The dare: the creator's bond, the proof, and how holders voted. */
-export function DareCard({ coin }: { coin: Coin }) {
+export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: LifecycleRead }) {
   const n = coin.near;
-  if (!n.dare) return null;
+  if (!n.dare) return <Text style={f.body}>This post has no dare.</Text>;
   return (
     <View style={f.card}>
       <Row justify="space-between">
@@ -508,8 +514,51 @@ export function DareCard({ coin }: { coin: Coin }) {
       <Text style={f.body}>
         Holders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.
       </Text>
+      {(["submit_proof", "vote_proof", "finalize_dare"] as const).map(method => <LifecycleControl key={method} coin={coin} read={lifecycle} method={method} />)}
     </View>
   );
+}
+
+/** Buttons only appear for a connected account eligible in the current final-chain snapshot. */
+function LifecycleControl({ coin, read, method }: { coin: Coin; read: LifecycleRead; method: LifecycleMethod }) {
+  const wallet = useWallet();
+  const account = useRef(wallet.address); account.current = wallet.address;
+  const [open, setOpen] = useState(false);
+  const [proof, setProof] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hash, setHash] = useState<string | null>(null);
+  const [progress, setProgress] = useState<SendProgress | null>(null);
+  const snapshot = read.data?.post === coin.address && read.data.snapshot.accountId === wallet.address ? read.data.snapshot : null;
+  const allowed = snapshot && !read.loading && !read.error ? lifecycleOptions(snapshot)[method] : { eligible: false, reason: read.error ? "Could not read lifecycle eligibility. Pull to refresh or wait a moment." : "Checking lifecycle eligibility…" };
+  const title = { claim_refund: "Claim auction refund", submit_proof: "Submit proof", vote_proof: "Vote on proof", finalize_dare: "Finalize dare" }[method];
+  async function run(accepted?: boolean) {
+    setBusy(true); setError(null); setProgress(null);
+    try {
+      const signer = account.current;
+      if (!signer) throw Error("Connect a NEAR wallet to continue.");
+      const fresh = await juno.lifecycle(coin.address, signer);
+      const step = buildLifecycle(coin.address, fresh, method, { proof, accepted });
+      if (account.current !== signer) throw Error("The connected account changed. Try again.");
+      const sent = await wallet.send([step], { onProgress: setProgress });
+      setHash(sent.hashes[sent.hashes.length - 1]!); read.refresh();
+    } catch (caught) {
+      const failure = describeTxError(caught); setError(failure.cancelled ? null : failure.message); read.refresh();
+    } finally { setBusy(false); }
+  }
+  return <>
+    {allowed.eligible ? <Button label={title} onPress={() => { setProof(coin.near.proof); setError(null); setHash(null); setOpen(true); }} /> : <Text testID={`${method}-reason`} style={f.body}>{allowed.reason}</Text>}
+    {open ? <TransactionSheet title={title} busy={busy} onClose={() => setOpen(false)}>
+      {hash ? <TransactionReceipt hash={hash} label={title} onDone={() => setOpen(false)} /> : <>
+        <Text style={f.body}>{method === "claim_refund" ? "Return unused auction escrow to this account." : method === "finalize_dare" ? "Settle the dare bond using holders' recorded votes." : coin.near.proof ? `Proof: ${coin.near.proof}` : "The creator has not posted proof yet."}</Text>
+        {method === "submit_proof" ? <Field label="Proof text or URL" value={proof} onChange={setProof} numeric={false} /> : null}
+        {method === "vote_proof" ? <Text style={f.body}>One vote per account. Voting weight is the token balance at finalization.</Text> : null}
+        {progress ? <TransactionProgress labels={[title]} at={progress} /> : null}
+        {error ? <Text style={f.error}>{error}</Text> : null}
+        {method === "vote_proof" ? <><Button label="Accept proof" onPress={() => void run(true)} disabled={busy} loading={busy} /><Button label="Reject proof" variant="ink" onPress={() => void run(false)} disabled={busy} /></> : <Button label={title} onPress={() => void run()} disabled={busy || (method === "submit_proof" && (!proof.trim() || new TextEncoder().encode(proof.trim()).length > 300))} loading={busy} />}
+      </>}
+    </TransactionSheet> : null}
+  </>;
 }
 
 function Tile({ label, value, on }: { label: string; value: string; on?: boolean }) {
@@ -523,14 +572,14 @@ function Tile({ label, value, on }: { label: string; value: string; on?: boolean
   );
 }
 
-function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function Field({ label, value, onChange, numeric = true }: { label: string; value: string; onChange: (v: string) => void; numeric?: boolean }) {
   return (
     <View style={f.field}>
       <Text style={f.tileLabel}>{label}</Text>
       <TextInput
         value={value}
-        onChangeText={(text) => onChange(text.replace(/[^0-9.]/g, ""))}
-        keyboardType="decimal-pad"
+        onChangeText={(text) => onChange(numeric ? text.replace(/[^0-9.]/g, "") : text)}
+        keyboardType={numeric ? "decimal-pad" : "default"}
         style={f.fieldInput}
         accessibilityLabel={label}
       />

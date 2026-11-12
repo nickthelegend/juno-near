@@ -45,6 +45,7 @@ import {
 import { money, since, tokens, useApi } from "../../lib/useApi";
 import { shareCoin } from "../../lib/social";
 import { useWallet } from "../../lib/wallet";
+import { useLifecycle } from "../../lib/useLifecycle";
 import { useFeedRevision } from "../../lib/refresh";
 import { theme } from "../../theme";
 
@@ -81,6 +82,7 @@ export default function CoinScreen() {
   const [copied, setCopied] = useState(false);
   const wallet = useWallet();
   const revision = useFeedRevision();
+  const lifecycle = useLifecycle(mint, wallet.address);
   // A link that is not an address is answered here, as the server would
   // answer it (400 → "No such coin"), without asking the server.
   const wellFormed = validAddress(mint);
@@ -214,7 +216,7 @@ export default function CoinScreen() {
 
             {coin.near.phase !== "curve" && coin.near.phase !== "graduated" ? (
               <Padded>
-                <AuctionCard coin={coin} onChanged={detail.refresh} />
+                <AuctionCard coin={coin} onChanged={detail.refresh} lifecycle={lifecycle} />
               </Padded>
             ) : null}
 
@@ -326,8 +328,8 @@ export default function CoinScreen() {
                   </Caption>
                 </View>
               </FloorRow>
-              {coin.near.phase === "curve" || coin.near.phase === "graduated" ? <AuctionCard coin={coin} onChanged={detail.refresh} /> : null}
-              <DareCard coin={coin} />
+              {coin.near.phase === "curve" || coin.near.phase === "graduated" ? <AuctionCard coin={coin} onChanged={detail.refresh} lifecycle={lifecycle} /> : null}
+              <DareCard coin={coin} lifecycle={lifecycle} />
 
               {/* The creator's own payday, on their own coin. The contract
                   checks it too; the button is simply not shown to anyone else. */}
