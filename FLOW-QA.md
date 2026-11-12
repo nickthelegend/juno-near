@@ -4,7 +4,7 @@ Date: 2026-11-11. Baseline: `a06a34d`. Production web export, Chrome channel `ch
 
 Continuation completed: all 15 route cases and the remaining interactive trader/creator controls pass at both widths. The interrupted click was a harness locator matching an obscured mounted-tab element; visible hit-tested controls work without a product change.
 
-The existing design is preserved. Changes fix data, errors, validation, session state and factual copy; no colors, fonts, art or layout rules are changed. The QA-signer browser buy/sell flow now passes end to end with real testnet transactions. Launch/bid spending and missing refund/dare UI controls remain blocked as detailed below.
+The existing design is preserved. Changes fix data, errors, validation, session state and factual copy; no colors, fonts, art or layout rules are changed. The QA-signer browser buy/sell flow now passes end to end with real testnet transactions. Launch/bid spending and fresh live lifecycle replay remain blocked as detailed below; R3 adds the four requested lifecycle controls.
 
 ## Ordered user flow
 
@@ -35,13 +35,13 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 19 | Validate a launch | **FIXED** | Choose art, enter name/caption and choose a dare. A 3 NEAR bond is invalid; 0.5 is valid. Oversized UTF-8 captions are blocked before signing. Launch opens sign-in while signed out. | `dare-invalid-bond`, `dare-valid`, `caption-too-many-bytes`, `launch-signin` |
 | 20 | Broadcast a new post or bid | **BLOCKED** | Launching requires at least 3 NEAR; a bid escrows 1 NEAR. Both exceed the entire QA spending cap of 0.3 NEAR. No new launch or bid is broadcast in this pass. | `dare-valid` |
 | 21 | Redeem a graduated post | **PASS** | PILE-IN opens the floor redemption quote. Switching to Buy shows the curve-closed blocker. No additional redemption is broadcast; existing deployment evidence already records one. | `graduated-redeem-quote`, `graduated-buy-blocked` |
-| 22 | Complete refunds and dare lifecycle in the app | **BLOCKED** | Contract methods exist for claim_refund, submit_proof, vote_proof and finalize_dare, but the approved web screens have no corresponding controls. Adding them changes those screens, so this pass reports the gap under the UI rule. CAP-TOSS is a readable finalized record. | `cap-toss` |
+| 22 | Use refunds and dare lifecycle controls | **FIXED** | R3 adds the four eligibility-gated methods in existing components. All app builders pass on a real sandbox. Live QA checks every seeded post/account at both widths; refunds are claimed and CAP-TOSS is final, so there is no eligible testnet action. See R3 below. | `cap-toss`; R3 filenames below |
 | 23 | Handle empty collections | **PASS** | Explicit empty feed, trader list and reels states are exercised with a labeled empty-posts RPC fixture; these screenshots do not claim the deployed factory is empty. | `empty-feed`, `empty-traders`, `empty-reels` |
 | 24 | Handle an empty wallet | **PASS** | The real factory account holds no post coins. A display-only session shows 0 positions and Nothing held yet, with no fabricated trades. | `empty-wallet` |
 | 25 | Handle unavailable RPC | **PASS** | Aborted testnet reads show a human-readable error and Try again. Recovery is checked by removing the fixture and retrying the feed. These failures are intentional and recorded separately. | `rpc-error`, `feed-retry` |
 | 26 | Handle bad links | **FIXED** | A missing NEAR account now reaches No such coin promptly. Malformed trader addresses and unknown routes show useful exits instead of raw errors. | `unknown-coin`, `unknown-trader`, `404` |
 | 27 | Email sign-in | **BLOCKED** | The relayer is not configured in this build. A valid email leaves Send code disabled with Setup required. No email is sent. | `email-unconfigured` |
-| 28 | Any-chain quote | **BLOCKED** | No mainnet payout/quote account is configured. The buy sheet states setup is required; no 1Click quote or swap is claimed or sent. | `buy-quote` |
+| 28 | NEAR mainnet funding | **BLOCKED** | R3 shows Setup required: NEAR_MAINNET_ACCOUNT in the existing buy sheet. No mainnet quote or swap is requested; trades use NEAR testnet. | `buy-quote`; R3 funding captures below |
 | 29 | Active auction states | **PASS** | Labeled market-state fixtures expose commit, reveal and settle. The requests target SPROUT with commit/reveal/settle and 1/0/0 NEAR deposits. Every pop-up is cancelled; a device-secret fixture exercises reveal without claiming a real bid. | `auction-commit`, `auction-bid-request`, `auction-reveal`, `auction-reveal-with-secret`, `auction-reveal-request`, `auction-settle-request` |
 | 30 | Cancel a bid and retry | **FIXED** | Before: cancelling the wallet left a local secret that hid the entry form. After: the form and Place sealed bid button return; a second attempt opens Meteor. Secrets are retained when a submission result is uncertain. | `auction-cancel`, `auction-bid-retry` |
 | 31 | Sign out and reload | **FIXED** | Before: cancelling Meteor logout appeared to sign out, then reload restored the account. After: local session records are cleared even if wallet key revocation is cancelled, and reload stays signed out. No on-chain key revocation is claimed. | `logout-wallet`, `logout-closed`, `logout-reload` |
@@ -49,7 +49,7 @@ Every screenshot stem below has `-1440-after.png` and `-375-after.png` under thi
 | 33 | Low balance | **FIXED** | A labeled zero-balance fixture shows the existing funding hint. It now distinguishes wallet deposits/gas from relayer-funded email calls. | `low-balance` |
 | 34 | Restore the feed after a failed read | **PASS** | The feed Try again control reloads live posts after simulated network failure. The desktop rail has a separate retry; the feed control is tested explicitly. | `feed-retry` |
 | 35 | Creator fees | **PASS** | The creator-only PILE-IN fee control opens Meteor testnet/sign with withdraw_earnings, zero deposit and 120 Tgas from kai to PILE-IN. Cancelling returns the existing control to idle. No creator-fee claim is broadcast in this request/cancellation check. | `creator-fees`, `creator-claim-request`, `creator-claim-cancel` |
-| 36 | Hosted release | **BLOCKED** | This pass validates the production export at localhost:5381. It does not push or redeploy the hosted site. The fixes must be republished before the hosted README demo can be treated as this tested revision. | `landing` |
+| 36 | Hosted release | **BLOCKED** | The November 12 hosted art build predates the R3 lifecycle controls and NEAR-only funding state. Nick must redeploy after R3; this task never pushes or redeploys. | `landing` |
 
 Screenshots were captured locally during QA and are not committed.
 
@@ -185,8 +185,42 @@ The QA-signer screenshots use the following exact paths, rather than the earlier
 
 Screenshots were captured locally during QA and are not committed.
 
-## Judging R3 — checkpoint
+## Judging R3 — November 12
 
-The local-link acceptance grep is clean; historical result rows are unchanged. Public-state reads checked all four posts for kai, mira and oto (12 account/post pairs): there are no unclaimed auction refunds, CAP-TOSS is finalized, and the other posts have no dare. No testnet write has been sent in R3. The exact app call builders pass all four methods on a real local sandbox (12 local transactions), recorded in `deployments/r3-2026-11-12.json`. App TypeScript and 12 data/policy tests pass. Eligibility-gated controls and the NEAR-only funding line are implemented in existing components. Browser confirmation at both widths is next.
+**PASS:** `pnpm test:lifecycle`, app/SDK TypeScript, 12 app data/policy tests and 8 SDK tests. The local sandbox executes all four exact app call builders against the existing WASM; it records 12 local transactions including setup. The method hashes below belong to the local sandbox and have no public explorer link. Three earlier local-only harness attempts stopped on fast-forward/finality handling; the corrected run passed. No public testnet transaction was made by those attempts.
+
+| App builder | Sandbox result | Local transaction hash | Live testnet |
+| --- | --- | --- | --- |
+| `claim_refund` | PASS | `5FJN3kxfRNpmSbAW5YC4GUW7yewBBUX1zRonsPAAJBo` | No eligible seeded state |
+| `submit_proof` | PASS | `FNkwbTDYmF6HCjfoDqZg9dn7e5arp2h6TM2jsb5xAx9q` | No eligible seeded state |
+| `vote_proof` | PASS | `F3WGqizJbSy9usatGjd1p3ja4PgSxvkZQxSBkK9cBsHc` | No eligible seeded state |
+| `finalize_dare` | PASS | `82K3RZ92wLDsUHmYrNDdFtrCPQixEtKTNpedFST6tWMq` | No eligible seeded state |
+
+**PASS:** `pnpm test:r3` on source `2187385`. QA signer connects kai, mira and oto to `juno-awkorp.testnet` in Chrome at 1440×900 and 375×812. Four posts × three accounts × two widths gives 24 browser account/post checks. The 70 screenshots cover each refund reason, the three CAP-TOSS dare reasons, no-dare posts, and the NEAR-only funding line. The chain inventory also has 12 initial read-only checks.
+
+The public `STATE` decoder reads refund amounts, holding balances, recorded votes and the dare deadline at a final block. These fields are not exposed by the deployed contract's `market` view. Its output was cross-checked against `market` and the real local contract. No contract deployment or upgrade is needed. The app re-reads eligibility before signing, validates proof length in UTF-8 bytes, sends zero-deposit calls through the same wallet path as buy/sell, and uses the existing pending/final receipt and NearBlocks components. No style definitions, fonts, colors or art changed.
+
+**BLOCKED — fresh live lifecycle execution:** all seeded auction refunds for the demo accounts are already claimed. CAP-TOSS's proof/vote window is closed and its dare is finalized; the other three posts have no dare. No post/account is eligible, so no testnet lifecycle transaction was sent or invented. A new launch costs 3 NEAR and a bid 1 NEAR, both outside the 0.3 NEAR cap. Failed-dare payout claiming (`claim_dare`) remains contract-only and is outside these four actions.
+
+R3 testnet spend: **0 NEAR**, zero testnet hashes. The 12 sandbox hashes are separate from public testnet evidence. The append-only run history, full eligibility inventory, screenshots and any transaction reservations/hashes are in [deployments/r3-2026-11-12.json](deployments/r3-2026-11-12.json). The export-resolution harness failure is retained; the successful functional pass and image-decoding confirmation pass remain separate runs.
+
+The final capture pass waits for visible images to decode. All 70 captures have zero page errors, raw error text, broken images and horizontal overflow. 13 public-RPC transport diagnostics recovered through the existing fallback and remain recorded; they are not described as a zero-console-error pass. Both normal production export and the flagged QA export succeed. The production scan finds no QA signer in its 5 JavaScript chunks; the QA adapter is present only in the separate QA export. Browsers, the local sandbox and preview port 5384 are stopped.
+
+The dead-link acceptance grep prints nothing. Screenshot links to local machines were replaced with plain filenames without changing the historical result rows. `r3-screenshot-index.html` compares before/after captures at 1440 and 375. The remaining 70 filenames and diagnostics are in the R3 ledger.
 
 Screenshots were captured locally during QA and are not committed.
+
+| Width | State | Screenshot filename |
+| --- | --- | --- |
+| 1440 | Funding setup | `after-1794480019158-signed-out-buy-quote-1440.png` |
+| 1440 | Dare reasons | `after-1794480019158-signed-out-dare-1440.png` |
+| 1440 | Claimed refund | `after-1794480019158-kai-sprout-claim_refund-reason-1440.png` |
+| 1440 | Non-bidder refund | `after-1794480019158-kai-pile-in-claim_refund-reason-1440.png` |
+| 1440 | No dare | `after-1794480019158-kai-balloons-no-dare-1440.png` |
+| 375 | Funding setup | `after-1794480019158-signed-out-buy-quote-375.png` |
+| 375 | Dare reasons | `after-1794480019158-signed-out-dare-375.png` |
+| 375 | Claimed refund | `after-1794480019158-kai-sprout-claim_refund-reason-375.png` |
+| 375 | Non-bidder refund | `after-1794480019158-kai-pile-in-claim_refund-reason-375.png` |
+| 375 | No dare | `after-1794480019158-kai-balloons-no-dare-375.png` |
+
+**BLOCKED — hosted release:** the hosted November 12 art build predates these lifecycle controls and the NEAR-only setup state. Nick must redeploy; this task did not redeploy.
