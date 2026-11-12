@@ -502,6 +502,2069 @@
     ],
     "at": "2026-11-12T10:31:07.595Z"
   },
-  "runs": [],
+  "runs": [
+    {
+      "id": "after-1794479732180",
+      "head": "73bf25c5dea512046ace8f38c3721c31b65a59b5",
+      "status": "failed",
+      "steps": [],
+      "inventory": [],
+      "failure": "Export failed; see R3 build log."
+    },
+    {
+      "id": "after-1794479834049",
+      "head": "ee71fefac86c5f762a7316a4dc1dc9191798cc52",
+      "status": "pass",
+      "steps": [
+        {
+          "name": "signed-out-buy-quote",
+          "width": 1440,
+          "screenshot": "after-1794479834049-signed-out-buy-quote-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nConnect a NEAR wallet to continue.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: —\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nSign in to trade\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "signed-out-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-signed-out-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nConnect a NEAR wallet to continue.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-sprout-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-sprout-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-sprout-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-sprout-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-buy-quote",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-buy-quote-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.06 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-pile-in-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-pile-in-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0167 NEAR in creator fees\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-pile-in-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-pile-in-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0167 NEAR in creator fees\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-cap-toss-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-submit_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-cap-toss-submit_proof-reason-1440.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-vote_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-cap-toss-vote_proof-reason-1440.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-finalize_dare-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-cap-toss-finalize_dare-reason-1440.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-balloons-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-balloons-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-balloons-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-kai-balloons-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-sprout-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-sprout-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-sprout-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-sprout-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-buy-quote",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-buy-quote-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.03 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-pile-in-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-pile-in-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-pile-in-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-pile-in-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-cap-toss-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-submit_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-cap-toss-submit_proof-reason-1440.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-vote_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-cap-toss-vote_proof-reason-1440.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-finalize_dare-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-cap-toss-finalize_dare-reason-1440.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-balloons-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-balloons-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-balloons-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-mira-balloons-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-sprout-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-sprout-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-sprout-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-sprout-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-buy-quote",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-buy-quote-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.53 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-pile-in-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-pile-in-claim_refund-reason-1440.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-pile-in-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-pile-in-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-cap-toss-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-submit_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-cap-toss-submit_proof-reason-1440.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-vote_proof-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-cap-toss-vote_proof-reason-1440.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-finalize_dare-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-cap-toss-finalize_dare-reason-1440.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-balloons-claim_refund-reason",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-balloons-claim_refund-reason-1440.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-balloons-no-dare",
+          "width": 1440,
+          "screenshot": "after-1794479834049-oto-balloons-no-dare-1440.png",
+          "overflow": 0,
+          "text": "juno\nEvery post is a market.\nOn NEAR, every post opens with a sealed-bid auction and keeps a floor you can always redeem.\n01\nPost\nA photo launches as its own NEAR account, <name>.<factory>, and that account is the coin.\n02\nBid\nFor one minute anyone can place a sealed bid. Everyone pays the same clearing price.\n03\nTrade\nThen the curve opens. 20% of each buy's base price goes into a floor any holder can redeem.\n04\nGraduate\nA full curve graduates. Dares put the creator's bond on the line.\nNEAR testnet · test NEAR, no real money\n0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy\nNEAR in post floors\nLive\n0.7160 NEAR\nAny holder can redeem against a post's floor at any time. 20% of each buy's base price and half the auction proceeds go in. NEAR testnet.\nSealed bids now\n0\n0 auctions open\nPosts\n4\n1 graduated\nSold 2 $SPROUT · 0.0008 NEAR\nkai · 16h ago",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "signed-out-buy-quote",
+          "width": 375,
+          "screenshot": "after-1794479834049-signed-out-buy-quote-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nConnect a NEAR wallet to continue.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: —\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nSign in to trade\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "signed-out-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-signed-out-dare-375.png",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nConnect a NEAR wallet to continue.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-sprout-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-sprout-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-sprout-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-sprout-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-buy-quote",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-buy-quote-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.06 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-pile-in-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-pile-in-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0167 NEAR in creator fees\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-pile-in-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-pile-in-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0167 NEAR in creator fees\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-cap-toss-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "kai-cap-toss-submit_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-cap-toss-submit_proof-reason-375.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-vote_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-cap-toss-vote_proof-reason-375.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-cap-toss-finalize_dare-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-cap-toss-finalize_dare-reason-375.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "kai-balloons-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-balloons-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "kai-balloons-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-kai-balloons-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-sprout-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-sprout-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "mira-sprout-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-sprout-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-buy-quote",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-buy-quote-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.03 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-pile-in-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-pile-in-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "mira-pile-in-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-pile-in-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-cap-toss-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "mira-cap-toss-submit_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-cap-toss-submit_proof-reason-375.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-vote_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-cap-toss-vote_proof-reason-375.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-cap-toss-finalize_dare-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-cap-toss-finalize_dare-reason-375.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "mira-balloons-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-balloons-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "mira-balloons-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-mira-balloons-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\nClaim 0.0001 NEAR in creator fees\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-sprout-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-sprout-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "oto-sprout-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-sprout-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-buy-quote",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-buy-quote-375.png",
+          "overflow": 0,
+          "text": "0.0004 NEAR\n+9.10%\npast day\n1H\n1D\n1W\n1M\nAll\nmira\n3 holders\nSprout\nPosted a photo, it grew a coin. First Juno post on NEAR.\n$\nSPROUT\nCopy address\n0.0824 NEAR\nMarket cap\n0.0798 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0002 NEAR floor per token\n0.0293 NEAR held for 191.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0004 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0178 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nSell\n2.00\n0.0009 NEAR\n16h\nkai\nBuy\n2.00\n0.0011 NEAR\n16h\nkai\nBuy\n2.00\n0.0010 NEAR\n18h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nBuy\n2.00\n0.0010 NEAR\n19h\nkai\nSell\n1.00\n0.0004 NEAR\n22h\nkai\nBuy\n1.00\n0.0005 NEAR\n22h\nkai\nBuy\n20.00\n0.0081 NEAR\n2d\noto\nBuy\n10.00\n0.0031 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\nkai\nSell\n1.00\n0.0002 NEAR\n2d\nkai\nBuy\n1.00\n0.0003 NEAR\n2d\noto\nSell\n5.00\n0.0012 NEAR\n3d\nmira\nBuy\n10.00\n0.0028 NEAR\n3d\noto\nBuy\n25.00\n0.0060 NEAR\n3d\noto\nBid\n75.00\n0.0300 NEAR\n3d\nkai\nBid\n50.00\n0.0200 NEAR\n3d\nBuy\nBuy\nSell\nRedeem\n✕\n1\nSpot 0.0004 NEAR per token\nSPROUT\nBalance: 1.53 NEAR\n1\n10\n50\n100\nTrading fee\n0.0₅431 NEAR\nAdded to the floor\n0.0₄863 NEAR\nPrice impact\n0.00%\nCosts 0.0005 NEAR for 1 SPROUT\nSetup required: NEAR_MAINNET_ACCOUNT\nNEAR mainnet funding is not configured. Trading uses NEAR testnet.\nBuy\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n⌫",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-pile-in-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-pile-in-claim_refund-reason-375.png",
+          "reason": "No unclaimed auction refund for this account.",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()",
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              },
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "oto-pile-in-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-pile-in-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0100 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nkai\n3 holders\nPile In\nEveryone threw a coin at the same photo. It sold out.\n$\nPILE-IN\nCopy address\n8.79 NEAR\nMarket cap\n4.10 NEAR\nTotal volume\n0.0167 NEAR\nCreator fees\n0.0008 NEAR floor per token\n0.6795 NEAR held for 880.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\n0.0005 NEAR\nSealed bids\n2\nRevealed\n2\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nNo unclaimed auction refund for this account.\nThis post has no dare.\n0.0417 NEAR in graduation escrow\nGraduated Nov 9, 09:26 PM\nAll 800 curve tokens sold. The curve is closed and its liquidity stays locked in this post's own account until a Rhea pool is seeded. The floor stays redeemable.\npile-in.juno-awkorp.testnet on NearBlocks\nGraduated\nGraduated · escrow on NearBlocks\nActivity\nHolders\nDetails\nmira\nRedeem\n20.00\n0.0153 NEAR\n3d\nkai\nBuy\n800.00\n4.05 NEAR\n3d\noto\nBid\n40.00\n0.0200 NEAR\n3d\nmira\nBid\n60.00\n0.0300 NEAR\n3d\nRedeem against the floor",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-cap-toss-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "oto-cap-toss-submit_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-cap-toss-submit_proof-reason-375.png",
+          "reason": "Proof submission closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-vote_proof-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-cap-toss-vote_proof-reason-375.png",
+          "reason": "Voting closed.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-cap-toss-finalize_dare-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-cap-toss-finalize_dare-reason-375.png",
+          "reason": "This dare is already final.",
+          "overflow": 0,
+          "text": "0.0003 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\noto\n1 holder\nCap Toss\nDare: a graduation photo from the roof before Friday. 0.5 NEAR says I do it.\n$\nCAP-TOSS\nCopy address\n0.0113 NEAR\nMarket cap\n0.0089 NEAR\nTotal volume\n0.0200 NEAR\nCreator fees\n0.0₄368 NEAR floor per token\n0.0015 NEAR held for 40.00 tokens. Redeemable at any time, even after graduation.\nOpening auction\nCleared at\nNo fills\nSealed bids\n2\nRevealed\n0\nEvery winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.\nThis account did not bid in this auction.\nDARE\nPost a graduation photo from the roof before Friday\nBond\nPaid out\nProof\nPosted\nStatus\nFinal\nProof: /art/juno-onboard-2.webp\nHolders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.\nProof submission closed.\nVoting closed.\nThis dare is already final.\nClaim 0.0200 NEAR in creator fees\n0.0074 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n40.00\n0.0089 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        },
+        {
+          "name": "oto-balloons-claim_refund-reason",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-balloons-claim_refund-reason-375.png",
+          "reason": "This account did not bid in this auction.",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [
+              "Failed to load resource: the server responded with a status of 429 ()"
+            ],
+            "failed": [
+              {
+                "url": "https://near-testnet.drpc.org/",
+                "status": 429
+              }
+            ]
+          }
+        },
+        {
+          "name": "oto-balloons-no-dare",
+          "width": 375,
+          "screenshot": "after-1794479834049-oto-balloons-no-dare-375.png",
+          "overflow": 0,
+          "text": "0.0006 NEAR\n—\npast day\nNo fills in this period.\n1H\n1D\n1W\n1M\nAll\nmira\n2 holders\nBalloons\nEvery post floats up on its own curve.\n$\nBALLOONS\nCopy address\n0.0528 NEAR\nMarket cap\n0.0347 NEAR\nTotal volume\n0.0001 NEAR\nCreator fees\n0.0₄636 NEAR floor per token\n0.0057 NEAR held for 90.00 tokens. Redeemable at any time, even after graduation.\nThis account did not bid in this auction.\nThis post has no dare.\n0.0286 NEAR\n3.35 NEAR\nActivity\nHolders\nDetails\nkai\nBuy\n30.00\n0.0176 NEAR\n3d\nmira\nBuy\n60.00\n0.0170 NEAR\n3d\nBuy",
+          "raw": false,
+          "broken": [],
+          "diagnostics": {
+            "pageErrors": [],
+            "errors": [],
+            "failed": []
+          }
+        }
+      ],
+      "inventory": [
+        {
+          "width": 1440,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479850928,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "76",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479852702,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "800",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479853343,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": true
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479854494,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "30",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479855141,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "10",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479856956,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479858300,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479858882,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "60",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479859975,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "105",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479861769,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479862406,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 1440,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479863625,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479869106,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "76",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479870893,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "800",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479871558,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": true
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "kai.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "kai.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479872159,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "30",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479873322,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "10",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479875863,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479876338,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "mira.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "mira.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479877591,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "60",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "sprout.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239898126,
+            "nowMs": 1794479878841,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "105",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "pile-in.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "kai.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794239903063,
+            "nowMs": 1794479881159,
+            "hasBid": true,
+            "refundYocto": "0",
+            "holding": "40",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "No unclaimed auction refund for this account."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "cap-toss.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "oto.juno-awkorp.testnet",
+            "dare": "Post a graduation photo from the roof before Friday",
+            "proof": "/art/juno-onboard-2.webp",
+            "settled": true,
+            "finalized": true,
+            "deadlineMs": 1794240103411,
+            "nowMs": 1794479881681,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "Proof submission closed."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "Voting closed."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This dare is already final."
+            }
+          }
+        },
+        {
+          "width": 375,
+          "post": "balloons.juno-awkorp.testnet",
+          "accountId": "oto.juno-awkorp.testnet",
+          "snapshot": {
+            "accountId": "oto.juno-awkorp.testnet",
+            "creator": "mira.juno-awkorp.testnet",
+            "dare": "",
+            "proof": "",
+            "settled": true,
+            "finalized": false,
+            "deadlineMs": 1794240107883,
+            "nowMs": 1794479882541,
+            "hasBid": false,
+            "refundYocto": "0",
+            "holding": "0",
+            "voted": false
+          },
+          "options": {
+            "claim_refund": {
+              "eligible": false,
+              "reason": "This account did not bid in this auction."
+            },
+            "submit_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "vote_proof": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            },
+            "finalize_dare": {
+              "eligible": false,
+              "reason": "This post has no dare."
+            }
+          }
+        }
+      ],
+      "productionIsolation": {
+        "javascriptFiles": 5,
+        "qaSignerPresent": false
+      },
+      "qaIsolation": {
+        "javascriptFiles": 1,
+        "qaSignerPresent": true
+      },
+      "preview": "http://127.0.0.1:5384",
+      "completedAt": "2026-11-12T10:38:05.086Z"
+    }
+  ],
   "sealed": false
 }
