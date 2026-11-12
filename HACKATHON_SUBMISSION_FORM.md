@@ -19,6 +19,10 @@ Idea character count: **765** (allowed: 20-2000; count includes spaces and punct
 
 Nick must fill the human fields and the README's other-project disclosure, make the repository public, and publish the demo before **2026-11-14 23:59 UTC**. This task does not push or publish. If using the API instead of the form, generate `requestId` once at submission time and reuse it on retries; it is API metadata, not a human form field. Review the exact payload with Nick before submitting. A saved submission is corrected through [request changes](https://nearhackathon.com/request-changes), not a second submission.
 
+## Disclosures and risks
+
+Juno also has an [Avalanche edition](https://juno-avax.vercel.app), verified live on November 12, 2026; this submission covers only the NEAR-specific code built during the November 1–14, 2026 window.
+
 ## X post draft
 
 The human posts this text and attaches the video:

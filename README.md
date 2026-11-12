@@ -178,6 +178,8 @@ The sibling project `juno-wif` is the earlier Juno on Robinhood Chain. Its git h
 
 `packages/app` was imported from `juno-wif/app` in commit `00251dd` on November 9. Its screens, components, theme, logo, fonts and art are reused. The source project also added art on November 9 (`b6231bf`, `4badda1`); that reused art is not claimed as new NEAR work. The curve weights are ported from the earlier Rust curve. Both [LICENSE](LICENSE) and [packages/app/LICENSE](packages/app/LICENSE) retain the reuse and Expo MIT notices. There is no separate NOTICE file in this repo. The Robinhood repository is not a remote of this one.
 
+Juno also has an [Avalanche edition](https://juno-avax.vercel.app), verified live on November 12, 2026; this submission covers only the NEAR-specific code built during the November 1–14, 2026 window.
+
 NEAR work built in the November 1-14 window, recorded here on November 9-12: the factory and post contracts (sealed auction, floor vault, dare bond and trade log), SDK, email relayer with NEP-366 policy, read-only MCP server, NEAR data and signing integration, browser wallet support, web landing page and testnet deployment. The window also includes the flow fixes, testnet-only QA signer and real browser buy/sell evidence, plus the new [3D object kit](docs/ART-3D.md) generated with ChatGPT. Only the NEAR-specific changes are offered for judging; the earlier product, imported app and reused art remain disclosed baseline. Live email sign-in, testnet relayed deposits, cross-chain swaps and Rhea pool seeding are not claimed as complete; see [BLOCKED.md](BLOCKED.md).
 
 To inspect the NEAR changes separately from the imported app and initial scaffold:
