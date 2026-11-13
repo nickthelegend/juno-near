@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import { Tabs, usePathname, useRouter } from "expo-router";
-import { Animated, Platform, StyleSheet } from "react-native";
+import { Animated, Platform, StyleSheet, View } from "react-native";
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 import styled from "styled-components/native";
 
 import { CreateSheet } from "../../components/CreateSheet";
 import { usePressScale } from "../../components/Press";
 import { motion, useReducedMotion, nativeDriver } from "../../lib/motion";
-import { useTabBarHeight } from "../../lib/tabbar";
+import { TAB_GAP, TAB_PILL, useTabBarHeight } from "../../lib/tabbar";
 import { theme } from "../../theme";
 
 /**
@@ -69,18 +69,27 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        // A floating ink pill: inset from the edges, icons only, the active
+        // tab marked by a springy lime disc and Post raised out of the bar.
         tabBarStyle: {
-          backgroundColor: night ? theme.colors.night : theme.colors.surface,
-          borderTopWidth: night ? StyleSheet.hairlineWidth : 0,
-          borderTopColor: theme.colors.nightLine,
-          height: bar.height,
-          paddingTop: 10,
-          paddingBottom: bar.paddingBottom,
-          paddingHorizontal: 8,
-          borderTopLeftRadius: theme.radius.xl,
-          borderTopRightRadius: theme.radius.xl,
           position: "absolute",
-          ...theme.shadow.raised,
+          left: 0,
+          right: 0,
+          marginHorizontal: TAB_GAP,
+          bottom: bar.bottom,
+          height: TAB_PILL,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 6,
+          borderRadius: TAB_PILL / 2,
+          borderTopWidth: 0,
+          backgroundColor: night ? "rgba(18,21,14,0.92)" : theme.colors.ink,
+          overflow: "visible",
+          shadowColor: "#12150E",
+          shadowOpacity: 0.28,
+          shadowRadius: 22,
+          shadowOffset: { width: 0, height: 10 },
+          elevation: 14,
         },
         sceneStyle: { backgroundColor: theme.colors.bg },
       }}
@@ -139,15 +148,35 @@ function Slot({
   night?: boolean;
   onPress: () => void;
 }) {
+  const reduced = useReducedMotion();
+  const on = useRef(new Animated.Value(active ? 1 : 0)).current;
+  React.useEffect(() => {
+    if (reduced) { on.setValue(active ? 1 : 0); return; }
+    Animated.spring(on, { toValue: active ? 1 : 0, damping: 11, stiffness: 260, mass: 0.7, useNativeDriver: nativeDriver }).start();
+  }, [active, reduced, on]);
+  const { scale, onPressIn, onPressOut } = usePressScale(0.88);
   return (
     <SlotBox
       onPress={onPress}
-      $on={active}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       accessibilityRole="tab"
       accessibilityLabel={label}
       accessibilityState={{ selected: active }}
     >
-      <Icon color={active ? theme.colors.onLime : night ? theme.colors.onNightMuted : theme.colors.faint} />
+      <Animated.View style={{ transform: [{ scale }], alignItems: "center", justifyContent: "center", width: 48, height: 48 }}>
+        <Animated.View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { borderRadius: 24, backgroundColor: theme.colors.lime, opacity: on, transform: [{ scale: on.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }] }]}
+        />
+        <View style={{ zIndex: 1 }}>
+          <Icon color={active ? theme.colors.onLime : night ? theme.colors.onNightMuted : "rgba(243,247,238,0.62)"} />
+        </View>
+        <Animated.View
+          pointerEvents="none"
+          style={{ position: "absolute", bottom: -7, width: 5, height: 5, borderRadius: 3, backgroundColor: theme.colors.lime, opacity: on, transform: [{ scale: on }] }}
+        />
+      </Animated.View>
     </SlotBox>
   );
 }
@@ -193,11 +222,11 @@ function PostSlot({ open, night = false, onPress }: { open: boolean; night?: boo
       <Animated.View style={{ transform: [{ scale }] }}>
         <PostDisc $night={night}>
           <Animated.View style={{ transform: [{ rotate }] }}>
-            <Svg width={24} height={24} viewBox="0 0 24 24">
+            <Svg width={26} height={26} viewBox="0 0 24 24">
               <Path
                 d="M12 5v14M5 12h14"
-                stroke={theme.colors.lime}
-                strokeWidth={2.6}
+                stroke={theme.colors.ink}
+                strokeWidth={2.8}
                 strokeLinecap="round"
               />
             </Svg>
@@ -208,15 +237,11 @@ function PostSlot({ open, night = false, onPress }: { open: boolean; night?: boo
   );
 }
 
-const SlotBox = styled.Pressable<{ $on: boolean }>`
+const SlotBox = styled.Pressable`
   flex: 1;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 44px;
-  margin-horizontal: 2px;
-  border-radius: ${(p) => p.theme.radius.pill}px;
-  background-color: ${(p) => (p.$on ? p.theme.colors.lime : "transparent")};
+  height: 64px;
 `;
 
 /* The same flex as every other slot. It was a fixed 62pt while the four
@@ -228,60 +253,63 @@ const PostBox = styled.Pressable`
   justify-content: center;
 `;
 
+/* Raised out of the pill: a lime disc ringed in the canvas colour, so it reads
+   as sitting on top of the bar rather than inside it. */
 const PostDisc = styled.View<{ $night: boolean }>`
-  width: 48px;
-  height: 44px;
-  border-radius: ${(p) => p.theme.radius.pill}px;
-  background-color: ${(p) => (p.$night ? "rgba(255,255,255,0.12)" : p.theme.colors.ink)};
+  width: 62px;
+  height: 62px;
+  margin-top: -26px;
+  border-radius: 31px;
+  border-width: 5px;
+  border-color: ${(p) => (p.$night ? p.theme.colors.night : p.theme.colors.bg)};
+  background-color: ${(p) => p.theme.colors.lime};
   align-items: center;
   justify-content: center;
+  shadow-color: #3b4a1a;
+  shadow-opacity: 0.35;
+  shadow-radius: 12px;
+  shadow-offset: 0px 6px;
 `;
 
-/* Icons are inline SVG rather than an icon font: five glyphs do not justify a
-   dependency, and these carry the theme's exact stroke weight. */
+/* Juno's own glyphs, drawn for a dark bar: a stack of post cards (the feed),
+   a podium (the leaderboard), a reel frame, and a person. Inline SVG at the
+   theme's stroke weight; five glyphs do not justify an icon font. */
 
 function HomeIcon({ color }: { color: string }) {
   return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M3 10.2 12 3.5l9 6.7V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"
-        stroke={color}
-        strokeWidth={1.9}
-        strokeLinejoin="round"
-      />
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+      <Rect x={6.5} y={2.8} width={13} height={15.5} rx={3.2} stroke={color} strokeWidth={1.9} opacity={0.55} />
+      <Rect x={3.5} y={6} width={13} height={15.2} rx={3.2} stroke={color} strokeWidth={1.9} />
+      <Circle cx={10} cy={13.6} r={2.2} fill={color} />
     </Svg>
   );
 }
 
 function TradeIcon({ color }: { color: string }) {
   return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Rect x={3} y={12} width={4} height={8} rx={1.4} stroke={color} strokeWidth={1.9} />
-      <Rect x={10} y={7} width={4} height={13} rx={1.4} stroke={color} strokeWidth={1.9} />
-      <Rect x={17} y={3} width={4} height={17} rx={1.4} stroke={color} strokeWidth={1.9} />
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+      <Path d="M9 9.5h6V21H9z" stroke={color} strokeWidth={1.9} strokeLinejoin="round" />
+      <Path d="M3 14h6v7H3zM15 12h6v9h-6z" stroke={color} strokeWidth={1.9} strokeLinejoin="round" />
+      <Path d="M12 2.6l1.1 2.2 2.4.35-1.75 1.7.41 2.4L12 8.1l-2.16 1.15.41-2.4L8.5 5.15l2.4-.35z" fill={color} />
     </Svg>
   );
 }
 
 function ReelsIcon({ color }: { color: string }) {
   return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Rect x={3} y={4} width={18} height={16} rx={3.4} stroke={color} strokeWidth={1.9} />
-      <Path d="M10 9.5 15 12l-5 2.5z" stroke={color} strokeWidth={1.9} strokeLinejoin="round" />
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+      <Rect x={4} y={3} width={16} height={18} rx={4.2} stroke={color} strokeWidth={1.9} />
+      <Path d="M10 9.2v5.6l4.8-2.8z" fill={color} />
     </Svg>
   );
 }
 
 function ProfileIcon({ color }: { color: string }) {
   return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={8.5} r={3.6} stroke={color} strokeWidth={1.9} />
-      <Path
-        d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"
-        stroke={color}
-        strokeWidth={1.9}
-        strokeLinecap="round"
-      />
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+      <Circle cx={12} cy={12} r={9} stroke={color} strokeWidth={1.9} />
+      <Circle cx={12} cy={10} r={3} fill={color} />
+      <Path d="M6.6 18.2c1.3-2 3.2-3 5.4-3s4.1 1 5.4 3" stroke={color} strokeWidth={1.9} strokeLinecap="round" />
     </Svg>
   );
 }

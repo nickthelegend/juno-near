@@ -658,7 +658,7 @@ export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: Lifecycle
       </Row>
       <Text style={f.dareBig}>“{n.dare}”</Text>
       <View style={f.tiles}>
-        <Tile label="Bond" value={n.dareBond > 0 ? money(n.dareBond, "NEAR") : n.dareFinalized ? "Settled" : "None"} on={n.dareBond > 0} />
+        <Tile label="Bond" value={n.dareBond > 0 ? `${Number(n.dareBond.toFixed(3))} NEAR` : n.dareFinalized ? "Settled" : "None"} on={n.dareBond > 0} />
         <Tile label="Proof" value={n.proof ? "Posted" : "Not yet"} />
         <Tile label="Votes" value={String(votes.length)} />
       </View>

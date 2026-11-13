@@ -2,18 +2,15 @@ import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 /**
- * How tall the bottom tab bar is, including what the system reserves under it.
- *
- * Android draws apps edge to edge, so the gesture bar sits on top of the
- * app's last few points. The tab bar used a fixed 70 there and its icons ran
- * under the gesture line. It now adds the bottom inset, and everything that
- * sits above the bar — the reel dock, the comment composer — asks this for
- * the height rather than assuming one.
- *
- * iOS keeps its measured 86, which already clears the home indicator.
+ * The floating tab bar: a 64pt ink pill inset 14pt from the sides and from the
+ * bottom (plus the system's home-indicator inset). `height` is the space it
+ * takes from the bottom of the screen, for anything that has to sit above it
+ * (the reel dock, the comment composer, a screen's last row).
  */
-export function useTabBarHeight(): { height: number; paddingBottom: number } {
+export const TAB_PILL = 64;
+export const TAB_GAP = 14;
+export function useTabBarHeight(): { height: number; paddingBottom: number; bottom: number } {
   const insets = useSafeAreaInsets();
-  if (Platform.OS === "ios") return { height: 86, paddingBottom: 26 };
-  return { height: 70 + insets.bottom, paddingBottom: 10 + insets.bottom };
+  const bottom = TAB_GAP + (Platform.OS === "ios" ? Math.max(insets.bottom - 10, 0) : insets.bottom);
+  return { height: TAB_PILL + bottom + 8, paddingBottom: 0, bottom };
 }
