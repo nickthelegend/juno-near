@@ -32,6 +32,26 @@ These transaction links are copied from [the deployment record](deployments/test
 
 The original Juno Expo app is reused from the Robinhood Chain edition. See [Prior work](#prior-work) and [Hackathon disclosures](#hackathon-disclosures).
 
+## Filmed live lifecycle (November 13, 2026)
+
+A new dare post, [`rooftop.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/rooftop.juno-awkorp.testnet), went through its whole life in the app (QA-signer build, account kai), with mira and oto bidding from their own accounts. Evidence: [deployments/film-v3-lifecycle-2026-11-13.json](deployments/film-v3-lifecycle-2026-11-13.json).
+
+| Step | Transaction |
+| --- | --- |
+| Create dare post (3 NEAR + 0.5 NEAR bond) | [E8DbxTpQ…](https://testnet.nearblocks.io/txns/E8DbxTpQFdzcshpViD1pG4H5QqV8U1dURz5NbLrzZhug) |
+| Sealed bid (1 NEAR escrow) | [AXjEeHYx…](https://testnet.nearblocks.io/txns/AXjEeHYxu5Rs1vQnvexvx7Pbdcx5QsuXWZ4bmDaAjqKx) |
+| Reveal | [4C4s7UWG…](https://testnet.nearblocks.io/txns/4C4s7UWGVyWCofHg7zvng693VF1dkeLJFmn5rjuaqVPp) |
+| Settle (200 tokens at 0.0015 NEAR) | [Fu8mve5d…](https://testnet.nearblocks.io/txns/Fu8mve5dPL2bqvBEVrDz2nKWQTC5C2o22jxKrZQ3FCja) |
+| Buy 20 | [BEmCBQe1…](https://testnet.nearblocks.io/txns/BEmCBQe1Qvh8NFPcJt1wCD1LLX4gBDF3ZwPt66QE94Hi) |
+| Sell 5 | [4unFpQ8R…](https://testnet.nearblocks.io/txns/4unFpQ8RDrKHa5BejyVZ8BoYqFPjxq4HEvW958RDY6NZ) |
+| Redeem 5 against the floor | [Dk48jbRx…](https://testnet.nearblocks.io/txns/Dk48jbRxjZBo8n5cWSikbxL3nRrHZh7EEfqkNih6pXjm) |
+| Claim auction refund | [3Z8cjzi2…](https://testnet.nearblocks.io/txns/3Z8cjzi2fFJWRR35ZAcqqZavXdrBo9pHUkCRbBTJUwdh) |
+| Finalize dare (no proof in time: bond split across holders) | [29YTsLjo…](https://testnet.nearblocks.io/txns/29YTsLjoJDx56127VyuMgRvD6SFpt1BuUUPRRnKsfU7u) |
+| Claim bond share (0.2619 NEAR) | [4DogezeZ…](https://testnet.nearblocks.io/txns/4DogezeZRddzBT4oUBiiMEY6Qw5Dnx8A4PZdim3YJQq4) |
+| Buy the last 785 curve tokens: graduated | [N9PLBYP2…](https://testnet.nearblocks.io/txns/N9PLBYP2qMrSNGegTC5hUnxan96UpaxtfCbAWBZdfe1) |
+
+The creator's proof missed the five-minute window, so this run shows the failed-dare path; CAP-TOSS keeps the accepted-proof path from November 9. Testnet NEAR for the run came from the dropped Engyē testnet accounts ([deployments/film-v3-funding-2026-11-13.json](deployments/film-v3-funding-2026-11-13.json)).
+
 ## Verify it
 
 ```bash
