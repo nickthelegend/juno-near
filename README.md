@@ -54,6 +54,8 @@ The creator's proof missed the five-minute window, so this run shows the failed-
 
 ## Filmed live lifecycle, take 2 (November 13, 2026): accepted dare and graduation
 
+The film's opening buy, re-recorded with the new tab bar, is 10 SUNSET: [4DDyTE4g…](https://testnet.nearblocks.io/txns/4DDyTE4gR1VAEgYSyvJAxkoLtajs41k7RESuRmtqG2rN).
+
 The final film follows [`golden-hour.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/golden-hour.juno-awkorp.testnet). kai acts in the app. Mira and oto bid, reveal, vote and buy from their own accounts. Evidence: [deployments/film-v4-lifecycle-2026-11-13.json](deployments/film-v4-lifecycle-2026-11-13.json).
 
 | Step (kai, in the app) | Transaction |
