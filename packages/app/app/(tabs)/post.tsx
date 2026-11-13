@@ -48,6 +48,9 @@ const ART = [
   "/art/juno-social-square.webp",
   "/art/juno-mark.webp",
   "/art/juno-object-2.webp",
+  "/art/juno-mobile-hero.webp",
+  "/art/juno-onboard-1.webp",
+  "/art/juno-onboard-2.webp",
 ];
 
 const KINDS = [

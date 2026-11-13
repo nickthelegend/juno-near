@@ -1,6 +1,6 @@
 /**
  * Other players in the filmed lifecycle: mira and oto bid, reveal and vote on testnet from their own seeded accounts.
- * usage: tsx scripts/film-players.ts <commit|reveal|vote> <post-account> <player> [amount maxPriceNEAR | yes|no]
+ * usage: tsx scripts/film-players.ts <commit|reveal|vote|call> <post-account> <player> [amount maxPriceNEAR | yes|no | method jsonArgs]
  * Keys are read from .near-credentials/seed.json in code only. Salts persist in deployments/film-v3-player-salts.json
  * so a reveal matches its commit. Every hash is appended to deployments/film-v3-players.jsonl.
  */
@@ -11,7 +11,7 @@ const [cmd, post, who, a, b] = process.argv.slice(2);
 const seed = JSON.parse(readFileSync('.near-credentials/seed.json', 'utf8'));
 const player = seed.players[who];
 if (!player || !post?.endsWith('.juno-awkorp.testnet')) throw Error('usage: <commit|reveal|vote> <post> <mira|oto|kai> ...');
-const provider = new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' });
+const provider = new JsonRpcProvider({ url: process.env.FILM_RPC || 'https://near-testnet.drpc.org' });
 const acct = new Account(player.id, provider, new KeyPairSigner(KeyPair.fromString(player.secretKey as KeyPairString)));
 const saltsFile = 'deployments/film-v3-player-salts.json';
 const salts = existsSync(saltsFile) ? JSON.parse(readFileSync(saltsFile, 'utf8')) : {};
@@ -28,8 +28,12 @@ if (cmd === 'commit') {
   method = 'reveal'; args = { amount: s.amount, max_price: s.maxPrice, salt: s.salt };
 } else if (cmd === 'vote') {
   method = 'vote_proof'; args = { accepted: a !== 'no' };
+} else if (cmd === 'call') {
+  // Zero-deposit post calls used to recycle test funds between takes: sell, redeem, claim_refund, claim_dare.
+  if (!['sell', 'redeem', 'claim_refund', 'claim_dare'].includes(a!)) throw Error('call allows sell, redeem, claim_refund, claim_dare');
+  method = a!; args = b ? JSON.parse(b) : {};
 } else throw Error('unknown command');
-const r = await acct.signAndSendTransaction({ receiverId: post, actions: [actions.functionCall(method, args, 60n * TGAS, deposit)] }) as { transaction: { hash: string }; status: Record<string, unknown> };
+const r = await acct.signAndSendTransaction({ receiverId: post, actions: [actions.functionCall(method, args, 120n * TGAS, deposit)] }) as { transaction: { hash: string }; status: Record<string, unknown> };
 const failed = 'Failure' in (r.status ?? {});
 const line = { at: new Date().toISOString(), player: player.id, post, method, hash: r.transaction.hash, ok: !failed };
 appendFileSync('deployments/film-v3-players.jsonl', JSON.stringify(line) + '\n');
