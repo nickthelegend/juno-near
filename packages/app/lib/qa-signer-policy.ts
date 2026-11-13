@@ -1,5 +1,13 @@
 /** Validation shared by the QA-only browser adapter and its Node harness. */
-export const QA_BUDGET = 3n * 10n ** 23n; // 0.3 testnet NEAR, across the run.
+/** Shared testnet spend cap for one QA run: 0.3 NEAR, or EXPO_PUBLIC_QA_BUDGET_NEAR (whole NEAR, max 12) for a filmed lifecycle run. */
+function budget(): bigint {
+  const raw = process.env.EXPO_PUBLIC_QA_BUDGET_NEAR;
+  if (!raw) return 3n * 10n ** 23n;
+  if (!/^\d{1,2}$/.test(raw) || Number(raw) < 1 || Number(raw) > 12) throw Error('EXPO_PUBLIC_QA_BUDGET_NEAR must be a whole number of NEAR from 1 to 12.');
+  return BigInt(raw) * 10n ** 24n;
+}
+export const QA_BUDGET = budget();
+const BUDGET_LABEL = `${Number(QA_BUDGET / 10n ** 20n) / 10_000}`;
 export const QA_RPC_URLS = ['https://near-testnet.drpc.org', 'https://test.rpc.fastnear.com', 'https://rpc.testnet.near.org'];
 const ACCOUNT = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 const METHODS = new Set(['buy', 'sell', 'redeem', 'withdraw_earnings', 'claim_refund', 'claim_dare', 'submit_proof', 'vote_proof', 'finalize_dare', 'settle', 'reveal', 'commit', 'create_post']);
@@ -28,6 +36,6 @@ export function validateQaTransaction(transaction: QaTransaction, accountId: str
 export function reserveQaBudget(reserved: bigint, deposit: bigint, gas: bigint, gasPrice: bigint) {
   if (reserved < 0n || deposit < 0n || gas <= 0n || gasPrice <= 0n) throw Error('Invalid QA budget input.');
   const next = reserved + deposit + gas * gasPrice * 3n;
-  if (next > QA_BUDGET) throw Error('QA signer stopped: the shared 0.3 testnet NEAR budget would be exceeded.');
+  if (next > QA_BUDGET) throw Error(`QA signer stopped: the shared ${BUDGET_LABEL} testnet NEAR budget would be exceeded.`);
   return next;
 }
