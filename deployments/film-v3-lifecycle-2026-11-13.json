@@ -113,6 +113,14 @@
       "success": true,
       "explorer": "https://testnet.nearblocks.io/txns/BwdNm3e7EvDMtGJ2dR17W2QkTLSPLRTuDE4UPpzNngYx",
       "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "claim_dare",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "4DogezeZRddzBT4oUBiiMEY6Qw5Dnx8A4PZdim3YJQq4",
+      "explorer": "https://testnet.nearblocks.io/txns/4DogezeZRddzBT4oUBiiMEY6Qw5Dnx8A4PZdim3YJQq4",
+      "source": "clicked in the app (QA signer build)"
     }
   ],
   "players": [
