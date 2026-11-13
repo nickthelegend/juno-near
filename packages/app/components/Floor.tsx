@@ -691,7 +691,9 @@ export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: Lifecycle
       <View style={[f.dareStatus, n.dareFinalized ? f.dareStatusDone : null]}>
         <Text style={[f.dareStatusText, n.dareFinalized ? { color: c.lime } : null]}>{status}</Text>
       </View>
-      {action ? <LifecycleControl coin={coin} read={lifecycle} method={action} /> : (
+      {/* Every control stays mounted (quiet when not eligible) so an open receipt survives the re-read that follows it. */}
+      {(["submit_proof", "vote_proof", "finalize_dare", "claim_dare"] as const).map((m) => <LifecycleControl key={m} coin={coin} read={lifecycle} method={m} quiet />)}
+      {action ? null : (
         <Text style={f.body}>{n.dareFinalized ? (n.proof && yes > no ? "Holders accepted the proof by token balance, so the contract returned the bond to the creator." : "No accepted proof by the deadline, so the contract split the bond across holders by balance.") : "The creator posts proof; holders vote with their balance. Flake, and the bond is split among holders."}</Text>
       )}
     </View>
