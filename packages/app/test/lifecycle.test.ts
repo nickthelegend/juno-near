@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import type { LifecycleSnapshot } from '@juno/sdk';
 import { buildLifecycle, lifecycleOptions } from '../lib/lifecycle';
-const s: LifecycleSnapshot = { accountId:'alice.testnet',creator:'alice.testnet',dare:'Do it',proof:'',settled:true,finalized:false,deadlineMs:300000,nowMs:200000,hasBid:true,refundYocto:'100',holding:'10',voted:false,bidders:[],votes:[],openedMs:0 };
+const s: LifecycleSnapshot = { accountId:'alice.testnet',creator:'alice.testnet',dare:'Do it',proof:'',settled:true,finalized:false,deadlineMs:300000,nowMs:200000,hasBid:true,refundYocto:'100',holding:'10',voted:false,bidders:[],votes:[],openedMs:0,darePayoutYocto:'0' };
 test('lifecycle gates refunds, proof, votes and finalization by chain eligibility',()=>{
   assert.equal(lifecycleOptions(s).claim_refund.eligible,true);
   assert.equal(lifecycleOptions({...s,settled:false}).claim_refund.eligible,false);
@@ -27,4 +27,11 @@ test('app call builders enforce UTF-8 proof bounds, vote choices, zero deposits 
   assert.deepEqual(buildLifecycle('post.testnet',s,'claim_refund').args,{});
   assert.deepEqual(buildLifecycle('post.testnet',{...s,nowMs:300000},'finalize_dare').args,{});
   assert.throws(()=>buildLifecycle('post.testnet',{...s,voted:true},'vote_proof',{accepted:true}),/already voted/);
+});
+test('a failed dare pays each holder only their own unclaimed bond share', () => {
+  const final = { ...s, finalized: true, nowMs: 400000 };
+  assert.equal(lifecycleOptions({ ...final, darePayoutYocto: '0' }).claim_dare.eligible, false);
+  assert.equal(lifecycleOptions({ ...final, darePayoutYocto: '5' }).claim_dare.eligible, true);
+  assert.equal(lifecycleOptions({ ...s, darePayoutYocto: '5' }).claim_dare.eligible, false);
+  assert.equal(buildLifecycle('p.testnet', { ...final, darePayoutYocto: '5' }, 'claim_dare').methodName, 'claim_dare');
 });

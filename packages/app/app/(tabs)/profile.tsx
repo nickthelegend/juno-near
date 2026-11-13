@@ -296,7 +296,12 @@ export default function ProfileScreen() {
               >
               <Card>
                 <Row gap={12}>
-                  <Identicon seed={position.baseMint} size={38} />
+                  <CoinArt
+                    uri={position.mediaUrl ? juno.still({ kind: position.mediaMime?.startsWith("video") ? "video" : "image", url: position.mediaUrl }) : null}
+                    seed={position.baseMint}
+                    size={44}
+                    radius={14}
+                  />
                   <Col gap={3} style={{ flex: 1 }}>
                     <Label style={{ fontWeight: "700" }} numberOfLines={1}>
                       {position.name}

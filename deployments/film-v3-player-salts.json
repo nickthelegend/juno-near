@@ -1,0 +1,12 @@
+{
+  "rooftop.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "50",
+    "maxPrice": "3000000000000000000000",
+    "salt": "mwf5in62-q5ie2vbp27j"
+  },
+  "rooftop.juno-awkorp.testnet:oto.juno-awkorp.testnet": {
+    "amount": "80",
+    "maxPrice": "1500000000000000000000",
+    "salt": "mwf5in64-vwtpcve3kki"
+  }
+}

@@ -1,7 +1,7 @@
 import type { LifecycleSnapshot } from '@juno/sdk';
 import type { TxStep } from './api';
 
-export const LIFECYCLE_METHODS = ['claim_refund', 'submit_proof', 'vote_proof', 'finalize_dare'] as const;
+export const LIFECYCLE_METHODS = ['claim_refund', 'submit_proof', 'vote_proof', 'finalize_dare', 'claim_dare'] as const;
 export type LifecycleMethod = typeof LIFECYCLE_METHODS[number];
 export type Eligibility = { eligible: boolean; reason: string };
 const gate = (reason: string): Eligibility => ({ eligible: !reason, reason });
@@ -16,6 +16,7 @@ export function lifecycleOptions(s: LifecycleSnapshot): Record<LifecycleMethod, 
     submit_proof: gate(noDare || (closed ? 'Proof submission closed.' : connected || (s.accountId !== s.creator ? 'Only the creator can submit proof.' : ''))),
     vote_proof: gate(noDare || (!s.settled ? 'Voting opens after the auction settles.' : closed ? 'Voting closed.' : connected || (BigInt(s.holding) === 0n ? 'Hold this post token to vote.' : s.voted ? 'This account already voted.' : ''))),
     finalize_dare: gate(noDare || (s.finalized ? 'This dare is already final.' : !closed ? 'Finalize after the dare deadline.' : connected)),
+    claim_dare: gate(noDare || (!s.finalized ? 'Bond shares are paid after the dare is final.' : connected || (BigInt(s.darePayoutYocto ?? '0') === 0n ? 'No bond share to claim for this account.' : ''))),
   };
 }
 
@@ -33,6 +34,6 @@ export function buildLifecycle(receiverId: string, snapshot: LifecycleSnapshot, 
     if (typeof input.accepted !== 'boolean') throw Error('Choose accept or reject.');
     args.accepted = input.accepted;
   }
-  const label = { claim_refund: 'Claim auction refund', submit_proof: 'Submit proof', vote_proof: 'Vote on proof', finalize_dare: 'Finalize dare' }[method];
+  const label = { claim_refund: 'Claim auction refund', submit_proof: 'Submit proof', vote_proof: 'Vote on proof', finalize_dare: 'Finalize dare', claim_dare: 'Claim bond share' }[method];
   return { receiverId, methodName: method, label, args, deposit: '0', gas: '120000000000000' };
 }

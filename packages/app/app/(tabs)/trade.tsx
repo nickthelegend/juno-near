@@ -377,6 +377,11 @@ function MarketCard({
 }
 
 const styles = StyleSheet.create({
+  podium: { flexDirection: "row", alignItems: "flex-end", gap: 10, marginTop: 6, marginBottom: 18 },
+  podiumName: { color: theme.colors.text, fontSize: theme.type.label.size, fontWeight: "800", maxWidth: 110 },
+  podiumPnl: { fontSize: theme.type.caption.size, fontWeight: "800", fontVariant: ["tabular-nums"] },
+  podiumStep: { alignSelf: "stretch", borderTopLeftRadius: 16, borderTopRightRadius: 16, alignItems: "center", justifyContent: "flex-start", paddingTop: 10 },
+  podiumPlace: { fontSize: theme.type.heading.size, fontWeight: "800" },
   king: { backgroundColor: theme.colors.ink, borderRadius: theme.radius.lg, padding: 18, gap: 16 },
   kingPill: { backgroundColor: theme.colors.lime, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 },
   kingPillText: { color: theme.colors.ink, fontSize: theme.type.caption.size, fontWeight: "800" },
@@ -541,7 +546,9 @@ function TraderBoard({
     );
   }
 
-  const traders = board.data?.traders ?? [];
+  // Ranked by total P&L: profit already taken plus the open position's gain at the curve price.
+  const traders = [...(board.data?.traders ?? [])].sort((a, b) => ((b.realised ?? 0) + (b.unrealised ?? 0)) - ((a.realised ?? 0) + (a.unrealised ?? 0)));
+  const podium = traders.slice(0, 3);
 
   return (
     <ScrollView
@@ -576,6 +583,26 @@ function TraderBoard({
           }
         />
       ) : (
+        <>
+        <View style={styles.podium}>
+          {[podium[1], podium[0], podium[2]].map((trader, slot) => {
+            if (!trader) return <View key={slot} style={{ flex: 1 }} />;
+            const place = slot === 1 ? 1 : slot === 0 ? 2 : 3;
+            const pnl = (trader.realised ?? 0) + (trader.unrealised ?? 0);
+            return (
+              <Tappable key={trader.wallet} onPress={() => onOpen(trader.wallet)} to={0.97} style={{ flex: 1 }}>
+                <View style={{ alignItems: "center", gap: 6 }}>
+                  <Identicon seed={trader.wallet} size={place === 1 ? 64 : 50} />
+                  <Text style={styles.podiumName} numberOfLines={1}><Handle wallet={trader.wallet} /></Text>
+                  <Text style={[styles.podiumPnl, { color: pnl >= 0 ? theme.colors.pos : theme.colors.neg }]} numberOfLines={1}>{pnl >= 0 ? "+" : ""}{money(pnl, "NEAR")}</Text>
+                  <View style={[styles.podiumStep, { height: place === 1 ? 92 : place === 2 ? 66 : 48, backgroundColor: place === 1 ? theme.colors.ink : theme.colors.surface }]}>
+                    <Text style={[styles.podiumPlace, { color: place === 1 ? theme.colors.lime : theme.colors.text }]}>{place}</Text>
+                  </View>
+                </View>
+              </Tappable>
+            );
+          })}
+        </View>
         <Ledger>
           {traders.map((trader, index) => (
             <Tappable key={trader.wallet} onPress={() => onOpen(trader.wallet)} to={0.985}>
@@ -599,20 +626,16 @@ function TraderBoard({
                     </Caption>
                   </Col>
                   <Col gap={2} style={{ alignItems: "flex-end" }}>
-                    <Mono
-                      style={{
-                        color:
-                          (trader.realised ?? 0) > 0
-                            ? theme.colors.pos
-                            : (trader.realised ?? 0) < 0
-                              ? theme.colors.neg
-                              : theme.colors.text,
-                      }}
-                    >
-                      {(trader.realised ?? 0) > 0 ? "+" : ""}
-                      {money(trader.realised, "NEAR")}
-                    </Mono>
-                    <Caption>taken</Caption>
+                    {(() => {
+                      const pnl = (trader.realised ?? 0) + (trader.unrealised ?? 0);
+                      return (
+                        <Mono style={{ color: pnl > 0 ? theme.colors.pos : pnl < 0 ? theme.colors.neg : theme.colors.text }}>
+                          {pnl > 0 ? "+" : ""}
+                          {money(pnl, "NEAR")}
+                        </Mono>
+                      );
+                    })()}
+                    <Caption>P&amp;L · {money(trader.realised, "NEAR")} taken</Caption>
                   </Col>
                 </Row>
 
@@ -638,6 +661,7 @@ function TraderBoard({
             </Tappable>
           ))}
         </Ledger>
+        </>
       )}
     </ScrollView>
   );

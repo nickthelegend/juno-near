@@ -148,6 +148,8 @@ export type LifecycleSnapshot = {
   /** Public dare votes, weighted by each voter's current balance (the weight finalization uses). */
   votes: { owner: string; accepted: boolean; weight: string }[];
   openedMs: number;
+  /** This account's unclaimed share of a failed dare's bond. */
+  darePayoutYocto: string;
 };
 
 export function decodeLifecycle(bytes: Uint8Array, accountId: string | null, nowMs: number): LifecycleSnapshot {
@@ -187,9 +189,11 @@ export function decodeLifecycle(bytes: Uint8Array, accountId: string | null, now
   const votes: LifecycleSnapshot['votes'] = [];
   for (let n = count(); n > 0; n--) { const owner = text(); const accepted = bool(); votes.push({ owner, accepted, weight: (balances.get(owner) ?? 0n).toString() }); if (owner === accountId) voted = true; }
   const finalized = bool();
+  let darePayoutYocto = '0';
+  for (let n = count(); n > 0; n--) { const owner = text(); const amount = u128(); if (owner === accountId) darePayoutYocto = amount.toString(); }
   const deadlineMs = Number(opened) + 300_000;
   if (!Number.isSafeInteger(deadlineMs) || !Number.isSafeInteger(nowMs) || nowMs < 0) throw Error('Unsupported Juno lifecycle timestamp.');
-  return { accountId, creator, dare, proof, settled, finalized, deadlineMs, nowMs, hasBid, refundYocto, holding, voted, bidders, votes, openedMs: Number(opened) };
+  return { accountId, creator, dare, proof, settled, finalized, deadlineMs, nowMs, hasBid, refundYocto, holding, voted, bidders, votes, openedMs: Number(opened), darePayoutYocto };
 }
 /** Read public post state at one final block, including per-account refund and vote eligibility. */
 export async function lifecycle(account: string, viewer: string | null, endpoint = TESTNET_RPC) {

@@ -1,0 +1,152 @@
+{
+  "network": "testnet",
+  "date": "2026-11-13",
+  "post": "rooftop.juno-awkorp.testnet",
+  "note": "Film v3 live lifecycle. kai acts in the app; mira and oto bid and reveal from their own accounts by script.",
+  "kai": [
+    {
+      "step": "create_post",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "juno-awkorp.testnet",
+      "hash": "E8DbxTpQFdzcshpViD1pG4H5QqV8U1dURz5NbLrzZhug",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/E8DbxTpQFdzcshpViD1pG4H5QqV8U1dURz5NbLrzZhug",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "commit",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "AXjEeHYxu5Rs1vQnvexvx7Pbdcx5QsuXWZ4bmDaAjqKx",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/AXjEeHYxu5Rs1vQnvexvx7Pbdcx5QsuXWZ4bmDaAjqKx",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "reveal",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "4C4s7UWGVyWCofHg7zvng693VF1dkeLJFmn5rjuaqVPp",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/4C4s7UWGVyWCofHg7zvng693VF1dkeLJFmn5rjuaqVPp",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "settle",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "Fu8mve5dPL2bqvBEVrDz2nKWQTC5C2o22jxKrZQ3FCja",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/Fu8mve5dPL2bqvBEVrDz2nKWQTC5C2o22jxKrZQ3FCja",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "buy_20",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "BEmCBQe1Qvh8NFPcJt1wCD1LLX4gBDF3ZwPt66QE94Hi",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/BEmCBQe1Qvh8NFPcJt1wCD1LLX4gBDF3ZwPt66QE94Hi",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "sell_5",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "4unFpQ8RDrKHa5BejyVZ8BoYqFPjxq4HEvW958RDY6NZ",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/4unFpQ8RDrKHa5BejyVZ8BoYqFPjxq4HEvW958RDY6NZ",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "redeem_5",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "Dk48jbRxjZBo8n5cWSikbxL3nRrHZh7EEfqkNih6pXjm",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/Dk48jbRxjZBo8n5cWSikbxL3nRrHZh7EEfqkNih6pXjm",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "claim_refund",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "3Z8cjzi2fFJWRR35ZAcqqZavXdrBo9pHUkCRbBTJUwdh",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/3Z8cjzi2fFJWRR35ZAcqqZavXdrBo9pHUkCRbBTJUwdh",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "finalize_dare",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "29YTsLjoJDx56127VyuMgRvD6SFpt1BuUUPRRnKsfU7u",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/29YTsLjoJDx56127VyuMgRvD6SFpt1BuUUPRRnKsfU7u",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "buy_785_graduate",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "rooftop.juno-awkorp.testnet",
+      "hash": "N9PLBYP2qMrSNGegTC5hUnxan96UpaxtfCbAWBZdfe1",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/N9PLBYP2qMrSNGegTC5hUnxan96UpaxtfCbAWBZdfe1",
+      "source": "clicked in the app (QA signer build)"
+    },
+    {
+      "step": "hook_buy_10_balloons",
+      "signer": "kai.juno-awkorp.testnet",
+      "receiver": "balloons.juno-awkorp.testnet",
+      "hash": "BwdNm3e7EvDMtGJ2dR17W2QkTLSPLRTuDE4UPpzNngYx",
+      "status": "FINAL",
+      "success": true,
+      "explorer": "https://testnet.nearblocks.io/txns/BwdNm3e7EvDMtGJ2dR17W2QkTLSPLRTuDE4UPpzNngYx",
+      "source": "clicked in the app (QA signer build)"
+    }
+  ],
+  "players": [
+    {
+      "at": "2026-11-13T15:48:27.779Z",
+      "player": "oto.juno-awkorp.testnet",
+      "post": "rooftop.juno-awkorp.testnet",
+      "method": "commit",
+      "hash": "9DNfBZKQazyrmm6Z3QfnCiw6LwMs49qvarKjkirNwJSf",
+      "ok": true
+    },
+    {
+      "at": "2026-11-13T15:48:27.783Z",
+      "player": "mira.juno-awkorp.testnet",
+      "post": "rooftop.juno-awkorp.testnet",
+      "method": "commit",
+      "hash": "EewHeg6Tu181WXwwmJ4VjgzaoWDaWXkQB4Hp76hgyCSu",
+      "ok": true
+    },
+    {
+      "at": "2026-11-13T15:49:15.550Z",
+      "player": "mira.juno-awkorp.testnet",
+      "post": "rooftop.juno-awkorp.testnet",
+      "method": "reveal",
+      "hash": "FjaFhNoTYJeXAjtt2JXvHbcPf8kgPoqxqFxvKcv9yggf",
+      "ok": true
+    },
+    {
+      "at": "2026-11-13T15:49:19.668Z",
+      "player": "oto.juno-awkorp.testnet",
+      "post": "rooftop.juno-awkorp.testnet",
+      "method": "reveal",
+      "hash": "2xfqpdkJiy3xC1stND2iE7vKo8ztNzPSuVK6fab6ZbqQ",
+      "ok": true
+    }
+  ]
+}

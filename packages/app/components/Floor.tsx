@@ -503,8 +503,18 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
           )
         ) : n.phase === "reveal" ? (
           <>
-            <Text style={f.body}>{mine ? `Reveal ${mine.amount} tokens at up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. A bid left hidden is refunded minus 1%.` : "This device holds no sealed bid for this post."}</Text>
-            <Button label={mine ? "Reveal my bid" : "No bid from this device"} variant="lime" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
+            {wallet.address && book.some((b) => b.owner === wallet.address && b.revealed) ? (
+              <View style={{ gap: 4 }}>
+                <Text style={f.tileLabel}>Your bid is revealed</Text>
+                <Text style={a.mineFig}>{mine ? `${mine.amount} tokens · up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")} each` : "Revealed on chain"}</Text>
+                <Text style={f.body}>Settlement opens when the reveal clock reaches zero.</Text>
+              </View>
+            ) : (
+              <>
+                <Text style={f.body}>{mine ? `Reveal ${mine.amount} tokens at up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. A bid left hidden is refunded minus 1%.` : "This device holds no sealed bid for this post."}</Text>
+                <Button label={mine ? "Reveal my bid" : "No bid from this device"} variant="lime" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
+              </>
+            )}
           </>
         ) : (
           <>
@@ -634,7 +644,7 @@ export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: Lifecycle
   const share = yes + no > 0 ? yes / (yes + no) : 0;
   const open = left !== null && left > 0;
   const options = snap ? lifecycleOptions(snap) : null;
-  const action = options ? (["submit_proof", "vote_proof", "finalize_dare"] as const).find((m) => options[m].eligible) : undefined;
+  const action = options ? (["submit_proof", "vote_proof", "finalize_dare", "claim_dare"] as const).find((m) => options[m].eligible) : undefined;
   const status = n.dareFinalized
     ? (n.proof && yes > no ? "Proof accepted · bond returned to the creator" : "Dare failed · bond split across holders")
     : open
@@ -682,7 +692,7 @@ export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: Lifecycle
         <Text style={[f.dareStatusText, n.dareFinalized ? { color: c.lime } : null]}>{status}</Text>
       </View>
       {action ? <LifecycleControl coin={coin} read={lifecycle} method={action} /> : (
-        <Text style={f.body}>{n.dareFinalized ? "Holders weighed the proof by token balance; the contract paid out the bond." : "The creator posts proof; holders vote with their balance. Flake, and the bond is split among holders."}</Text>
+        <Text style={f.body}>{n.dareFinalized ? (n.proof && yes > no ? "Holders accepted the proof by token balance, so the contract returned the bond to the creator." : "No accepted proof by the deadline, so the contract split the bond across holders by balance.") : "The creator posts proof; holders vote with their balance. Flake, and the bond is split among holders."}</Text>
       )}
     </View>
   );
@@ -700,7 +710,8 @@ function LifecycleControl({ coin, read, method, quiet }: { coin: Coin; read: Lif
   const [progress, setProgress] = useState<SendProgress | null>(null);
   const snapshot = read.data?.post === coin.address && read.data.snapshot.accountId === wallet.address ? read.data.snapshot : null;
   const allowed = snapshot && !read.loading && !read.error ? lifecycleOptions(snapshot)[method] : { eligible: false, reason: read.error ? "Could not read lifecycle eligibility. Pull to refresh or wait a moment." : "Checking lifecycle eligibility…" };
-  const title = { claim_refund: "Claim auction refund", submit_proof: "Submit proof", vote_proof: "Vote on proof", finalize_dare: "Finalize dare" }[method];
+  const share = snapshot && BigInt(snapshot.darePayoutYocto ?? "0") > 0n ? ` · ${amountOf(Number(BigInt(snapshot.darePayoutYocto)) / 1e24, "NEAR")}` : "";
+  const title = { claim_refund: "Claim auction refund", submit_proof: "Submit proof", vote_proof: "Vote on proof", finalize_dare: "Finalize dare", claim_dare: `Claim my bond share${share}` }[method];
   async function run(accepted?: boolean) {
     setBusy(true); setError(null); setProgress(null);
     try {
@@ -719,7 +730,7 @@ function LifecycleControl({ coin, read, method, quiet }: { coin: Coin; read: Lif
     {allowed.eligible ? <Button label={title} variant="lime" tall onPress={() => { setProof(coin.near.proof); setError(null); setHash(null); setOpen(true); }} /> : quiet ? null : <Text testID={`${method}-reason`} style={f.body}>{allowed.reason}</Text>}
     {open ? <TransactionSheet title={title} busy={busy} onClose={() => setOpen(false)}>
       {hash ? <TransactionReceipt hash={hash} label={title} onDone={() => setOpen(false)} /> : <>
-        <Text style={f.body}>{method === "claim_refund" ? "Return unused auction escrow to this account." : method === "finalize_dare" ? "Settle the dare bond using holders' recorded votes." : coin.near.proof ? `Proof: ${coin.near.proof}` : "The creator has not posted proof yet."}</Text>
+        <Text style={f.body}>{method === "claim_refund" ? "Return unused auction escrow to this account." : method === "claim_dare" ? "The creator flaked, so the bond was split across holders by balance. This sends your share to this account." : method === "finalize_dare" ? "Settle the dare bond using holders' recorded votes." : coin.near.proof ? `Proof: ${coin.near.proof}` : "The creator has not posted proof yet."}</Text>
         {method === "submit_proof" ? <Field label="Proof text or URL" value={proof} onChange={setProof} numeric={false} /> : null}
         {method === "vote_proof" ? <Text style={f.body}>One vote per account. Voting weight is the token balance at finalization.</Text> : null}
         {progress ? <TransactionProgress labels={[title]} at={progress} /> : null}

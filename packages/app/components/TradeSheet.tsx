@@ -193,9 +193,13 @@ export function TradeSheet({
                 $on={side === id}
                 $buy={id !== "sell"}
                 onPress={() => {
+                  // A new side is a new trade: drop the last receipt so it is never shown under the wrong verb.
+                  if (stage === "confirming") return;
                   setSide(id);
                   setQuote(null);
                   setError(null);
+                  setTxHash(null);
+                  setStage("entry");
                 }}
                 accessibilityRole="button"
                 accessibilityState={{ selected: side === id }}
