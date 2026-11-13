@@ -54,7 +54,7 @@ The creator's proof missed the five-minute window, so this run shows the failed-
 
 ## Filmed live lifecycle, take 2 (November 13, 2026): accepted dare and graduation
 
-The film's opening buy, re-recorded with the new tab bar, is 10 SUNSET: [4DDyTE4g…](https://testnet.nearblocks.io/txns/4DDyTE4gR1VAEgYSyvJAxkoLtajs41k7RESuRmtqG2rN).
+The film's on-camera create is [`pier-lights.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/pier-lights.juno-awkorp.testnet), launched from the app: [D4suNsww…](https://testnet.nearblocks.io/txns/D4suNswwkbDeBTZCyBmz29J4Rapz8e66FriZC63YLQaA). For that 3 NEAR, kai was topped up from the remaining dropped Engyē test balances ([deployments/film-v5-funding-2026-11-14.json](deployments/film-v5-funding-2026-11-14.json)), creator fees, and floor redemptions by the three test players. A November 13 recycling step sold PILE-IN's curve back to fund the re-record, so PILE-IN is no longer graduated; golden-hour is the graduated example. The film's opening buy, re-recorded with the new tab bar, is 10 SUNSET: [4DDyTE4g…](https://testnet.nearblocks.io/txns/4DDyTE4gR1VAEgYSyvJAxkoLtajs41k7RESuRmtqG2rN).
 
 The final film follows [`golden-hour.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/golden-hour.juno-awkorp.testnet). kai acts in the app. Mira and oto bid, reveal, vote and buy from their own accounts. Evidence: [deployments/film-v4-lifecycle-2026-11-13.json](deployments/film-v4-lifecycle-2026-11-13.json).
 

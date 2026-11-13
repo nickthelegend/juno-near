@@ -1,0 +1,91 @@
+{
+  "network": "testnet",
+  "purpose": "Film v3 live lifecycle: create post, sealed bids, dare, graduation",
+  "at": "2026-11-13T20:21:03.546Z",
+  "transfers": [
+    {
+      "from": "b1.engye-v3-8c5cc3a8.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.38,
+      "hash": "8UBnhbqpy1YgTrWyJ3Bxix7hF9yXGzUHiaDJ84yqj8XR",
+      "explorer": "https://testnet.nearblocks.io/txns/8UBnhbqpy1YgTrWyJ3Bxix7hF9yXGzUHiaDJ84yqj8XR"
+    },
+    {
+      "from": "b2.engye-v3-8c5cc3a8.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.2,
+      "hash": "7MmeAbX6i91bhX5YZrdAtwXmHcZpqWqhBFiQddPjBWuA",
+      "explorer": "https://testnet.nearblocks.io/txns/7MmeAbX6i91bhX5YZrdAtwXmHcZpqWqhBFiQddPjBWuA"
+    },
+    {
+      "from": "engye-59539fdb42.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.165,
+      "hash": "Fv53tt1vKGBQs2q64eGJdzcx6rr7667Eus2NJZYctBos",
+      "explorer": "https://testnet.nearblocks.io/txns/Fv53tt1vKGBQs2q64eGJdzcx6rr7667Eus2NJZYctBos"
+    },
+    {
+      "from": "engye-e6e91cf795.engye-59539fdb42.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.17,
+      "hash": "F7PhnGJJCqSZ63xuULc4FBhd3fH38PkVKAF5RtfhUbp5",
+      "explorer": "https://testnet.nearblocks.io/txns/F7PhnGJJCqSZ63xuULc4FBhd3fH38PkVKAF5RtfhUbp5"
+    },
+    {
+      "from": "maker.engye-v3-8c5cc3a8.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.285,
+      "hash": "CrGgnesgmKSMhnaJNo7JECHEmmxUHn1RNZ6WJ67XUvhD",
+      "explorer": "https://testnet.nearblocks.io/txns/CrGgnesgmKSMhnaJNo7JECHEmmxUHn1RNZ6WJ67XUvhD"
+    },
+    {
+      "from": "engye-4f18d8544b.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.053,
+      "hash": "GbxyetuUUjH23Ri7YCfXG9i8NGGKjt3CYtxaMUY5CMRm",
+      "explorer": "https://testnet.nearblocks.io/txns/GbxyetuUUjH23Ri7YCfXG9i8NGGKjt3CYtxaMUY5CMRm"
+    },
+    {
+      "from": "engye-5d3dc3dd57.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.043,
+      "hash": "5bnJJwvM9ujcaFkCd8o8SBrw7zoAkg6yUb9t3eivfMbE",
+      "explorer": "https://testnet.nearblocks.io/txns/5bnJJwvM9ujcaFkCd8o8SBrw7zoAkg6yUb9t3eivfMbE"
+    },
+    {
+      "from": "engye-90efb5817e.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.049,
+      "hash": "FFi3NraDnKNGyYSeD6PDT2ewXhdYoYs3pkjrqJv6iShM",
+      "explorer": "https://testnet.nearblocks.io/txns/FFi3NraDnKNGyYSeD6PDT2ewXhdYoYs3pkjrqJv6iShM"
+    },
+    {
+      "from": "engye-open-df599f7f.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.061,
+      "hash": "EcAwTt4FiNJx3xnfq3GdnddFTgUfqNu2SjCnvQ7ufBY9",
+      "explorer": "https://testnet.nearblocks.io/txns/EcAwTt4FiNJx3xnfq3GdnddFTgUfqNu2SjCnvQ7ufBY9"
+    },
+    {
+      "from": "engye-v3-f2-aa591d.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.035,
+      "hash": "49KjiL8a72jXbXzYmmvfqSa62CPrT2KzrhZfFkLnYJ7M",
+      "explorer": "https://testnet.nearblocks.io/txns/49KjiL8a72jXbXzYmmvfqSa62CPrT2KzrhZfFkLnYJ7M"
+    },
+    {
+      "from": "engye-v3-f3-1796e0.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.035,
+      "hash": "B2GwjR8SzJkiDeyhCgJFLickVcNfSLXZAWdySEM2tRy9",
+      "explorer": "https://testnet.nearblocks.io/txns/B2GwjR8SzJkiDeyhCgJFLickVcNfSLXZAWdySEM2tRy9"
+    },
+    {
+      "from": "maker-28dadc38.engye-59539fdb42.testnet",
+      "to": "kai.juno-awkorp.testnet",
+      "amountNEAR": 0.064,
+      "hash": "DQnkurMcQ6mpC9g9sABUqE7DYb9NTJf4QVtUzDiQGGkh",
+      "explorer": "https://testnet.nearblocks.io/txns/DQnkurMcQ6mpC9g9sABUqE7DYb9NTJf4QVtUzDiQGGkh"
+    }
+  ]
+}

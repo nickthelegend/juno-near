@@ -6,7 +6,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Account, JsonRpcProvider, KeyPair, KeyPairSigner, actions, type KeyPairString } from 'near-api-js';
-const RPC = process.env.FILM_RPC || 'https://near-testnet.drpc.org';
+const RPC = process.env.FILM_RPC || 'https://rpc.testnet.near.org';
 const provider = new JsonRpcProvider({ url: RPC });
 const dir = join(process.cwd(), '../engye/.near-credentials');
 const keys = new Map<string, string>();
@@ -22,7 +22,16 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json'))) walk(JSON.p
 const N = (x: number) => BigInt(Math.round(x * 1e6)) * 10n ** 18n;
 // Round 1 (Nov 13, 15:4x UTC) moved 8.9 NEAR from the non-contract accounts. Round 2 (FILM_FUND_ROUND=2) tops up
 // kai from the dropped Engyē v3 account's free balance for the crisp re-record after an RPC-dropped bid.
-const plan: [string, string, number][] = process.env.FILM_FUND_ROUND === '2'
+const K = 'kai.juno-awkorp.testnet';
+// Round 3 (Nov 14): the remaining free balance of the dropped Engyē test accounts (0.01 NEAR left in each) for a
+// live create on camera. Juno's own players top up kai separately after redeeming their floor shares.
+const round3: [string, string, number][] = [
+  ['b1.engye-v3-8c5cc3a8.testnet', K, 0.38], ['b2.engye-v3-8c5cc3a8.testnet', K, 0.2], ['engye-59539fdb42.testnet', K, 0.165],
+  ['engye-e6e91cf795.engye-59539fdb42.testnet', K, 0.17], ['maker.engye-v3-8c5cc3a8.testnet', K, 0.285], ['engye-4f18d8544b.testnet', K, 0.053],
+  ['engye-5d3dc3dd57.testnet', K, 0.043], ['engye-90efb5817e.testnet', K, 0.049], ['engye-open-df599f7f.testnet', K, 0.061],
+  ['engye-v3-f2-aa591d.testnet', K, 0.035], ['engye-v3-f3-1796e0.testnet', K, 0.035], ['maker-28dadc38.engye-59539fdb42.testnet', K, 0.064],
+];
+const plan: [string, string, number][] = process.env.FILM_FUND_ROUND === '3' ? round3 : process.env.FILM_FUND_ROUND === '2'
   ? [['engye-v3-8c5cc3a8.testnet', 'kai.juno-awkorp.testnet', 4.5]]
   : [
   ['maker-28dadc38.engye-59539fdb42.testnet', 'kai.juno-awkorp.testnet', 3.25],
@@ -44,4 +53,4 @@ for (const [from, to, amount] of plan) {
     out.push({ from, to, amountNEAR: amount, hash, explorer: `https://testnet.nearblocks.io/txns/${hash}` });
   } catch (e) { console.log(`FAILED ${from}: ${String((e as Error).message).replace(/ed25519:[1-9A-HJ-NP-Za-km-z]+/g, '[redacted]').slice(0, 200)}`); }
 }
-writeFileSync(process.env.FILM_FUND_ROUND === '2' ? 'deployments/film-v4-funding-2026-11-13.json' : 'deployments/film-v3-funding-2026-11-13.json', JSON.stringify({ network: 'testnet', purpose: 'Film v3 live lifecycle: create post, sealed bids, dare, graduation', at: new Date().toISOString(), transfers: out }, null, 2) + '\n');
+writeFileSync(process.env.FILM_FUND_ROUND === '3' ? 'deployments/film-v5-funding-2026-11-14.json' : process.env.FILM_FUND_ROUND === '2' ? 'deployments/film-v4-funding-2026-11-13.json' : 'deployments/film-v3-funding-2026-11-13.json', JSON.stringify({ network: 'testnet', purpose: 'Film v3 live lifecycle: create post, sealed bids, dare, graduation', at: new Date().toISOString(), transfers: out }, null, 2) + '\n');
