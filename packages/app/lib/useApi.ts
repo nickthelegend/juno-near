@@ -30,6 +30,7 @@ export type AsyncState<T> = {
 export function useApi<T>(
   load: () => Promise<T>,
   deps: React.DependencyList = [],
+  options: { pollMs?: number | null } = {},
 ): AsyncState<T> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,20 +42,27 @@ export function useApi<T>(
   // slow first response must not overwrite a newer one.
   const generation = useRef(0);
 
+  const hasData = useRef(false);
   const run = useCallback(
-    async (isRefresh: boolean) => {
+    async (isRefresh: boolean, silent = false) => {
       const mine = ++generation.current;
-      if (isRefresh) setRefreshing(true);
-      else setLoading(true);
-      setError(null);
-      setErrorStatus(null);
+      if (!silent) {
+        if (isRefresh) setRefreshing(true);
+        else setLoading(true);
+        setError(null);
+        setErrorStatus(null);
+      }
 
       try {
         const result = await load();
         if (generation.current !== mine) return;
+        hasData.current = true;
         setData(result);
+        if (silent) { setError(null); setErrorStatus(null); }
       } catch (caught) {
         if (generation.current !== mine) return;
+        // A background re-read that fails keeps what is on screen; the next tick tries again.
+        if (silent && hasData.current) return;
         setErrorStatus(caught instanceof ApiError && caught.status > 0 ? caught.status : null);
         setError(
           caught instanceof ApiError
@@ -64,7 +72,7 @@ export function useApi<T>(
               : "Something went wrong",
         );
       } finally {
-        if (generation.current === mine) {
+        if (generation.current === mine && !silent) {
           setLoading(false);
           setRefreshing(false);
         }
@@ -82,6 +90,15 @@ export function useApi<T>(
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
+
+  // Live screens re-read quietly on an interval: no spinner, and a failed tick keeps the last good read.
+  const pollMs = options.pollMs ?? null;
+  useEffect(() => {
+    if (!pollMs) return;
+    const id = setInterval(() => { if (!loading) void run(false, true); }, pollMs);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pollMs, run, loading]);
 
   return { data, error, errorStatus, loading, refreshing, refresh: () => run(true) };
 }

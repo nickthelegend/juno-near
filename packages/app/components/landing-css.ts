@@ -39,8 +39,18 @@ export const LANDING_CSS = `
 .jl-wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
 .jl-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+/* faq */
+.jl-faq { display: grid; gap: 12px; max-width: 920px; margin-top: 48px; padding-bottom: 128px; }
+.jl-faq details { background: var(--surface); border-radius: 22px; padding: 0 26px; box-shadow: 0 1px 0 rgba(42,51,38,.04), 0 10px 30px -22px rgba(42,51,38,.3); }
+.jl-faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; font-weight: 800; font-size: 20px; letter-spacing: -.03em; }
+.jl-faq summary::-webkit-details-marker { display: none; }
+.jl-faq summary::after { content: "+"; flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: var(--lime); font-size: 20px; font-weight: 700; transition: rotate .25s var(--ease); }
+.jl-faq details[open] summary::after { rotate: 45deg; }
+.jl-faq details p { color: var(--muted); font-size: 16px; line-height: 1.55; padding: 0 0 24px; max-width: 70ch; }
+@media (max-width: 640px) { .jl-faq summary { font-size: 17px; min-height: 64px; } .jl-faq details { padding: 0 18px; } }
+
 /* nav */
-.jl-nav { position: absolute; z-index: 5; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--gut); }
+.jl-nav { position: sticky; z-index: 20; top: 0; height: 88px; margin-bottom: -88px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gut); background: rgba(18,21,14,.78); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2); border-bottom: 1px solid rgba(243,247,238,.06); }
 .jl-brand { display: inline-flex; align-items: center; gap: 8px; color: var(--lime); text-decoration: none; min-height: 44px; }
 .jl-brand span { color: var(--on-ink); font-weight: 800; font-size: 27px; letter-spacing: -.05em; line-height: 1; padding-bottom: 3px; }
 .jl-nav nav { display: flex; align-items: center; gap: 22px; }
@@ -230,7 +240,7 @@ a.jl-acct:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* phone */
 @media (max-width: 640px) {
-  .jl-nav { padding-top: 14px; }
+  .jl-nav { height: 72px; margin-bottom: -72px; }
   .jl-link { display: none; }
   .jl-hero { min-height: 780px; padding: 96px 16px 120px; }
   .jl-hero-copy { gap: 24px; translate: 0 6px; }

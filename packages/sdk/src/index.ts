@@ -143,6 +143,11 @@ export type LifecycleSnapshot = {
   accountId: string | null; creator: string; dare: string; proof: string;
   settled: boolean; finalized: boolean; deadlineMs: number; nowMs: number;
   hasBid: boolean; refundYocto: string; holding: string; voted: boolean;
+  /** Public auction book: who sealed a bid, whether it is revealed, and what it won after settlement. */
+  bidders: { owner: string; revealed: boolean; allocated: string }[];
+  /** Public dare votes, weighted by each voter's current balance (the weight finalization uses). */
+  votes: { owner: string; accepted: boolean; weight: string }[];
+  openedMs: number;
 };
 
 export function decodeLifecycle(bytes: Uint8Array, accountId: string | null, nowMs: number): LifecycleSnapshot {
@@ -165,22 +170,26 @@ export function decodeLifecycle(bytes: Uint8Array, accountId: string | null, now
   text(); const creator = text(); text(); text(); // slug, creator, caption, media
   const opened = u64();
   let hasBid = false, refundYocto = '0';
+  const bidders: LifecycleSnapshot['bidders'] = [];
   for (let n = count(64); n > 0; n--) {
-    const owner = text(); skipBytes(); u128(); u128(); u128(); bool(); u128(); const refund = u128();
+    const owner = text(); skipBytes(); u128(); u128(); u128(); const revealed = bool(); const allocated = u128(); const refund = u128();
+    bidders.push({ owner, revealed, allocated: allocated.toString() });
     if (owner === accountId) { hasBid = true; refundYocto = refund.toString(); }
   }
   const settled = bool(); u128(); // clearing price
   let holding = '0';
-  for (let n = count(); n > 0; n--) { const owner = text(); const amount = u128(); if (owner === accountId) holding = amount.toString(); }
+  const balances = new Map<string, bigint>();
+  for (let n = count(); n > 0; n--) { const owner = text(); const amount = u128(); balances.set(owner, amount); if (owner === accountId) holding = amount.toString(); }
   for (let n = 0; n < 6; n++) u128(); // supply, sold, floor, reserve, graduation escrow, creator earnings
   bool(); // graduated
   const dare = text(); u128(); const proof = text();
   let voted = false;
-  for (let n = count(); n > 0; n--) { const owner = text(); bool(); if (owner === accountId) voted = true; }
+  const votes: LifecycleSnapshot['votes'] = [];
+  for (let n = count(); n > 0; n--) { const owner = text(); const accepted = bool(); votes.push({ owner, accepted, weight: (balances.get(owner) ?? 0n).toString() }); if (owner === accountId) voted = true; }
   const finalized = bool();
   const deadlineMs = Number(opened) + 300_000;
   if (!Number.isSafeInteger(deadlineMs) || !Number.isSafeInteger(nowMs) || nowMs < 0) throw Error('Unsupported Juno lifecycle timestamp.');
-  return { accountId, creator, dare, proof, settled, finalized, deadlineMs, nowMs, hasBid, refundYocto, holding, voted };
+  return { accountId, creator, dare, proof, settled, finalized, deadlineMs, nowMs, hasBid, refundYocto, holding, voted, bidders, votes, openedMs: Number(opened) };
 }
 /** Read public post state at one final block, including per-account refund and vote eligibility. */
 export async function lifecycle(account: string, viewer: string | null, endpoint = TESTNET_RPC) {

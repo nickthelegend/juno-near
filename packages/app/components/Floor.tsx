@@ -4,7 +4,8 @@ import { Linking, Platform, Pressable, StyleSheet, Text, TextInput, View } from 
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 import { base64, commitment, YOCTO } from "@juno/sdk";
 
-import { CoinGlyph } from "./art";
+import { CoinGlyph, Identicon } from "./art";
+import { Handle } from "./Handle";
 import { TransactionSheet, TransactionReceipt, TransactionProgress } from "./TradeSheet";
 import { buildLifecycle, lifecycleOptions, type LifecycleMethod } from "../lib/lifecycle";
 import type { LifecycleRead } from "../lib/useLifecycle";
@@ -341,7 +342,8 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
   }, [commitLeft, revealLeft, onChanged]);
 
   if (n.phase === "curve" || n.phase === "graduated") {
-    if (!(n.clearingPrice > 0) && n.sealedBids === 0) return <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />;
+    if (!(n.clearingPrice > 0) && n.sealedBids === 0) return <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" quiet />;
+    const winners = (lifecycle.data?.post === coin.address ? lifecycle.data.snapshot.bidders : []).filter((b) => Number(b.allocated) > 0);
     return (
       <View style={f.card}>
         <Row justify="space-between">
@@ -351,15 +353,30 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
           </Row>
           <Object3D art="envelope" alt="" size={44} style={{ margin: "-6px 0" }} />
         </Row>
-        <View style={f.tiles}>
-          <Tile label="Cleared at" value={n.clearingPrice > 0 ? money(n.clearingPrice, "NEAR") : "No fills"} />
-          <Tile label="Sealed bids" value={String(n.sealedBids)} />
-          <Tile label="Revealed" value={String(n.revealedBids)} />
+        <PhaseSteps at={3} dark={false} />
+        <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 12 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={f.tileLabel}>Cleared at one price</Text>
+            <Text style={f.bigFig} numberOfLines={1} adjustsFontSizeToFit>{n.clearingPrice > 0 ? money(n.clearingPrice, "NEAR") : "No fills"}</Text>
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text style={f.tileLabel}>{n.sealedBids} sealed · {n.revealedBids} revealed</Text>
+            <Text style={f.tileLabel}>200 tokens allocated</Text>
+          </View>
         </View>
-        <Text style={f.body}>
-          Every winning bid paid the same clearing price. Unrevealed bids lost 1% of their escrow to the creator.
-        </Text>
-        <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />
+        {winners.length ? (
+          <View style={{ gap: 8 }}>
+            {winners.map((b) => (
+              <View key={b.owner} style={f.winner}>
+                <Identicon seed={b.owner} size={24} />
+                <Text style={f.winnerName} numberOfLines={1}><Handle wallet={b.owner} /></Text>
+                <Text style={f.winnerFig}>{b.allocated} tokens</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+        <Text style={f.body}>Every winner paid the same clearing price, so bidding first bought nothing.</Text>
+        <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" quiet />
       </View>
     );
   }
@@ -411,57 +428,168 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
   const settle = () => run("Settle", async () => [juno.call(coin.address, "settle", "Settle", {}, 0n, 150n * 10n ** 12n)]);
 
   const mine = wallet.address ? readSecret(coin.address, wallet.address) : null;
+  const book = lifecycle.data?.post === coin.address ? lifecycle.data.snapshot.bidders : [];
+  const left = n.phase === "commit" ? commitLeft : n.phase === "reveal" ? revealLeft : 0;
+  const total = 60;
+  const step = n.phase === "commit" ? 0 : n.phase === "reveal" ? 1 : 2;
+  const units = Math.max(0, Math.floor(Number(amount) || 0));
+  const each = Number(maxPrice) || 0;
+  const fits = units > 0 && units * each <= 1;
 
   return (
-    <View style={f.card}>
+    <View style={a.card}>
       <Row justify="space-between">
         <Row>
-          <SealGlyph />
-          <Text style={f.title}>Sealed-bid opening</Text>
+          <SealGlyph color={c.lime} />
+          <Text style={a.title}>Opening auction</Text>
         </Row>
-        <View style={f.clock}>
-          <Text style={f.clockText}>
-            {n.phase === "commit" && commitLeft !== null
-              ? `Bids close ${clock(commitLeft)}`
-              : n.phase === "reveal" && revealLeft !== null
-                ? `Reveals close ${clock(revealLeft)}`
-                : "Ready to settle"}
-          </Text>
+        <View style={a.live}>
+          <LiveDot />
+          <Text style={a.liveText}>Live</Text>
         </View>
       </Row>
-      <View style={f.tiles}>
-        <Tile label="Sealed bids" value={String(n.sealedBids)} on />
-        <Tile label="Revealed" value={String(n.revealedBids)} />
-        <Tile label="For sale" value="200" />
-      </View>
-      <Text style={f.body}>
-        {n.phase === "commit"
-          ? "Bids are hashes with 1 NEAR escrowed: nobody can see a price until the reveal. Everyone who clears pays the same price."
-          : n.phase === "reveal"
-            ? "Bidders reveal amount, max price and salt. A bid that is never revealed is refunded minus 1%."
-            : "Bidding and reveals are over. Anyone can settle: winners get tokens at one price. Unused escrow is claimed separately."}
-      </Text>
 
-      {n.phase === "commit" ? (
-        mine ? (
-          <Text style={f.mine}>Your sealed bid: {mine.amount} tokens at up to {amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. Kept on this device until you reveal.</Text>
+      <PhaseSteps at={step} />
+
+      <View style={a.clockRow}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={a.clock}>{n.phase === "settle" ? "0:00" : clock(left ?? total)}</Text>
+          <Text style={a.clockLabel}>
+            {n.phase === "commit" ? "until sealed bids close" : n.phase === "reveal" ? "until reveals close" : "Bidding is over · ready to settle"}
+          </Text>
+        </View>
+        <Ring pct={n.phase === "settle" ? 1 : 1 - (left ?? total) / total} />
+      </View>
+
+      <View style={a.stats}>
+        <Stat2 value={String(n.sealedBids)} label={n.sealedBids === 1 ? "sealed bid" : "sealed bids"} />
+        <Stat2 value={String(n.revealedBids)} label="revealed" />
+        <Stat2 value="200" label="tokens for sale" />
+      </View>
+
+      {book.length ? (
+        <View style={a.book}>
+          {book.map((b) => (
+            <View key={b.owner} style={a.bidder}>
+              <Identicon seed={b.owner} size={22} />
+              <Text style={a.bidderName} numberOfLines={1}><Handle wallet={b.owner} /></Text>
+              <Text style={[a.bidderState, b.revealed ? a.bidderOpen : null]}>{b.revealed ? "Revealed" : "Sealed"}</Text>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text style={a.note}>No sealed bids yet. Bids are hashes with 1 NEAR escrowed, so nobody can see a price until the reveal.</Text>
+      )}
+
+      <View style={a.inset}>
+        {n.phase === "commit" ? (
+          mine ? (
+            <View style={{ gap: 4 }}>
+              <Text style={f.tileLabel}>Your sealed bid</Text>
+              <Text style={a.mineFig}>{mine.amount} tokens · up to {amountOf(Number(mine.maxPrice) / 1e24, "NEAR")} each</Text>
+              <Text style={f.body}>The price stays on this device until you reveal it.</Text>
+            </View>
+          ) : (
+            <>
+              <View style={f.inputs}>
+                <Field label="Tokens" value={amount} onChange={setAmount} />
+                <Field label="Max NEAR each" value={maxPrice} onChange={setMaxPrice} />
+              </View>
+              <Text style={[f.body, !fits && units > 0 ? { color: c.neg } : null]}>
+                {fits ? `Pays at most ${amountOf(units * each, "NEAR")}. Everyone who clears pays one price; unused escrow comes back.` : "Tokens × max price must fit inside the 1 NEAR escrow."}
+              </Text>
+              <Button label="Place sealed bid · 1 NEAR escrow" variant="lime" tall disabled={!fits} onPress={() => void commit()} loading={busy} />
+            </>
+          )
+        ) : n.phase === "reveal" ? (
+          <>
+            <Text style={f.body}>{mine ? `Reveal ${mine.amount} tokens at up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. A bid left hidden is refunded minus 1%.` : "This device holds no sealed bid for this post."}</Text>
+            <Button label={mine ? "Reveal my bid" : "No bid from this device"} variant="lime" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
+          </>
         ) : (
           <>
-            <View style={f.inputs}>
-              <Field label="Tokens" value={amount} onChange={setAmount} />
-              <Field label="Max NEAR each" value={maxPrice} onChange={setMaxPrice} />
-            </View>
-            <Button label="Place sealed bid · 1 NEAR escrow" variant="lime" tall onPress={() => void commit()} loading={busy} />
+            <Text style={f.body}>Anyone can settle. Revealed bids are ranked by max price; all 200 tokens clear at one price.</Text>
+            <Button label="Settle the auction" variant="lime" tall onPress={() => void settle()} loading={busy} />
           </>
-        )
-      ) : n.phase === "reveal" ? (
-        <Button label={mine ? "Reveal my bid" : "No bid from this device"} variant="ink" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
-      ) : (
-        <Button label="Settle the auction" variant="lime" tall onPress={() => void settle()} loading={busy} />
-      )}
-      {error ? <Text style={f.error}>{error}</Text> : null}
-      {hash ? <TxLink hash={hash} /> : null}
-      <LifecycleControl coin={coin} read={lifecycle} method="claim_refund" />
+        )}
+        {error ? <Text style={f.error}>{error}</Text> : null}
+        {hash ? <TxLink hash={hash} /> : null}
+      </View>
+    </View>
+  );
+}
+
+/** The coin page's bottom bar while the opening auction runs: the live phase and its clock. */
+export function AuctionBar({ coin }: { coin: Coin }) {
+  const n = coin.near;
+  const left = useCountdown(n.phase === "commit" ? n.commitEndMs : n.phase === "reveal" ? n.revealEndMs : null);
+  const text = n.phase === "commit" ? "Sealed bids close" : n.phase === "reveal" ? "Reveals close" : "Auction over · settle it above";
+  return (
+    <View style={{ flex: 1, minHeight: 56, borderRadius: 999, backgroundColor: c.ink, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, paddingHorizontal: 18 }}>
+      <LiveDot />
+      <Text style={{ color: c.onInk, fontSize: theme.type.body.size, fontWeight: "700" }}>{text}</Text>
+      {left !== null && n.phase !== "settle" ? <Text style={{ color: c.lime, fontSize: theme.type.body.size, fontWeight: "800", ...tabular }}>{clock(left)}</Text> : null}
+    </View>
+  );
+}
+
+/** Over a post's photo: where its market is right now, ticking during the auction. */
+export function PhaseChip({ coin }: { coin: Coin }) {
+  const n = coin.near;
+  const left = useCountdown(n.phase === "commit" ? n.commitEndMs : n.phase === "reveal" ? n.revealEndMs : null);
+  const live = n.phase === "commit" || n.phase === "reveal" || n.phase === "settle";
+  const text = n.phase === "graduated" ? "Graduated" : n.phase === "curve" ? `On the curve · ${Math.floor((n.curveSold / 800) * 100)}%` : phaseLabel(coin, left);
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", left: 12, top: 12, flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 11, paddingVertical: 6, borderRadius: 999, backgroundColor: n.phase === "graduated" ? c.lime : "rgba(18,21,14,0.82)" }}>
+      {live ? <LiveDot /> : null}
+      <Text style={{ color: n.phase === "graduated" ? c.ink : live ? c.lime : c.onInk, fontSize: theme.type.caption.size, fontWeight: "800", ...tabular }}>{text}</Text>
+    </View>
+  );
+}
+
+/** Bid · Reveal · Settle · Trade — where the opening auction is, as four segments. */
+export function PhaseSteps({ at, dark = true }: { at: number; dark?: boolean }) {
+  const steps = ["Bid", "Reveal", "Settle", "Trade"];
+  return (
+    <View style={{ flexDirection: "row", gap: 6 }}>
+      {steps.map((label, i) => (
+        <View key={label} style={{ flex: 1, gap: 6 }}>
+          <View style={{ height: 4, borderRadius: 2, backgroundColor: i < at ? c.lime : i === at ? c.lime : dark ? "rgba(243,247,238,0.16)" : c.line, opacity: i < at ? 0.55 : 1 }} />
+          <Text style={{ fontSize: theme.type.caption.size, fontWeight: i === at ? "800" : "600", color: i === at ? (dark ? c.lime : c.text) : dark ? "#7F8A78" : c.faint }}>{label}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function LiveDot() {
+  const reduced = useReducedMotion();
+  const style = Platform.OS === "web" && !reduced ? ({ animationName: "junoPulse", animationDuration: "1.4s", animationIterationCount: "infinite" } as object) : null;
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof document === "undefined" || document.getElementById("juno-pulse")) return;
+    const el = document.createElement("style");
+    el.id = "juno-pulse";
+    el.textContent = "@keyframes junoPulse{0%{box-shadow:0 0 0 0 rgba(214,255,61,.7)}70%{box-shadow:0 0 0 7px rgba(214,255,61,0)}100%{box-shadow:0 0 0 0 rgba(214,255,61,0)}}";
+    document.head.appendChild(el);
+  }, []);
+  return <View style={[{ width: 7, height: 7, borderRadius: 4, backgroundColor: c.lime }, style]} />;
+}
+
+function Ring({ pct }: { pct: number }) {
+  const r = 26, len = 2 * Math.PI * r, p = Math.max(0, Math.min(1, pct));
+  return (
+    <Svg width={64} height={64} viewBox="0 0 64 64">
+      <Circle cx={32} cy={32} r={r} stroke="rgba(243,247,238,0.14)" strokeWidth={6} fill="none" />
+      <Circle cx={32} cy={32} r={r} stroke={c.lime} strokeWidth={6} fill="none" strokeLinecap="round" strokeDasharray={`${len * p} ${len}`} transform="rotate(-90 32 32)" />
+    </Svg>
+  );
+}
+
+function Stat2({ value, label }: { value: string; label: string }) {
+  return (
+    <View style={{ flex: 1, minWidth: 0 }}>
+      <Text style={a.statValue} numberOfLines={1}>{value}</Text>
+      <Text style={a.statLabel} numberOfLines={1}>{label}</Text>
     </View>
   );
 }
@@ -497,30 +625,71 @@ export function GraduationMoment({ coin }: { coin: Coin }) {
 /** The dare: the creator's bond, the proof, and how holders voted. */
 export function DareCard({ coin, lifecycle }: { coin: Coin; lifecycle: LifecycleRead }) {
   const n = coin.near;
-  if (!n.dare) return <Text style={f.body}>This post has no dare.</Text>;
+  const snap = lifecycle.data?.post === coin.address ? lifecycle.data.snapshot : null;
+  const left = useCountdown(snap && !snap.finalized ? snap.deadlineMs : null);
+  if (!n.dare) return null;
+  const votes = snap?.votes ?? [];
+  const yes = votes.filter((v) => v.accepted).reduce((t, v) => t + Number(v.weight), 0);
+  const no = votes.filter((v) => !v.accepted).reduce((t, v) => t + Number(v.weight), 0);
+  const share = yes + no > 0 ? yes / (yes + no) : 0;
+  const open = left !== null && left > 0;
+  const options = snap ? lifecycleOptions(snap) : null;
+  const action = options ? (["submit_proof", "vote_proof", "finalize_dare"] as const).find((m) => options[m].eligible) : undefined;
+  const status = n.dareFinalized
+    ? (n.proof && yes > no ? "Proof accepted · bond returned to the creator" : "Dare failed · bond split across holders")
+    : open
+      ? `${clock(left!)} left to post proof and vote`
+      : "Voting closed · ready to finalize";
   return (
-    <View style={f.card}>
+    <View style={f.dareCard}>
       <Row justify="space-between">
-        <Text style={f.kicker}>Dare</Text>
+        <View style={f.darePill}><Text style={f.darePillText}>Dare</Text></View>
         <Object3D art="dice" alt="" size={52} float style={{ margin: "-10px 0" }} />
       </Row>
-      <Text style={f.dare}>{n.dare}</Text>
+      <Text style={f.dareBig}>“{n.dare}”</Text>
       <View style={f.tiles}>
-        <Tile label="Bond" value={n.dareBond > 0 ? money(n.dareBond, "NEAR") : n.dareFinalized ? "Paid out" : "None"} on={n.dareBond > 0} />
+        <Tile label="Bond" value={n.dareBond > 0 ? money(n.dareBond, "NEAR") : n.dareFinalized ? "Settled" : "None"} on={n.dareBond > 0} />
         <Tile label="Proof" value={n.proof ? "Posted" : "Not yet"} />
-        <Tile label="Status" value={n.dareFinalized ? "Final" : "Open"} />
+        <Tile label="Votes" value={String(votes.length)} />
       </View>
-      {n.proof ? <Text style={f.body}>Proof: {n.proof}</Text> : null}
-      <Text style={f.body}>
-        Holders vote on the proof. If it passes, the bond returns to the creator; if it flakes, the bond is split across holders.
-      </Text>
-      {(["submit_proof", "vote_proof", "finalize_dare"] as const).map(method => <LifecycleControl key={method} coin={coin} read={lifecycle} method={method} />)}
+      {n.proof ? (
+        <View style={f.proof}>
+          <Text style={f.tileLabel}>Creator's proof</Text>
+          <Text style={f.proofText}>{n.proof}</Text>
+        </View>
+      ) : null}
+      {votes.length ? (
+        <View style={{ gap: 8 }}>
+          <View style={f.tally}>
+            <View style={[f.tallyYes, { flex: Math.max(share, 0.0001) }]} />
+            <View style={[f.tallyNo, { flex: Math.max(1 - share, 0.0001) }]} />
+          </View>
+          <Row justify="space-between">
+            <Text style={[f.tileLabel, { color: c.pos }]}>Accept · {yes} tokens</Text>
+            <Text style={[f.tileLabel, { color: c.neg }]}>Reject · {no} tokens</Text>
+          </Row>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {votes.map((v) => (
+              <View key={v.owner} style={f.voter}>
+                <Identicon seed={v.owner} size={18} />
+                <Text style={f.voterText}><Handle wallet={v.owner} /> {v.accepted ? "accepted" : "rejected"}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : null}
+      <View style={[f.dareStatus, n.dareFinalized ? f.dareStatusDone : null]}>
+        <Text style={[f.dareStatusText, n.dareFinalized ? { color: c.lime } : null]}>{status}</Text>
+      </View>
+      {action ? <LifecycleControl coin={coin} read={lifecycle} method={action} /> : (
+        <Text style={f.body}>{n.dareFinalized ? "Holders weighed the proof by token balance; the contract paid out the bond." : "The creator posts proof; holders vote with their balance. Flake, and the bond is split among holders."}</Text>
+      )}
     </View>
   );
 }
 
 /** Buttons only appear for a connected account eligible in the current final-chain snapshot. */
-function LifecycleControl({ coin, read, method }: { coin: Coin; read: LifecycleRead; method: LifecycleMethod }) {
+function LifecycleControl({ coin, read, method, quiet }: { coin: Coin; read: LifecycleRead; method: LifecycleMethod; quiet?: boolean }) {
   const wallet = useWallet();
   const account = useRef(wallet.address); account.current = wallet.address;
   const [open, setOpen] = useState(false);
@@ -547,7 +716,7 @@ function LifecycleControl({ coin, read, method }: { coin: Coin; read: LifecycleR
     } finally { setBusy(false); }
   }
   return <>
-    {allowed.eligible ? <Button label={title} onPress={() => { setProof(coin.near.proof); setError(null); setHash(null); setOpen(true); }} /> : <Text testID={`${method}-reason`} style={f.body}>{allowed.reason}</Text>}
+    {allowed.eligible ? <Button label={title} variant="lime" tall onPress={() => { setProof(coin.near.proof); setError(null); setHash(null); setOpen(true); }} /> : quiet ? null : <Text testID={`${method}-reason`} style={f.body}>{allowed.reason}</Text>}
     {open ? <TransactionSheet title={title} busy={busy} onClose={() => setOpen(false)}>
       {hash ? <TransactionReceipt hash={hash} label={title} onDone={() => setOpen(false)} /> : <>
         <Text style={f.body}>{method === "claim_refund" ? "Return unused auction escrow to this account." : method === "finalize_dare" ? "Settle the dare bond using holders' recorded votes." : coin.near.proof ? `Proof: ${coin.near.proof}` : "The creator has not posted proof yet."}</Text>
@@ -629,7 +798,46 @@ const s = StyleSheet.create({
   floorText: { color: c.pos, fontSize: theme.type.caption.size, fontWeight: "700", ...tabular },
 });
 
+const a = StyleSheet.create({
+  card: { backgroundColor: c.ink, borderRadius: theme.radius.lg, padding: 18, gap: 16, alignSelf: "stretch", marginTop: 16 },
+  title: { color: c.onInk, fontSize: theme.type.title.size, fontWeight: "700", letterSpacing: -0.4 },
+  live: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.inkSoft },
+  liveText: { color: c.lime, fontSize: theme.type.caption.size, fontWeight: "800" },
+  clockRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  clock: { color: c.lime, fontSize: 56, lineHeight: 60, fontWeight: "800", letterSpacing: -2, ...tabular },
+  clockLabel: { color: "#A9B3A2", fontSize: theme.type.label.size, fontWeight: "600" },
+  stats: { flexDirection: "row", gap: 12, paddingTop: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(243,247,238,0.16)" },
+  statValue: { color: c.onInk, fontSize: theme.type.title.size, fontWeight: "800", ...tabular },
+  statLabel: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "600" },
+  book: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  bidder: { flexDirection: "row", alignItems: "center", gap: 7, paddingLeft: 5, paddingRight: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.inkSoft },
+  bidderName: { color: c.onInk, fontSize: theme.type.label.size, fontWeight: "700", maxWidth: 110 },
+  bidderState: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "700" },
+  bidderOpen: { color: c.lime },
+  note: { color: "#A9B3A2", fontSize: theme.type.label.size, lineHeight: 20 },
+  inset: { backgroundColor: c.surface, borderRadius: theme.radius.md, padding: 14, gap: 12 },
+  mineFig: { color: c.text, fontSize: theme.type.lead.size, fontWeight: "800", ...tabular },
+});
+
 const f = StyleSheet.create({
+  bigFig: { color: c.text, fontSize: theme.type.heading.size, fontWeight: "800", letterSpacing: -0.6, ...tabular },
+  winner: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: c.surfaceAlt, borderRadius: theme.radius.md, paddingHorizontal: 12, paddingVertical: 9 },
+  winnerName: { flex: 1, minWidth: 0, color: c.text, fontSize: theme.type.label.size, fontWeight: "700" },
+  winnerFig: { color: c.text, fontSize: theme.type.label.size, fontWeight: "800", ...tabular },
+  dareCard: { backgroundColor: c.surface, borderRadius: theme.radius.lg, padding: 16, gap: 14, alignSelf: "stretch", marginTop: 16, borderWidth: 2, borderColor: c.lime },
+  darePill: { backgroundColor: c.ink, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 },
+  darePillText: { color: c.lime, fontSize: theme.type.caption.size, fontWeight: "800" },
+  dareBig: { color: c.text, fontSize: theme.type.title.size, lineHeight: 27, fontWeight: "800", letterSpacing: -0.5 },
+  proof: { backgroundColor: c.limeSoft, borderRadius: theme.radius.md, padding: 12, gap: 4 },
+  proofText: { color: c.text, fontSize: theme.type.body.size, fontWeight: "600" },
+  tally: { flexDirection: "row", height: 10, borderRadius: 5, overflow: "hidden", gap: 2 },
+  tallyYes: { backgroundColor: c.pos },
+  tallyNo: { backgroundColor: c.negSoft },
+  voter: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: c.surfaceAlt, borderRadius: 999, paddingLeft: 4, paddingRight: 10, paddingVertical: 4 },
+  voterText: { color: c.text, fontSize: theme.type.caption.size, fontWeight: "700" },
+  dareStatus: { backgroundColor: c.surfaceAlt, borderRadius: theme.radius.md, paddingHorizontal: 12, paddingVertical: 10 },
+  dareStatusDone: { backgroundColor: c.ink },
+  dareStatusText: { color: c.text, fontSize: theme.type.label.size, fontWeight: "800", ...tabular },
   card: { backgroundColor: c.surface, borderRadius: theme.radius.lg, padding: 16, gap: 12, alignSelf: "stretch", marginTop: 16 },
   title: { color: c.text, fontSize: theme.type.title.size, fontWeight: "700", letterSpacing: -0.4 },
   kicker: { color: c.muted, fontSize: theme.type.caption.size, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.6 },

@@ -166,8 +166,7 @@ export default function PostScreen() {
         >
           <Text style={styles.title}>Post a photo</Text>
           <Text style={styles.lede}>
-            Publishing creates this post&apos;s own NEAR account with its market inside: a sealed-bid opening, a bonding
-            curve priced in NEAR, and a floor every holder can redeem. The post is the market.
+            Your photo becomes its own NEAR account and its own coin: 1,000 tokens, a sealed-bid opening and a floor holders can always redeem.
           </Text>
 
           <MediaPicker media={chosen} onPick={setMedia} disabled={busy} />
@@ -216,7 +215,7 @@ export default function PostScreen() {
 
           <Text style={styles.sectionTitle}>Kind</Text>
           <Text style={styles.sectionLede}>
-            Every post uses the same sixteen-segment weighted curve, priced in NEAR. 20% of each buy's base price goes into the floor.
+            Both open with the same sealed-bid auction and bonding curve, priced in NEAR.
           </Text>
 
           <View style={styles.presets}>
@@ -237,6 +236,7 @@ export default function PostScreen() {
                     </View>
                     {on && option.id === "dare" ? (
                       <View style={{ gap: 10, marginTop: 8 }}>
+                        <Text style={styles.fieldLabel}>The dare</Text>
                         <TextInput
                           value={dare}
                           onChangeText={setDare}
@@ -245,6 +245,7 @@ export default function PostScreen() {
                           style={styles.input}
                           maxLength={300}
                         />
+                        <Text style={styles.fieldLabel}>Bond in NEAR · returned if holders accept your proof</Text>
                         <TextInput
                           value={bond}
                           onChangeText={(next) => setBond(next.replace(/[^0-9.]/g, ""))}
@@ -269,6 +270,21 @@ export default function PostScreen() {
           )}
 
           {log.length > 0 ? <LaunchLog entries={log} /> : null}
+
+          <View style={styles.next}>
+            <Text style={styles.nextTitle}>What happens when you post</Text>
+            {[
+              ["0:00", "Your post account is created and the sealed-bid opening starts"],
+              ["1:00", "Bids close; bidders reveal their prices"],
+              ["2:00", "Anyone settles: 200 tokens clear at one price, the curve opens"],
+              ...(kind === "dare" ? [["5:00", "Proof and votes close; the dare is finalized"]] : []),
+            ].map(([t, what]) => (
+              <View key={t} style={styles.nextRow}>
+                <Text style={styles.nextTime}>{t}</Text>
+                <Text style={styles.nextText}>{what}</Text>
+              </View>
+            ))}
+          </View>
 
           <Button
             label={status ?? `Launch post · ${kind === "dare" && bondNear > 0 ? 3 + bondNear : 3} NEAR`}
@@ -369,6 +385,11 @@ function LaunchLog({ entries }: { entries: LogEntry[] }) {
 }
 
 const styles = StyleSheet.create({
+  next: { backgroundColor: theme.colors.ink, borderRadius: theme.radius.lg, padding: 16, gap: 10 },
+  nextTitle: { color: theme.colors.onInk, fontSize: theme.type.label.size, fontWeight: "800" },
+  nextRow: { flexDirection: "row", gap: 12, alignItems: "flex-start" },
+  nextTime: { color: theme.colors.lime, fontSize: theme.type.label.size, fontWeight: "800", width: 40, fontVariant: ["tabular-nums"] },
+  nextText: { flex: 1, color: "#C9D2C2", fontSize: theme.type.label.size, lineHeight: 19 },
   screen: { flex: 1, backgroundColor: theme.colors.bg },
   body: { paddingHorizontal: 16, paddingBottom: 140, gap: 12 },
   title: { fontSize: theme.type.screen.size, fontWeight: "800", color: theme.colors.ink },

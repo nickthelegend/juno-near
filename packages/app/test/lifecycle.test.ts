@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import type { LifecycleSnapshot } from '@juno/sdk';
 import { buildLifecycle, lifecycleOptions } from '../lib/lifecycle';
-const s: LifecycleSnapshot = { accountId:'alice.testnet',creator:'alice.testnet',dare:'Do it',proof:'',settled:true,finalized:false,deadlineMs:300000,nowMs:200000,hasBid:true,refundYocto:'100',holding:'10',voted:false };
+const s: LifecycleSnapshot = { accountId:'alice.testnet',creator:'alice.testnet',dare:'Do it',proof:'',settled:true,finalized:false,deadlineMs:300000,nowMs:200000,hasBid:true,refundYocto:'100',holding:'10',voted:false,bidders:[],votes:[],openedMs:0 };
 test('lifecycle gates refunds, proof, votes and finalization by chain eligibility',()=>{
   assert.equal(lifecycleOptions(s).claim_refund.eligible,true);
   assert.equal(lifecycleOptions({...s,settled:false}).claim_refund.eligible,false);

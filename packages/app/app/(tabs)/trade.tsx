@@ -37,8 +37,8 @@ import { theme } from "../../theme";
 type Sort = "memes" | "traders";
 
 const SORTS = [
-  { id: "memes" as const, label: "Posts" },
-  { id: "traders" as const, label: "Traders" },
+  { id: "memes" as const, label: "Top posts" },
+  { id: "traders" as const, label: "Top traders" },
 ];
 
 /**
@@ -95,7 +95,7 @@ export default function TradeScreen() {
   return (
     <Page edges={["top"]}>
       <Header>
-        <Title>Trade</Title>
+        <Title>Leaderboard</Title>
         <Segmented items={SORTS} value={sort} onChange={setSort} />
       </Header>
 
@@ -150,19 +150,27 @@ export default function TradeScreen() {
             <Placeholder art title="No posts yet" detail="Post something with +." />
           ) : (
             <View style={{ gap: 14 }}>
-              <Intro
-                pill="NEAR testnet"
-                title="Every post is a market."
-                body="Each post is its own NEAR account: a sealed-bid opening, then a bonding curve priced in NEAR, with a floor every holder can redeem."
-              />
-              {markets.data!.posts.map((coin) => (
-                <MarketCard
-                  key={coin.address}
-                  coin={coin}
-                  onOpen={() => router.push(`/coin/${coin.address}`)}
-                  onTrade={() => setTrade({ coin, side: coin.curve.graduated ? "redeem" : "buy" })}
-                />
-              ))}
+              {(() => {
+                const ranked = [...markets.data!.posts].sort((a, b) => (b.marketCapQuote ?? b.marketCap) - (a.marketCapQuote ?? a.marketCap));
+                const [king, ...rest] = ranked;
+                return (
+                  <>
+                    <KingCard coin={king} onOpen={() => router.push(`/coin/${king.address}`)} />
+                    {rest.map((coin, i) => (
+                      <View key={coin.address}>
+                        <RankTag>
+                          <RankTagText>#{i + 2}</RankTagText>
+                        </RankTag>
+                        <MarketCard
+                          coin={coin}
+                          onOpen={() => router.push(`/coin/${coin.address}`)}
+                          onTrade={() => setTrade({ coin, side: coin.curve.graduated ? "redeem" : "buy" })}
+                        />
+                      </View>
+                    ))}
+                  </>
+                );
+              })()}
             </View>
           )}
         </ScrollView>
@@ -183,6 +191,54 @@ export default function TradeScreen() {
     </Page>
   );
 }
+
+/** #1 by market cap: the post everyone is piling into, in the app's one dark panel. */
+function KingCard({ coin, onOpen }: { coin: Coin; onOpen: () => void }) {
+  const pct = Math.min(100, coin.curve.progress * 100);
+  return (
+    <Tappable onPress={onOpen} to={0.985}>
+      <View style={styles.king}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View style={styles.kingPill}>
+            <Text style={styles.kingPillText}>#1 · King of the hill</Text>
+          </View>
+          <Text style={styles.kingMeta}>{coin.curve.graduated ? "Graduated" : coin.near.phase === "curve" ? "On the curve" : "Opening auction"}</Text>
+        </View>
+        <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
+          <CoinArt uri={juno.still(coin.media)} seed={coin.address} size={88} radius={20} />
+          <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
+            <Text style={styles.kingName} numberOfLines={1}>{coin.name}</Text>
+            <Text style={styles.kingMeta} numberOfLines={1}>${coin.symbol} · by <Handle wallet={coin.creator.wallet} /></Text>
+            <Text style={styles.kingCap}>{money(coin.marketCapQuote ?? coin.marketCap, "NEAR")}</Text>
+          </View>
+        </View>
+        <View style={{ gap: 6 }}>
+          <View style={styles.kingTrack}><View style={[styles.kingFill, { width: `${Math.max(2, pct)}%` }]} /></View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={styles.kingMeta}>{coin.near.curveSold} of 800 curve tokens sold</Text>
+            <Text style={styles.kingMeta}>{coin.holders ?? "—"} holders · floor {money(coin.near.floorPerToken, "NEAR")}</Text>
+          </View>
+        </View>
+      </View>
+    </Tappable>
+  );
+}
+
+const RankTag = styled.View`
+  position: absolute;
+  z-index: 2;
+  top: -8px;
+  left: 14px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background-color: ${theme.colors.ink};
+`;
+
+const RankTagText = styled.Text`
+  color: ${theme.colors.lime};
+  font-size: ${theme.type.caption.size}px;
+  font-weight: 800;
+`;
 
 /** What this list is, once, in the app's one dark panel. */
 function Intro({
@@ -321,6 +377,14 @@ function MarketCard({
 }
 
 const styles = StyleSheet.create({
+  king: { backgroundColor: theme.colors.ink, borderRadius: theme.radius.lg, padding: 18, gap: 16 },
+  kingPill: { backgroundColor: theme.colors.lime, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 },
+  kingPillText: { color: theme.colors.ink, fontSize: theme.type.caption.size, fontWeight: "800" },
+  kingName: { color: theme.colors.onInk, fontSize: theme.type.heading.size, fontWeight: "800", letterSpacing: -0.6 },
+  kingCap: { color: theme.colors.lime, fontSize: theme.type.title.size, fontWeight: "800", fontVariant: ["tabular-nums"] },
+  kingMeta: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "600" },
+  kingTrack: { height: 8, borderRadius: 4, backgroundColor: "rgba(243,247,238,0.14)", overflow: "hidden" },
+  kingFill: { height: 8, borderRadius: 4, backgroundColor: theme.colors.lime },
   intro: {
     borderRadius: theme.radius.lg,
     padding: 18,

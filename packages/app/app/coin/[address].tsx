@@ -7,7 +7,7 @@ import Svg, { Path, Rect } from "react-native-svg";
 import styled from "styled-components/native";
 
 import { CoinGlyph, Identicon } from "../../components/art";
-import { AuctionCard, DareCard, FloorGlyph, GraduationMoment } from "../../components/Floor";
+import { AuctionCard, DareCard, FloorGlyph, GraduationMoment, PhaseChip, AuctionBar } from "../../components/Floor";
 import { DepthChart } from "../../components/DepthChart";
 import { Handle } from "../../components/Handle";
 import { PriceLine } from "../../components/PriceLine";
@@ -87,7 +87,7 @@ export default function CoinScreen() {
   // answer it (400 → "No such coin"), without asking the server.
   const wellFormed = validAddress(mint);
   const notAnAddress = () => Promise.reject(new ApiError("That is not a NEAR account.", 400));
-  const detail = useApi(() => (wellFormed ? juno.coin(mint) : notAnAddress()), [mint, revision]);
+  const detail = useApi(() => (wellFormed ? juno.coin(mint) : notAnAddress()), [mint, revision], { pollMs: 6000 });
   const coin = detail.data?.coin;
 
   /*
@@ -201,6 +201,7 @@ export default function CoinScreen() {
                           : 1,
                     }}
                   />
+                  <PhaseChip coin={coin} />
                   {coin.media.kind === "video" ? (
                     <PlayOver pointerEvents="none">
                       <PlayDisc>
@@ -213,19 +214,6 @@ export default function CoinScreen() {
                 </Tappable>
               </Padded>
             ) : null}
-
-            {coin.near.phase !== "curve" && coin.near.phase !== "graduated" ? (
-              <Padded>
-                <AuctionCard coin={coin} onChanged={detail.refresh} lifecycle={lifecycle} />
-              </Padded>
-            ) : null}
-
-            <PriceLine
-              ticks={ticks}
-              livePrice={coin.priceQuote ?? toQuote(coin.priceUsd)}
-              partial={coin.priceHistoryPartial === true}
-              format={(value) => price(value, unit)}
-            />
 
             <Padded>
               {/* Who made it, how many hold it, and a way to pass it on. */}
@@ -296,6 +284,43 @@ export default function CoinScreen() {
                 </Tappable>
               </Row>
 
+              {coin.near.phase !== "curve" && coin.near.phase !== "graduated" ? (
+                <AuctionCard coin={coin} onChanged={detail.refresh} lifecycle={lifecycle} />
+              ) : null}
+            </Padded>
+
+            {coin.near.phase === "curve" || coin.near.phase === "graduated" ? (
+              <PriceLine
+                ticks={ticks}
+                livePrice={coin.priceQuote ?? toQuote(coin.priceUsd)}
+                partial={coin.priceHistoryPartial === true}
+                format={(value) => price(value, unit)}
+              />
+            ) : null}
+
+            <Padded>
+              {coin.near.phase === "curve" || coin.near.phase === "graduated" ? (
+                <CurveCard>
+                  <Row justify="space-between" align="baseline">
+                    <CurveTitle>{coin.curve.graduated ? "Graduated" : "Bonding curve"}</CurveTitle>
+                    <CurvePct>{Math.floor(coin.curve.progress * 100)}%</CurvePct>
+                  </Row>
+                  <CurveTrack>
+                    {coin.curve.progress > 0 ? (
+                      <CurveFill style={{ width: `${Math.min(100, Math.max(1.5, coin.curve.progress * 100))}%` }} />
+                    ) : null}
+                  </CurveTrack>
+                  <Row justify="space-between">
+                    <Caption>{coin.near.curveSold} of 800 curve tokens sold</Caption>
+                    <Caption>
+                      {coin.curve.graduated
+                        ? "Curve closed"
+                        : `${money(coin.curve.raisedQuote ?? toQuote(coin.curve.raisedUsd), unit)} of ${money(coin.curve.thresholdQuote ?? toQuote(coin.curve.thresholdUsd), unit)}`}
+                    </Caption>
+                  </Row>
+                </CurveCard>
+              ) : null}
+
               {/* Three figures, ruled apart rather than boxed — the band is one
                   reading of size, not three separate cards. */}
               <Band>
@@ -344,39 +369,11 @@ export default function CoinScreen() {
                 />
               ) : null}
 
-              {/* Raised against threshold, with both ends labelled. A bar with
-                  no numbers on it is a mood. */}
-              {coin.near.phase !== "curve" && !coin.curve.graduated ? null : !coin.curve.graduated ? (
-                <RaisedRow>
-                  <End>{money(coin.curve.raisedQuote ?? toQuote(coin.curve.raisedUsd), unit)}</End>
-                  <Track>
-                    {/* A floor of 1.5% so a curve 0.02% of the way along still
-                        reads as started — but only above zero, where drawing
-                        anything would claim a raise nobody made. */}
-                    {coin.curve.progress > 0 ? (
-                      <FillBar
-                        style={{
-                          width: `${Math.min(100, Math.max(1.5, coin.curve.progress * 100))}%`,
-                        }}
-                      />
-                    ) : null}
-                  </Track>
-                  <End>{money(coin.curve.thresholdQuote ?? toQuote(coin.curve.thresholdUsd), unit)}</End>
-                </RaisedRow>
-              ) : (
+              {coin.curve.graduated ? (
                 <View style={{ marginTop: 16, gap: 12 }}>
-                <GraduationMoment coin={coin} />
-                <Row gap={8}>
-                  <Pill label="Graduated" tone="pos" />
-                  <Tappable onPress={() => void Linking.openURL(explorer("address", coin.address))}>
-                    <Row gap={6} align="center">
-                      <LinkText>Graduated · escrow on {EXPLORER_NAME}</LinkText>
-                      <ExternalGlyph />
-                    </Row>
-                  </Tappable>
-                </Row>
+                  <GraduationMoment coin={coin} />
                 </View>
-              )}
+              ) : null}
 
               <TabBar>
                 {TABS.map((option) => (
@@ -428,9 +425,7 @@ export default function CoinScreen() {
             {coin.curve.graduated ? (
               <Button label="Redeem against the floor" variant="ink" tall onPress={() => setSheet("redeem")} style={{ flex: 1 }} />
             ) : coin.near.phase !== "curve" ? (
-              <GraduatedNote>
-                {coin.near.phase === "settle" ? "Auction over — settle it below." : coin.near.phase === "reveal" ? "Reveals open — see the auction below." : "Sealed-bid auction open — bid below."}
-              </GraduatedNote>
+              <AuctionBar coin={coin} />
             ) : (
               <Button label="Buy" variant="lime" tall onPress={() => setSheet("buy")} style={{ flex: 1 }} />
             )}
@@ -940,6 +935,41 @@ const Divider = styled.View`
   background-color: ${(p) => p.theme.colors.line};
 `;
 
+const CurveCard = styled.View`
+  margin-top: 18px;
+  padding: 16px;
+  gap: 10px;
+  border-radius: ${theme.radius.lg}px;
+  background-color: ${theme.colors.surface};
+`;
+
+const CurveTrack = styled.View`
+  height: 10px;
+  border-radius: 5px;
+  background-color: ${theme.colors.line};
+  overflow: hidden;
+`;
+
+const CurveFill = styled.View`
+  height: 10px;
+  border-radius: 5px;
+  background-color: ${theme.colors.pos};
+`;
+
+const CurveTitle = styled.Text`
+  color: ${theme.colors.text};
+  font-size: ${theme.type.lead.size}px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+`;
+
+const CurvePct = styled.Text`
+  color: ${theme.colors.pos};
+  font-size: ${theme.type.title.size}px;
+  font-weight: 800;
+  font-variant: tabular-nums;
+`;
+
 const RaisedRow = styled.View`
   flex-direction: row;
   align-items: center;
@@ -1007,7 +1037,7 @@ const Line = styled.View`
 const Verb = styled.Text<{ $buy: boolean }>`
   font-size: ${(p) => p.theme.type.label.size}px;
   font-weight: 800;
-  width: 38px;
+  width: 58px;
   color: ${(p) => (p.$buy ? p.theme.colors.pos : p.theme.colors.neg)};
 `;
 

@@ -167,6 +167,7 @@ export default function Landing() {
         <a href="/" className="jl-brand" aria-label="Juno home"><Mark size={26} /><span>juno</span></a>
         <nav aria-label="Primary">
           <a href="#how" onClick={jump("how")} className="jl-link">How it works</a>
+          <a href="#faq" onClick={jump("faq")} className="jl-link">FAQ</a>
           <a href="/social" onClick={go("/(tabs)/social")} className="jl-pill jl-pill-white">Open app</a>
         </nav>
       </header>
@@ -332,6 +333,41 @@ export default function Landing() {
                   <a href={explorer("tx", DEPLOY_TX)} target="_blank" rel="noreferrer">{DEPLOY_TX.slice(0, 6)}…{DEPLOY_TX.slice(-4)}</a>. Charts and holder lists come from the contract's <code>trades()</code> and <code>holders()</code> views, with no indexer.
                 </p>
               </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="jl-sec" id="faq" aria-labelledby="jl-faq-title">
+          <div className="jl-wrap">
+            <header className="jl-head">
+              <p className="jl-lbl">Questions</p>
+              <h2 id="jl-faq-title">Before you post.</h2>
+            </header>
+            <div className="jl-faq">
+              <details open>
+                <summary>What happens when I post?</summary>
+                <p>Juno calls <code>create_post</code> on the factory. Your photo becomes its own NEAR account with 1,000 tokens: 200 sold in a one-minute sealed-bid opening, 800 on a bonding curve priced in NEAR. Posting attaches 3 NEAR for the account's storage.</p>
+              </details>
+              <details>
+                <summary>Why a sealed-bid opening instead of a launch?</summary>
+                <p>On most launchpads the first transaction wins and bots snipe it. Here every bid is a hash with the same 1 NEAR escrow, revealed after a minute, and every winner pays one clearing price. Being first buys nothing.</p>
+              </details>
+              <details>
+                <summary>Can I always sell?</summary>
+                <p>Yes. Sell back to the curve while it is open, or redeem against the floor at any time, even after graduation. The floor is NEAR held in the post's own account: 20% of every curve buy and half the auction raise.</p>
+              </details>
+              <details>
+                <summary>What is a dare?</summary>
+                <p>A creator can put a NEAR bond behind a promise. They post proof, holders vote with their balance, and the contract either returns the bond or splits it across holders.</p>
+              </details>
+              <details>
+                <summary>What does graduation mean?</summary>
+                <p>When all 800 curve tokens sell, the post graduates: buys close and the curve's liquidity stays locked in the post account's escrow. The floor stays redeemable. Seeding a Rhea pool is not built yet.</p>
+              </details>
+              <details>
+                <summary>Is this real money?</summary>
+                <p>No. Juno runs on NEAR testnet, so every figure is test NEAR with no cash value. Contracts, accounts and transactions are real and public on NearBlocks.</p>
+              </details>
             </div>
           </div>
         </section>

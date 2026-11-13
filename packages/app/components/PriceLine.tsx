@@ -66,7 +66,8 @@ export function PriceLine({
   partial?: boolean;
   height?: number;
 }) {
-  const [span, setSpan] = useState<Span>("1D");
+  // Open on the shortest span that has at least two fills, so a quiet day never opens on an empty chart.
+  const [span, setSpan] = useState<Span>(() => (["1D", "1W", "1M"] as Span[]).find((k) => withinSpan(ticks, k).length >= 2) ?? "ALL");
   const [width, setWidth] = useState(0);
   // Where the finger is, as an index into the drawn series. Null when nobody
   // is touching it — the readout then shows the latest price rather than

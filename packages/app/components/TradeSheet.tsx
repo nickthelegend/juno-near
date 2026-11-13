@@ -294,7 +294,8 @@ export function TradeSheet({
 
             <Receive>{quoting ? "Quoting against the contract…" : (receiving ?? " ")}</Receive>
 
-            {side === "buy" && quote ? (
+            {/* Funding from NEAR mainnet is only relevant when this testnet account cannot cover the buy. */}
+            {side === "buy" && quote && balance !== null && quote.amountIn > balance ? (
               <Depth>
                 <Col gap={2} style={{ flex: 1 }}>
                   <Label style={{ fontWeight: "700", color: theme.colors.muted }}>
