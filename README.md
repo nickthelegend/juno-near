@@ -52,6 +52,26 @@ A new dare post, [`rooftop.juno-awkorp.testnet`](https://testnet.nearblocks.io/a
 
 The creator's proof missed the five-minute window, so this run shows the failed-dare path; CAP-TOSS keeps the accepted-proof path from November 9. Testnet NEAR for the run came from the dropped Engyē testnet accounts ([deployments/film-v3-funding-2026-11-13.json](deployments/film-v3-funding-2026-11-13.json)).
 
+## Filmed live lifecycle, take 2 (November 13, 2026): accepted dare and graduation
+
+The final film follows [`golden-hour.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/golden-hour.juno-awkorp.testnet). kai acts in the app. Mira and oto bid, reveal, vote and buy from their own accounts. Evidence: [deployments/film-v4-lifecycle-2026-11-13.json](deployments/film-v4-lifecycle-2026-11-13.json).
+
+| Step (kai, in the app) | Transaction |
+| --- | --- |
+| buy 10 ROOFTOP (feed, opening shot) | [uyXqWmeS…](https://testnet.nearblocks.io/txns/uyXqWmeS4EPwVNhiHJVsbGqJ56Ba4oXoGLRxehBwc6d) |
+| create dare post golden-hour | [4CqpdjXg…](https://testnet.nearblocks.io/txns/4CqpdjXgjAnYFUpY5g3qn49kn5wfRDcrZ36gDyJAHRuz) |
+| sealed bid | [Hirv9KuS…](https://testnet.nearblocks.io/txns/Hirv9KuSWWMtHY9581wvPLKKkVfPhrn5dYUimF9Pnn8Y) |
+| submit proof | [DYDCXy57…](https://testnet.nearblocks.io/txns/DYDCXy57SFtYfrjCbbh6zVmi3EJJjX4TkgYNNvUEaL6n) |
+| reveal | [9sfkN9vi…](https://testnet.nearblocks.io/txns/9sfkN9viYKvS3JXvGHTse9t7R85GMYXZApCc6pPzcuUB) |
+| settle | [C1R4kyY2…](https://testnet.nearblocks.io/txns/C1R4kyY2PHBr6ekaVRfefvfLYt7qAYXU2jcxDyqNUcGw) |
+| vote: accept proof | [4rNHz2Cp…](https://testnet.nearblocks.io/txns/4rNHz2CpCDNZa45N6WB17wpDEpqQ8pjE9muR1UaAAdfY) |
+| buy 20 | [CCH2gU2m…](https://testnet.nearblocks.io/txns/CCH2gU2m4B5GF3XZE5g5zsX58g4yL5MLQJ1rPHJKNTna) |
+| sell 5 | [ABinCRAk…](https://testnet.nearblocks.io/txns/ABinCRAkBYQuwAa7DAb3M5ri89jAzTKP7bKrypFydVyj) |
+| redeem 5 | [h884dMbp…](https://testnet.nearblocks.io/txns/h884dMbp2uPijQFj7j22yQc292pdAvTxcgZGa4xCGeN) |
+| claim auction refund | [HpfP5Agm…](https://testnet.nearblocks.io/txns/HpfP5Agm6kyJHdd9J4RSnj84fsKDLGMRbsTj7EEw8FMH) |
+| finalize dare: proof accepted, bond returned | [oE2tXvJU…](https://testnet.nearblocks.io/txns/oE2tXvJUYxZiwux1qTwLuYGGT4Ba4nN3VRaRSZofMwX) |
+| buy last 135: graduated | [Dm7x5WW4…](https://testnet.nearblocks.io/txns/Dm7x5WW4yBniRtFuTbLbVw4qLBYZgipEgruTTZBNFpPp) |
+
 ## Verify it
 
 ```bash

@@ -1,0 +1,72 @@
+{
+  "network": "testnet",
+  "post": "golden-hour.juno-awkorp.testnet",
+  "kai_in_app": [
+    {
+      "step": "buy 10 ROOFTOP (feed, opening shot)",
+      "hash": "uyXqWmeS4EPwVNhiHJVsbGqJ56Ba4oXoGLRxehBwc6d",
+      "explorer": "https://testnet.nearblocks.io/txns/uyXqWmeS4EPwVNhiHJVsbGqJ56Ba4oXoGLRxehBwc6d"
+    },
+    {
+      "step": "create dare post golden-hour",
+      "hash": "4CqpdjXgjAnYFUpY5g3qn49kn5wfRDcrZ36gDyJAHRuz",
+      "explorer": "https://testnet.nearblocks.io/txns/4CqpdjXgjAnYFUpY5g3qn49kn5wfRDcrZ36gDyJAHRuz"
+    },
+    {
+      "step": "sealed bid",
+      "hash": "Hirv9KuSWWMtHY9581wvPLKKkVfPhrn5dYUimF9Pnn8Y",
+      "explorer": "https://testnet.nearblocks.io/txns/Hirv9KuSWWMtHY9581wvPLKKkVfPhrn5dYUimF9Pnn8Y"
+    },
+    {
+      "step": "submit proof",
+      "hash": "DYDCXy57SFtYfrjCbbh6zVmi3EJJjX4TkgYNNvUEaL6n",
+      "explorer": "https://testnet.nearblocks.io/txns/DYDCXy57SFtYfrjCbbh6zVmi3EJJjX4TkgYNNvUEaL6n"
+    },
+    {
+      "step": "reveal",
+      "hash": "9sfkN9viYKvS3JXvGHTse9t7R85GMYXZApCc6pPzcuUB",
+      "explorer": "https://testnet.nearblocks.io/txns/9sfkN9viYKvS3JXvGHTse9t7R85GMYXZApCc6pPzcuUB"
+    },
+    {
+      "step": "settle",
+      "hash": "C1R4kyY2PHBr6ekaVRfefvfLYt7qAYXU2jcxDyqNUcGw",
+      "explorer": "https://testnet.nearblocks.io/txns/C1R4kyY2PHBr6ekaVRfefvfLYt7qAYXU2jcxDyqNUcGw"
+    },
+    {
+      "step": "vote: accept proof",
+      "hash": "4rNHz2CpCDNZa45N6WB17wpDEpqQ8pjE9muR1UaAAdfY",
+      "explorer": "https://testnet.nearblocks.io/txns/4rNHz2CpCDNZa45N6WB17wpDEpqQ8pjE9muR1UaAAdfY"
+    },
+    {
+      "step": "buy 20",
+      "hash": "CCH2gU2m4B5GF3XZE5g5zsX58g4yL5MLQJ1rPHJKNTna",
+      "explorer": "https://testnet.nearblocks.io/txns/CCH2gU2m4B5GF3XZE5g5zsX58g4yL5MLQJ1rPHJKNTna"
+    },
+    {
+      "step": "sell 5",
+      "hash": "ABinCRAkBYQuwAa7DAb3M5ri89jAzTKP7bKrypFydVyj",
+      "explorer": "https://testnet.nearblocks.io/txns/ABinCRAkBYQuwAa7DAb3M5ri89jAzTKP7bKrypFydVyj"
+    },
+    {
+      "step": "redeem 5",
+      "hash": "h884dMbp2uPijQFj7j22yQc292pdAvTxcgZGa4xCGeN",
+      "explorer": "https://testnet.nearblocks.io/txns/h884dMbp2uPijQFj7j22yQc292pdAvTxcgZGa4xCGeN"
+    },
+    {
+      "step": "claim auction refund",
+      "hash": "HpfP5Agm6kyJHdd9J4RSnj84fsKDLGMRbsTj7EEw8FMH",
+      "explorer": "https://testnet.nearblocks.io/txns/HpfP5Agm6kyJHdd9J4RSnj84fsKDLGMRbsTj7EEw8FMH"
+    },
+    {
+      "step": "finalize dare: proof accepted, bond returned",
+      "hash": "oE2tXvJUYxZiwux1qTwLuYGGT4Ba4nN3VRaRSZofMwX",
+      "explorer": "https://testnet.nearblocks.io/txns/oE2tXvJUYxZiwux1qTwLuYGGT4Ba4nN3VRaRSZofMwX"
+    },
+    {
+      "step": "buy last 135: graduated",
+      "hash": "Dm7x5WW4yBniRtFuTbLbVw4qLBYZgipEgruTTZBNFpPp",
+      "explorer": "https://testnet.nearblocks.io/txns/Dm7x5WW4yBniRtFuTbLbVw4qLBYZgipEgruTTZBNFpPp"
+    }
+  ],
+  "players": "deployments/film-v3-players.jsonl (golden-hour entries)"
+}

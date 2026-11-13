@@ -8,5 +8,25 @@
     "amount": "80",
     "maxPrice": "1500000000000000000000",
     "salt": "mwf5in64-vwtpcve3kki"
+  },
+  "sunset.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "50",
+    "maxPrice": "3000000000000000000000",
+    "salt": "mwf74396-o2jeo1wwma"
+  },
+  "sunset.juno-awkorp.testnet:oto.juno-awkorp.testnet": {
+    "amount": "80",
+    "maxPrice": "1500000000000000000000",
+    "salt": "mwf745ch-86q9gyf5udx"
+  },
+  "golden-hour.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "50",
+    "maxPrice": "3000000000000000000000",
+    "salt": "mwf9ffbx-xm9ev2f82u"
+  },
+  "golden-hour.juno-awkorp.testnet:oto.juno-awkorp.testnet": {
+    "amount": "80",
+    "maxPrice": "1500000000000000000000",
+    "salt": "mwf9fgl9-xfco2iwz9nb"
   }
 }
