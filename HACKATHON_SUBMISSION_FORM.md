@@ -33,4 +33,4 @@ launch sniping is a rough welcome. juno gives photo coins a sealed-bid launch an
 
 Post character count: **243** (under 280, even before X shortens the URL).
 
-attach: /Volumes/Extreme SSD/Projects/grokbot/videos/juno-near/juno-near-film-share.mp4
+attach: juno-near-film-share.mp4
