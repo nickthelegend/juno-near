@@ -200,6 +200,7 @@ export function TradeSheet({
                   setError(null);
                   setTxHash(null);
                   setStage("entry");
+                  setAmount("");
                 }}
                 accessibilityRole="button"
                 accessibilityState={{ selected: side === id }}
