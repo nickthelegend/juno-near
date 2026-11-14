@@ -530,7 +530,7 @@ function MediaPicker({
       </Svg>
       <View style={styles.previewTop}>
         <View style={styles.photoTag}>
-          <Text style={styles.changeText}>{photo ? `Preview · ${Math.round(photo.size / 1000)} kB, goes on NEAR at launch` : "Preview · how the feed shows it"}</Text>
+          <Text style={styles.changeText}>{photo ? `${Math.round(photo.size / 1000)} kB · goes on NEAR at launch` : "Preview · how the feed shows it"}</Text>
         </View>
         <Pressable onPress={() => onPick(null)} disabled={disabled} style={styles.change} accessibilityRole="button">
           <Text style={styles.changeText}>Change</Text>

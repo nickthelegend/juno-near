@@ -89,6 +89,8 @@ export function SignInSheet({
   };
 
   const validEmail = /.+@.+\..+/.test(email.trim());
+  // The film's phone build (QA signer): no relayer runs, so the test wallet is the only way in.
+  const testOnly = bridge.wallet?.name === "Test wallet" && !!bridge.setup;
 
   return (
     <BottomSheet visible={visible} onClose={onClose} dismissable={!busy && !walletBusy}>
@@ -98,14 +100,18 @@ export function SignInSheet({
           <Object3D art="wallet" alt="" size={64} float eager style={{ margin: "-8px 0" }} />
         </TitleRow>
         <Body muted>
-          {step === "email"
+          {testOnly
+            ? "Juno's test wallet is a NEAR testnet account. It shows you every transaction, and nothing is signed until you approve it."
+            : step === "email"
             ? bridge.wallet && bridge.setup
               ? `Connect a NEAR testnet wallet. You approve each trade in ${bridge.wallet.name} and pay your own gas.`
               : "Juno makes you a NEAR account. No seed phrase, nothing to install, and the key stays on this device."
             : `Enter the six-digit code sent to ${email.trim()}.`}
         </Body>
 
-        {step === "email" ? (
+        {testOnly ? (
+          <Button label="Use the test wallet" variant="ink" onPress={() => void connectWallet()} loading={walletBusy} tall />
+        ) : step === "email" ? (
           <>
             <Field>
               <TextInput
@@ -163,7 +169,7 @@ export function SignInSheet({
 
         {error ? (
           <ErrorText>{error}</ErrorText>
-        ) : bridge.setup ? (
+        ) : bridge.setup && !testOnly ? (
           bridge.wallet && step === "email" ? (
             <Secured>Email sign-in · {bridge.setup}</Secured>
           ) : (

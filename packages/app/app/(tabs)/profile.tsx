@@ -114,10 +114,10 @@ export default function ProfileScreen() {
     return (
       <Page edges={["top"]}>
         <Placeholder
-          art
+          art="wallet"
           title="Not signed in"
           detail={
-            wallet.walletName === "Test wallet"
+            wallet.offer === "Test wallet"
               ? `One tap signs in with Juno's test wallet. It shows every transaction before it signs. ${NETWORK_LABEL}.`
               : wallet.walletLogin
                 ? `Sign in with your email, or connect a NEAR wallet you already have. ${NETWORK_LABEL}.`

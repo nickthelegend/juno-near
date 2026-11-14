@@ -84,6 +84,8 @@ export type WalletState = {
   disconnect: () => Promise<void>;
   /** The wallet's name when signed in through one (a NEAR browser wallet, or the test wallet in a QA build). */
   walletName: string | null;
+  /** The wallet on offer to sign in with (a NEAR browser wallet on web, the test wallet in a QA build), or null. */
+  offer: string | null;
   /** The test wallet's pending approval, for a screen presented as its own Modal to show (see ApprovalOutlet). */
   approval: ApprovalRequest | null;
   answerApproval: (approved: boolean) => void;
@@ -383,6 +385,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       connect,
       disconnect,
       walletName: via === "wallet" ? (BROWSER_WALLET?.name ?? null) : null,
+      offer: BROWSER_WALLET?.name ?? null,
       approval,
       answerApproval,
       hostApprovals,

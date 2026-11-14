@@ -1,5 +1,9 @@
 import React from "react";
 import { Platform } from "react-native";
+import { Image as ExpoImage } from "expo-image";
+
+/** Native builds load the same files from the hosted web app (EXPO_PUBLIC_APP_URL). */
+const ART_HOST = process.env.EXPO_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://juno-near.vercel.app";
 
 /**
  * The brand illustrations (hero, post card, flame coin, empty slot), served
@@ -40,7 +44,7 @@ export function BrandImage({
   eager?: boolean;
   style?: React.CSSProperties;
 }) {
-  if (Platform.OS !== "web") return null;
+  if (Platform.OS !== "web") return <ExpoImage source={{ uri: `${ART_HOST}${BRAND[art].src}` }} style={{ width: size, height: Math.round((size * BRAND[art].height) / BRAND[art].width) }} contentFit="contain" accessible={alt !== ""} accessibilityLabel={alt || undefined} />;
   const asset = BRAND[art];
   const height = Math.round((size * asset.height) / asset.width);
   return React.createElement("img", {
