@@ -23,3 +23,5 @@
 
 ## Hosted app (2026-11-10)
 The web app is hosted at https://juno-near.vercel.app (live testnet reads). Since 2026-11-10 it can trade through a NEAR browser wallet (Meteor Wallet, testnet; see item 2). Hosting the relayer as well, for email sign-in, would put a funded testnet signing key and the email API key on a third-party server; that needs Nick's decision and the credentials above. Until then the email option on the hosted sheet shows **Setup required: EXPO_PUBLIC_RELAYER_URL**.
+
+13. **Signing-pass film beats for create post, bid and vote — BLOCKED on testnet NEAR (2026-11-14):** the film's Approve sheet was recorded live for buy, sell and redeem (sprout, kai). A new create_post needs 3.1 NEAR, a bid 1 NEAR plus gas, and a vote needs a fresh dare post; Juno's own accounts hold kai 0.19, mira 0.03, oto 0.03, factory 0.41 free. About 5 testnet NEAR to `kai.juno-awkorp.testnet` unblocks it. The harness flag `__JUNO_QA_SHEET__` (film runs only) shows the sheet; automated tests skip it.
