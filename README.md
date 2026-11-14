@@ -281,7 +281,7 @@ AI-assisted code: Built with AI coding agents (Claude Code, Codex) under human d
 
 ### Other projects by the same team in this hackathon
 
-Lead: <TBD by Nick>
+Lead: Praharika (github.com/Praharika267). Praharika also leads Noren (https://github.com/Praharika267/noren-near), a credit line that lets shoppers borrow against test BTC and pays the shop. The two are independent products.
 
 ### License
 
