@@ -201,7 +201,8 @@ export default function PostScreen() {
     }
   }
 
-  const ticker = slug.replace(/-/g, "").slice(0, 11).toUpperCase();
+  // The post contract reports its symbol as the name in capitals (ft_metadata), dashes included.
+  const ticker = slug.toUpperCase();
   const steps = [
     { label: "Photo", done: !!chosen },
     { label: "Details", done: slugOk && taken !== slug && captionOk },
