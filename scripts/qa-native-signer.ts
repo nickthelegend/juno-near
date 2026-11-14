@@ -56,7 +56,7 @@ const server = createServer(async (req, res) => {
       player.id,
       FACTORY,
     );
-    const gasPrice = BigInt(((await provider.gasPrice(null)) as { gas_price: string }).gas_price);
+    const gasPrice = BigInt(((await provider.viewGasPrice(null)) as { gas_price: string }).gas_price);
     // Photo bytes are charged per byte on top of the attached gas: reserve that too.
     const byteGas = args instanceof Uint8Array ? BigInt(args.length) * 4_500_000n : 0n;
     reserved = reserveQaBudget(reserved, BigInt(call.deposit), BigInt(call.gas) + byteGas, gasPrice);

@@ -34,10 +34,10 @@ if (cmd === 'commit') {
   method = 'buy'; args = { quantity: a }; deposit = BigInt(q);
 } else if (cmd === 'call') {
   // Zero-deposit post calls used to recycle test funds between takes: sell, redeem, claim_refund, claim_dare.
-  if (!['sell', 'redeem', 'claim_refund', 'claim_dare', 'withdraw_earnings'].includes(a!)) throw Error('call allows sell, redeem, claim_refund, claim_dare, withdraw_earnings');
+  if (!['sell', 'redeem', 'claim_refund', 'claim_dare', 'withdraw_earnings', 'submit_proof', 'vote_proof', 'finalize_dare'].includes(a!)) throw Error('call allows sell, redeem, claim_refund, claim_dare, withdraw_earnings');
   method = a!; args = b ? JSON.parse(b) : {};
 } else throw Error('unknown command');
-const r = await acct.signAndSendTransaction({ receiverId: post, actions: [actions.functionCall(method, args, (['buy', 'redeem', 'withdraw_earnings', 'claim_refund', 'claim_dare'].includes(method) ? 30n : 120n) * TGAS, deposit)] }) as { transaction: { hash: string }; status: Record<string, unknown> };
+const r = await acct.signAndSendTransaction({ receiverId: post, actions: [actions.functionCall(method, args, (['buy', 'redeem', 'withdraw_earnings', 'claim_refund', 'claim_dare'].includes(method) ? 30n : method === 'commit' ? 20n : 120n) * TGAS, deposit)] }) as { transaction: { hash: string }; status: Record<string, unknown> };
 const failed = 'Failure' in (r.status ?? {});
 const line = { at: new Date().toISOString(), player: player.id, post, method, hash: r.transaction.hash, ok: !failed };
 appendFileSync('deployments/film-v3-players.jsonl', JSON.stringify(line) + '\n');

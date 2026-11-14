@@ -686,6 +686,7 @@ export function TransactionSheet({ title, busy, onClose, children }: { title: st
     <Sheet><Grabber /><Row justify="space-between" align="center"><Label>{title}</Label>
       <Close disabled={busy} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close"><CloseMark>✕</CloseMark></Close>
     </Row>{children}</Sheet>
+    <ApprovalOutlet />
   </Modal>;
 }
 export function TransactionReceipt({ hash, label, onDone }: { hash: string; label: string; onDone: () => void }) {

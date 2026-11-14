@@ -349,9 +349,8 @@ export default function PostScreen() {
             <View style={styles.plan}>
               <PlanRow at="0:00" title="Sealed bids open" detail="1 minute · 200 tokens · 1 NEAR escrow per bid" now />
               <PlanRow at="1:00" title="Bidders reveal" detail="1 minute · unrevealed bids refunded minus 1%" />
-              <PlanRow at="2:00" title="Settle at one price" detail="Every winner pays the same clearing price" />
-              {kind === "dare" ? <PlanRow at="5:00" title="Holders vote on your proof" detail="Accepted: your bond comes back · rejected: holders split it" /> : null}
-              <PlanRow at="Then" title="Bonding curve in NEAR" detail="800 tokens · 20% of every buy into the floor" last />
+              <PlanRow at="2:00" title="Settle at one price, then the curve" detail="Every winner pays the same price · then 800 tokens on a NEAR curve, 20% of every buy into the floor" last={kind !== "dare"} />
+              {kind === "dare" ? <PlanRow at="5:00" title="Holders vote on your proof" detail="Accepted: your bond comes back · rejected: holders split it" last /> : null}
             </View>
             <View style={styles.cost}>
               <Text style={styles.costLabel}>You pay</Text>

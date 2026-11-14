@@ -38,5 +38,10 @@
     "amount": "50",
     "maxPrice": "2000000000000000000000",
     "salt": "mwfwv4xi-n9qu0u34lls"
+  },
+  "cat-in-shades.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "150",
+    "maxPrice": "2000000000000000000000",
+    "salt": "mwg8x2gd-xndbjrxkqjl"
   }
 }

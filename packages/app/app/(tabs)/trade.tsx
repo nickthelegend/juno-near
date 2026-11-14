@@ -214,7 +214,7 @@ function KingCard({ coin, onOpen }: { coin: Coin; onOpen: () => void }) {
         </View>
         <View style={{ gap: 6 }}>
           <View style={styles.kingTrack}><View style={[styles.kingFill, { width: `${Math.max(2, pct)}%` }]} /></View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap", columnGap: 10 }}>
             <Text style={styles.kingMeta}>{coin.near.curveSold} of 800 curve tokens sold</Text>
             <Text style={styles.kingMeta}>{coin.holders ?? "—"} holders · floor {money(coin.near.floorPerToken, "NEAR")}</Text>
           </View>

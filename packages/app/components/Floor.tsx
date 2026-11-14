@@ -355,6 +355,8 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
   const [done, setDone] = useState<"Bid" | "Reveal" | "Settle" | null>(null);
   const pendingBidAccount = useRef<string | null>(null);
 
+  // A message about the last step does not carry into the next phase.
+  useEffect(() => setError(null), [n.phase]);
   // A phase boundary passing on screen is a reason to re-read.
   useEffect(() => {
     if (commitLeft === 0 || revealLeft === 0) onChanged();
@@ -437,7 +439,8 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
       const salt = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
       writeSecret(coin.address, account, { amount: units.toString(), maxPrice: price.toString(), salt });
       pendingBidAccount.current = account;
-      return [juno.call(coin.address, "commit", "Sealed bid", { commitment: base64(commitment(account, units, price, salt)) }, YOCTO)];
+      // 20 Tgas covers the commit's one storage write; a wallet must hold the 1 NEAR escrow plus the most this gas can cost.
+      return [juno.call(coin.address, "commit", "Sealed bid", { commitment: base64(commitment(account, units, price, salt)) }, YOCTO, 20n * 10n ** 12n)];
     });
   const reveal = () =>
     run("Reveal", async () => {

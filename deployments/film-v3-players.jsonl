@@ -41,3 +41,4 @@
 {"at":"2026-11-14T09:48:42.662Z","player":"oto.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"redeem","hash":"GNJy4gZp5kCE7NtvqGFZNHoEctBkAmjcRNx84DaHDGhQ","ok":true}
 {"at":"2026-11-14T09:48:46.637Z","player":"oto.juno-awkorp.testnet","post":"sprout.juno-awkorp.testnet","method":"redeem","hash":"2VHM2y2L9gra9YsnRWceqgfPLVfzZbj8mbn1aPTXuHqL","ok":true}
 {"at":"2026-11-14T09:48:50.242Z","player":"kai.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"redeem","hash":"72vH7eo4Kosxdtv93HB21Ap7pAigZ5Rwi9acFacLMn9X","ok":true}
+{"at":"2026-11-14T10:15:37.127Z","player":"kai.juno-awkorp.testnet","post":"cat-in-shades.juno-awkorp.testnet","method":"submit_proof","hash":"HHZj72sxurcMTAZKaEL4UQrqpMvwkE55Lst19YUv8CTs","ok":true}
