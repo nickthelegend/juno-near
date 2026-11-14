@@ -34,3 +34,10 @@
 {"at":"2026-11-14T04:34:00.058Z","player":"oto.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"commit","hash":"744HitCxbn85zRUe8NJNAsjhXehNazdmXaJUVU3xDJdd","ok":true}
 {"at":"2026-11-14T04:34:53.165Z","player":"mira.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"reveal","hash":"DvxAew3yExkgpoDQgzNy7JmgPXC68XSwn2Q6CYvFderV","ok":true}
 {"at":"2026-11-14T04:34:56.606Z","player":"oto.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"reveal","hash":"91PkMK2dtMtTyEw8h3Mi4FuYK1h5FEiR1juYdXf2Bcfb","ok":true}
+{"at":"2026-11-14T09:48:19.711Z","player":"mira.juno-awkorp.testnet","post":"golden-hour.juno-awkorp.testnet","method":"redeem","hash":"2PT8tPHKfxRRt8MTNosBKovkcm6aesfM2mNui67rsvHy","ok":true}
+{"at":"2026-11-14T09:48:32.887Z","player":"mira.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"redeem","hash":"8qfKAGUQ7fbV3VJe3ewoaF1wDFyKN5CugFNhwaraHRsB","ok":true}
+{"at":"2026-11-14T09:48:36.429Z","player":"mira.juno-awkorp.testnet","post":"balloons.juno-awkorp.testnet","method":"redeem","hash":"BfVWANJBtczu2jGQxMq9uSi7U99ru41xpo8r8T7vukRo","ok":true}
+{"at":"2026-11-14T09:48:39.598Z","player":"oto.juno-awkorp.testnet","post":"golden-hour.juno-awkorp.testnet","method":"redeem","hash":"95L5pASK546KisdyiR4KR7x1zxTjQoJxbkkDUD16zge1","ok":true}
+{"at":"2026-11-14T09:48:42.662Z","player":"oto.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"redeem","hash":"GNJy4gZp5kCE7NtvqGFZNHoEctBkAmjcRNx84DaHDGhQ","ok":true}
+{"at":"2026-11-14T09:48:46.637Z","player":"oto.juno-awkorp.testnet","post":"sprout.juno-awkorp.testnet","method":"redeem","hash":"2VHM2y2L9gra9YsnRWceqgfPLVfzZbj8mbn1aPTXuHqL","ok":true}
+{"at":"2026-11-14T09:48:50.242Z","player":"kai.juno-awkorp.testnet","post":"harbor-dawn.juno-awkorp.testnet","method":"redeem","hash":"72vH7eo4Kosxdtv93HB21Ap7pAigZ5Rwi9acFacLMn9X","ok":true}
