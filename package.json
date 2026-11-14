@@ -19,7 +19,8 @@
     "qa:web": "cd packages/app && node scripts/qa.mjs http://127.0.0.1:8091 ../../docs/qa",
     "test:e2e": "node --import tsx scripts/qa-browser.mjs",
     "test:lifecycle": "scripts/lifecycle-sandbox.sh",
-    "test:r3": "node --import tsx scripts/qa-lifecycle.mjs"
+    "test:r3": "node --import tsx scripts/qa-lifecycle.mjs",
+    "qa:signer": "tsx scripts/qa-native-signer.ts"
   },
   "dependencies": {
     "@juno/sdk": "workspace:*",

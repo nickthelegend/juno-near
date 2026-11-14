@@ -10,7 +10,7 @@ export const QA_BUDGET = budget();
 const BUDGET_LABEL = `${Number(QA_BUDGET / 10n ** 20n) / 10_000}`;
 export const QA_RPC_URLS = ['https://near-testnet.drpc.org', 'https://test.rpc.fastnear.com', 'https://rpc.testnet.near.org'];
 const ACCOUNT = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
-const METHODS = new Set(['buy', 'sell', 'redeem', 'withdraw_earnings', 'claim_refund', 'claim_dare', 'submit_proof', 'vote_proof', 'finalize_dare', 'settle', 'reveal', 'commit', 'create_post']);
+const METHODS = new Set(['buy', 'sell', 'redeem', 'withdraw_earnings', 'claim_refund', 'claim_dare', 'submit_proof', 'vote_proof', 'finalize_dare', 'settle', 'reveal', 'commit', 'create_post', 'fs_store']);
 
 export function testnetAccount(id: string): void {
   if (typeof id !== 'string' || !id.endsWith('.testnet') || id.length > 64 || !ACCOUNT.test(id)) throw Error('QA signer requires a named .testnet account.');
@@ -31,6 +31,10 @@ export function validateQaTransaction(transaction: QaTransaction, accountId: str
   const gas = BigInt(action.params.gas), deposit = BigInt(action.params.deposit);
   if (gas <= 0n || gas > 150n * 10n ** 12n || deposit < 0n || deposit > QA_BUDGET) throw Error('QA signer gas/deposit exceeds the test budget.');
   if (!action.params.args || typeof action.params.args !== 'object' || Array.isArray(action.params.args)) throw Error('QA signer requires JSON function-call arguments.');
+  if (action.params.methodName === 'fs_store') {
+    // A photo for a post: raw JPEG bytes to the factory's locked media account, no deposit, at most 250 kB.
+    if (transaction.receiverId !== `media.${factory}` || deposit !== 0n || !(action.params.args instanceof Uint8Array) || action.params.args.length > 250_000) throw Error('QA signer only stores photos (fs_store, under 250 kB, no deposit) on the media account.');
+  } else if (action.params.args instanceof Uint8Array) throw Error('QA signer requires JSON function-call arguments.');
   return { receiverId: transaction.receiverId, methodName: action.params.methodName, args: action.params.args, gas: gas.toString(), deposit: deposit.toString() };
 }
 export function reserveQaBudget(reserved: bigint, deposit: bigint, gas: bigint, gasPrice: bigint) {

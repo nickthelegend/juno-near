@@ -106,3 +106,6 @@ export async function sendWithWallet(step: TxStep): Promise<string> {
   if (!hash) throw new Error(`${BROWSER_WALLET.name} did not return a transaction hash. Check your account on NearBlocks before trying again.`);
   return hash;
 }
+
+/** Only the native QA signer shows an in-app approval sheet; other wallets have their own window. */
+export function setApprover(_approver: ((request: import("../components/ApproveSheet").ApprovalRequest) => Promise<void>) | null): void {}

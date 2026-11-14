@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BASE, buyQuote, commitment, curveCost, floorPerToken } from '../src/index.ts';
+import { BASE, buyQuote, commitment, curveCost, floorPerToken, nearfsCid } from '../src/index.ts';
 
 test('split buys differ only by segment rounding', () => {
   for (let sold=0n;sold<500n;sold+=23n) {
@@ -37,4 +37,8 @@ test('sell and redeem quotes mirror the contract and never pay more than a buy c
   assert.equal(redeemQuote(1000n, 0n, 10n), 0n);
   assert.ok(spotPrice(799n) > spotPrice(0n));
   assert.throws(() => sellQuote(5n, 10n, 0n, 100n), /ERR_SELL/);
+});
+test('NEARFS CID matches the one the gateway served for a stored probe', () => {
+  // 'juno media probe 1794649130\n' was stored with fs_store (tx B71P9Bju…) and served at this CID.
+  assert.equal(nearfsCid(new TextEncoder().encode('juno media probe 1794649130\n')), 'bafkreibotlstzaqef3svcqpxmtxwgup6wqqpefbvcvba7lb6kutfcagbxq');
 });

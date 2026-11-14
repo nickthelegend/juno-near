@@ -75,6 +75,21 @@ export function base64(bytes: Uint8Array): string {
   if (B) return B.from(bytes).toString('base64');
   return btoa(String.fromCharCode(...bytes));
 }
+/** NEARFS (IPFS over NEAR): a file stored as the arguments of an `fs_store` call is served by its CID here. */
+export const NEARFS_GATEWAY = 'https://ipfs.web4.testnet.page/ipfs/';
+/** NEARFS serves one raw block per file; larger files would need chunking, so Juno keeps photos under this. */
+export const NEARFS_MAX_BYTES = 250_000;
+/** CIDv1 of a raw block (codec 0x55, sha2-256), base32 lower: the address NEARFS gives the bytes of one `fs_store` call. */
+export function nearfsCid(bytes: Uint8Array): string {
+  const digest = sha256(bytes);
+  const raw = new Uint8Array(4 + digest.length);
+  raw.set([0x01, 0x55, 0x12, 0x20]); raw.set(digest, 4);
+  const A = 'abcdefghijklmnopqrstuvwxyz234567';
+  let bits = 0, value = 0, out = 'b';
+  for (const byte of raw) { value = (value << 8) | byte; bits += 8; while (bits >= 5) { out += A[(value >>> (bits - 5)) & 31]; bits -= 5; } value &= 0xff; }
+  if (bits) out += A[(value << (5 - bits)) & 31];
+  return out;
+}
 async function rpc(body: object, endpoint = TESTNET_RPC): Promise<any> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);

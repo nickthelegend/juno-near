@@ -25,3 +25,6 @@ export async function disconnectWallet(): Promise<void> {}
 export async function sendWithWallet(_step: TxStep): Promise<string> {
   throw unavailable();
 }
+
+/** Only the native QA signer shows an in-app approval sheet; other wallets have their own window. */
+export function setApprover(_approver: ((request: import("../components/ApproveSheet").ApprovalRequest) => Promise<void>) | null): void {}

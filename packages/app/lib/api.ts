@@ -267,7 +267,8 @@ export type TxStep = {
   label: string;
   receiverId: string;
   methodName: string;
-  args: Record<string, unknown>;
+  /** JSON arguments, or raw bytes (a photo stored with `fs_store`). */
+  args: Record<string, unknown> | Uint8Array;
   /** yocto, decimal string. */
   deposit: string;
   /** gas units, decimal string. */
@@ -842,6 +843,19 @@ export const juno = {
     const { coin } = await juno.coin(input.curve);
     return quoteFor(coin, input.side, Math.floor(input.amountOut));
   },
+
+  /**
+   * Store a photo on NEAR: one `fs_store` call to the factory's media account (a locked account whose only
+   * method does nothing) with the JPEG bytes as its arguments. NEARFS serves them by CID; see lib/photo.ts.
+   */
+  buildStorePhoto: (bytes: Uint8Array): TxStep => ({
+    label: "Store photo",
+    receiverId: `media.${requireFactory()}`,
+    methodName: "fs_store",
+    args: bytes,
+    deposit: "0",
+    gas: (5n * TGAS).toString(),
+  }),
 
   /** Launch a post: a named sub-account of the factory with its own market. */
   buildLaunch: (input: { slug: string; caption: string; mediaUrl: string; dare: string; dareBondNear: number }): { steps: TxStep[]; account: string } => {

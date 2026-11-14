@@ -24,3 +24,13 @@ test('one shared budget reserves deposits plus three times the maximum gas charg
   assert.throws(()=>reserveQaBudget(QA_BUDGET-first+1n,deposit,gas,price),/0.3/);
   assert.throws(()=>reserveQaBudget(0n,0n,gas,-1n));
 });
+test('QA signer stores a photo only as bytes to the media account, with no deposit', () => {
+  const store = (receiverId: string, args: unknown, deposit = '0') => ({ receiverId, actions: [{ type: 'FunctionCall', params: { methodName: 'fs_store', args, gas: '5000000000000', deposit } }] });
+  const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xe0]);
+  assert.equal(validateQaTransaction(store(`media.${factory}`, jpeg), account, factory).methodName, 'fs_store');
+  assert.throws(() => validateQaTransaction(store(`sprout.${factory}`, jpeg), account, factory));
+  assert.throws(() => validateQaTransaction(store(`media.${factory}`, jpeg, '1'), account, factory));
+  assert.throws(() => validateQaTransaction(store(`media.${factory}`, { a: 1 }), account, factory));
+  assert.throws(() => validateQaTransaction(store(`media.${factory}`, new Uint8Array(250_001)), account, factory));
+  const bytesToBuy = tx(); (bytesToBuy.actions[0].params as { args: unknown }).args = jpeg; assert.throws(() => validateQaTransaction(bytesToBuy, account, factory));
+});

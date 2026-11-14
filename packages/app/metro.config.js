@@ -14,6 +14,10 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (qa && platform === "web" && moduleName === "./browser-wallet" && context.originModulePath.endsWith(path.join("lib", "wallet.tsx"))) {
     return { type: "sourceFile", filePath: path.join(__dirname, "lib", "qa-signer.web.ts") };
   }
+  // The iOS Simulator film build: the test wallet signs through the local QA signer (scripts/qa-native-signer.ts).
+  if (qa && platform !== "web" && moduleName === "./browser-wallet" && context.originModulePath.endsWith(path.join("lib", "wallet.tsx"))) {
+    return { type: "sourceFile", filePath: path.join(__dirname, "lib", "qa-signer.native.ts") };
+  }
   return context.resolveRequest(context, moduleName, platform);
 };
 module.exports = config;

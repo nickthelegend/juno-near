@@ -128,7 +128,7 @@ export function SignInSheet({
               <>
                 <Or>or</Or>
                 <Button
-                  label="Connect NEAR wallet"
+                  label={bridge.wallet.name === "Test wallet" ? "Use the test wallet" : "Connect NEAR wallet"}
                   variant="ink"
                   onPress={() => void connectWallet()}
                   loading={walletBusy}

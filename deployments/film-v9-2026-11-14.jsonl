@@ -1,0 +1,2 @@
+{"at":"2026-11-14T09:38:46.049Z","account":"media.juno-awkorp.testnet","hash":"GjzYPHNF2yiaHPi5TiKdgJrjMob6qAmmBtYexT4PUqma","ok":true,"note":"locked media account: no-op fs_store for NEARFS photo storage"}
+{"at":"2026-11-14T09:39:30Z","signer":"kai.juno-awkorp.testnet","receiver":"media.juno-awkorp.testnet","method":"fs_store","hash":"B71P9Bju8YQfRZQdfuptx3NHGjio7CyPmgXPzySEr63R","note":"NEARFS probe: 28 bytes served at https://ipfs.web4.testnet.page/ipfs/bafkreibotlstzaqef3svcqpxmtxwgup6wqqpefbvcvba7lb6kutfcagbxq"}

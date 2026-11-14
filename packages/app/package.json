@@ -16,6 +16,7 @@
     "expo-font": "~57.0.4",
     "expo-haptics": "~57.0.3",
     "expo-image": "~57.0.5",
+    "expo-image-manipulator": "~57.0.22",
     "expo-image-picker": "~57.0.19",
     "expo-linking": "~57.0.10",
     "expo-router": "~57.0.22",
@@ -33,7 +34,8 @@
     "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
     "react-native-web": "^0.21.2",
-    "styled-components": "^6.5.3"
+    "styled-components": "^6.5.3",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",

@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
 import {
   Account,
@@ -21,10 +22,12 @@ import {
   preloadWallet,
   restoreWallet,
   sendWithWallet,
+  setApprover,
 } from "./browser-wallet";
 import { describeTxError, EXPLORER_NAME, FACTORY, RELAYER_URL, RPC_URL, TxError } from "./chain";
 import { confirmTx } from "./tx-status";
 import { SignInSheet } from "../components/SignInSheet";
+import { ApproveSheet, type ApprovalRequest } from "../components/ApproveSheet";
 
 /**
  * The wallet: Juno on NEAR, signed in with email.
@@ -79,6 +82,12 @@ export type WalletState = {
   send: (steps: TxStep[], options?: { onProgress?: (progress: SendProgress) => void }) => Promise<SendResult>;
   connect: () => Promise<string>;
   disconnect: () => Promise<void>;
+  /** The wallet's name when signed in through one (a NEAR browser wallet, or the test wallet in a QA build). */
+  walletName: string | null;
+  /** The test wallet's pending approval, for a screen presented as its own Modal to show (see ApprovalOutlet). */
+  approval: ApprovalRequest | null;
+  answerApproval: (approved: boolean) => void;
+  hostApprovals: () => () => void;
 };
 
 const WalletContext = createContext<WalletState | null>(null);
@@ -144,6 +153,31 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
    * sign-in window used that tap up, so the action asks for one more.
    */
   const freshWallet = useRef(0);
+  // The test wallet (QA builds) asks before it signs anything; a NEAR browser wallet shows its own window instead.
+  const [approval, setApproval] = useState<ApprovalRequest | null>(null);
+  // A Modal screen (the trade sheet) covers the root view, so while one is open it shows the approval itself.
+  const [hosts, setHosts] = useState(0);
+  const hostApprovals = useCallback(() => {
+    setHosts((n) => n + 1);
+    return () => setHosts((n) => n - 1);
+  }, []);
+  const answer = useRef<((approved: boolean) => void) | null>(null);
+  const answerApproval = useCallback((approved: boolean) => answer.current?.(approved), []);
+  useEffect(() => {
+    setApprover(
+      (request) =>
+        new Promise<void>((resolve, reject) => {
+          answer.current = (approved) => {
+            answer.current = null;
+            setApproval(null);
+            if (approved) resolve();
+            else reject(new TxError({ message: "", cancelled: true, reason: null }));
+          };
+          setApproval(request);
+        }),
+    );
+    return () => setApprover(null);
+  }, []);
 
   useEffect(() => {
     let live = true;
@@ -338,14 +372,29 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo<WalletState>(
-    () => ({ address, ready, signing, emailLogin: true, walletLogin: !!BROWSER_WALLET, via, send, connect, disconnect }),
-    [address, ready, signing, via, send, connect, disconnect],
+    () => ({
+      address,
+      ready,
+      signing,
+      emailLogin: true,
+      walletLogin: !!BROWSER_WALLET,
+      via,
+      send,
+      connect,
+      disconnect,
+      walletName: via === "wallet" ? (BROWSER_WALLET?.name ?? null) : null,
+      approval,
+      answerApproval,
+      hostApprovals,
+    }),
+    [address, ready, signing, via, send, connect, disconnect, approval, answerApproval, hostApprovals],
   );
 
   return (
     <WalletContext.Provider value={value}>
       {children}
       <SignInSheet visible={signingIn} onClose={cancelSignIn} bridge={bridge} />
+      <ApproveSheet request={hosts > 0 ? null : approval} onAnswer={answerApproval} />
     </WalletContext.Provider>
   );
 }
@@ -354,4 +403,20 @@ export function useWallet(): WalletState {
   const context = useContext(WalletContext);
   if (!context) throw new Error("useWallet must be used inside a WalletProvider");
   return context;
+}
+
+/** Renders the test wallet's approval sheet inside a screen that is its own Modal (it would be hidden behind it). */
+export function ApprovalOutlet() {
+  const wallet = useWallet();
+  const { hostApprovals } = wallet;
+  useEffect(() => hostApprovals(), [hostApprovals]);
+  const shown = useRef(false);
+  // A Modal is its own native window: gestures inside it need their own root (the sheet can be dragged down).
+  if (!wallet.approval && !shown.current) return null;
+  shown.current = !!wallet.approval;
+  return (
+    <GestureHandlerRootView style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      <ApproveSheet request={wallet.approval} onAnswer={wallet.answerApproval} />
+    </GestureHandlerRootView>
+  );
 }
