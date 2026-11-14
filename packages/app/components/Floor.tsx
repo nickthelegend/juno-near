@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Linking, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Svg, { Circle, Path, Rect } from "react-native-svg";
+import * as SecureStore from "expo-secure-store";
 import { base64, commitment, YOCTO } from "@juno/sdk";
 
 import { CoinGlyph, Identicon } from "./art";
@@ -296,11 +297,23 @@ type BidSecret = { amount: string; maxPrice: string; salt: string };
 function secretKey(token: string, account: string) {
   return `juno-bid:${token}:${account}`;
 }
+/** On a phone the secret lives in the secure store (keys allow only letters, digits, ".", "-" and "_"), mirrored in memory for the synchronous read. */
+const nativeSecrets = new Map<string, BidSecret>();
+const storeKey = (token: string, account: string) => secretKey(token, account).replace(/[^A-Za-z0-9._-]/g, "_");
 function readSecret(token: string, account: string): BidSecret | null {
   try {
-    if (Platform.OS === "web" && typeof localStorage !== "undefined") {
+    if (Platform.OS === "web") {
+      if (typeof localStorage === "undefined") return null;
       const raw = localStorage.getItem(secretKey(token, account));
       return raw ? (JSON.parse(raw) as BidSecret) : null;
+    }
+    const cached = nativeSecrets.get(storeKey(token, account));
+    if (cached) return cached;
+    const raw = SecureStore.getItem(storeKey(token, account));
+    if (raw) {
+      const secret = JSON.parse(raw) as BidSecret;
+      nativeSecrets.set(storeKey(token, account), secret);
+      return secret;
     }
   } catch {
     /* storage refused */
@@ -309,7 +322,12 @@ function readSecret(token: string, account: string): BidSecret | null {
 }
 function writeSecret(token: string, account: string, secret: BidSecret) {
   try {
-    if (Platform.OS === "web" && typeof localStorage !== "undefined") localStorage.setItem(secretKey(token, account), JSON.stringify(secret));
+    if (Platform.OS === "web") {
+      if (typeof localStorage !== "undefined") localStorage.setItem(secretKey(token, account), JSON.stringify(secret));
+      return;
+    }
+    nativeSecrets.set(storeKey(token, account), secret);
+    SecureStore.setItem(storeKey(token, account), JSON.stringify(secret));
   } catch {
     /* storage refused */
   }
@@ -334,6 +352,7 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hash, setHash] = useState<string | null>(null);
+  const [done, setDone] = useState<"Bid" | "Reveal" | "Settle" | null>(null);
   const pendingBidAccount = useRef<string | null>(null);
 
   // A phase boundary passing on screen is a reason to re-read.
@@ -390,6 +409,7 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
       const steps = await build();
       const sent = await wallet.send(steps);
       setHash(sent.hashes[sent.hashes.length - 1] ?? null);
+      setDone(label as "Bid" | "Reveal" | "Settle");
       onChanged();
     } catch (caught) {
       const failure = describeTxError(caught);
@@ -397,7 +417,8 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
         // A cancelled/blocked approval cannot have submitted this commitment.
         // Keep the secret for uncertain network outcomes, where a bid may have landed.
         try {
-          if (typeof localStorage !== "undefined") localStorage.removeItem(secretKey(coin.address, pendingBidAccount.current));
+          if (Platform.OS === "web" && typeof localStorage !== "undefined") localStorage.removeItem(secretKey(coin.address, pendingBidAccount.current));
+          else nativeSecrets.delete(storeKey(coin.address, pendingBidAccount.current));
         } catch { /* storage refused */ }
         pendingBidAccount.current = null;
       }
@@ -429,101 +450,157 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
 
   const mine = wallet.address ? readSecret(coin.address, wallet.address) : null;
   const book = lifecycle.data?.post === coin.address ? lifecycle.data.snapshot.bidders : [];
+  const mineOnChain = wallet.address ? book.find((b) => b.owner === wallet.address) ?? null : null;
   const left = n.phase === "commit" ? commitLeft : n.phase === "reveal" ? revealLeft : 0;
-  const total = 60;
-  const step = n.phase === "commit" ? 0 : n.phase === "reveal" ? 1 : 2;
+  const span = 60;
+  const elapsed = left === null ? 0 : Math.min(1, Math.max(0, 1 - left / span));
+  const stepNo = n.phase === "commit" ? 1 : n.phase === "reveal" ? 2 : 3;
   const units = Math.max(0, Math.floor(Number(amount) || 0));
   const each = Number(maxPrice) || 0;
-  const fits = units > 0 && units * each <= 1;
+  const spend = units * each;
+  const fits = units > 0 && spend <= 1;
+  const sealedMine = !!(mine && mineOnChain);
 
   return (
-    <View style={a.card}>
-      <Row justify="space-between">
-        <Row>
-          <SealGlyph color={c.lime} />
-          <Text style={a.title}>Opening auction</Text>
-        </Row>
-        <View style={a.live}>
-          <LiveDot />
-          <Text style={a.liveText}>Live</Text>
+    <View>
+      {/* The clock: where the opening is, how long is left, who has bid. */}
+      <View style={a.stage}>
+        <View style={a.stageHead}>
+          <View style={a.livePill}>
+            <LiveDot />
+            <Text style={a.liveText}>Sealed-bid opening</Text>
+          </View>
+          <Text style={a.stageStep}>Step {stepNo} of 3</Text>
         </View>
-      </Row>
-
-      <PhaseSteps at={step} />
-
-      <View style={a.clockRow}>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={a.clock}>{n.phase === "settle" ? "0:00" : clock(left ?? total)}</Text>
+        <View style={{ gap: 2 }}>
+          <Text style={a.clock}>{n.phase === "settle" ? "0:00" : left !== null ? clock(left) : "…"}</Text>
           <Text style={a.clockLabel}>
-            {n.phase === "commit" ? "until sealed bids close" : n.phase === "reveal" ? "until reveals close" : "Bidding is over · ready to settle"}
+            {n.phase === "commit" ? "until sealed bids close" : n.phase === "reveal" ? "until reveals close" : "Bids and reveals are in. Ready to settle."}
           </Text>
         </View>
-        <Ring pct={n.phase === "settle" ? 1 : 1 - (left ?? total) / total} />
-      </View>
-
-      <View style={a.stats}>
-        <Stat2 value={String(n.sealedBids)} label={n.sealedBids === 1 ? "sealed bid" : "sealed bids"} />
-        <Stat2 value={String(n.revealedBids)} label="revealed" />
-        <Stat2 value="200" label="tokens for sale" />
-      </View>
-
-      {book.length ? (
-        <View style={a.book}>
-          {book.map((b) => (
-            <View key={b.owner} style={a.bidder}>
-              <Identicon seed={b.owner} size={22} />
-              <Text style={a.bidderName} numberOfLines={1}><Handle wallet={b.owner} /></Text>
-              <Text style={[a.bidderState, b.revealed ? a.bidderOpen : null]}>{b.revealed ? "Revealed" : "Sealed"}</Text>
-            </View>
-          ))}
+        <View style={a.bar}>
+          <View style={[a.fill, { width: `${Math.round((n.phase === "settle" ? 1 : elapsed) * 100)}%` }]} />
         </View>
-      ) : (
-        <Text style={a.note}>No sealed bids yet. Bids are hashes with 1 NEAR escrowed, so nobody can see a price until the reveal.</Text>
-      )}
+        <View style={a.stats}>
+          <Stat2 value={String(n.sealedBids)} label={n.sealedBids === 1 ? "sealed bid" : "sealed bids"} lit />
+          <View style={a.statRule} />
+          <Stat2 value={String(n.revealedBids)} label="revealed" />
+          <View style={a.statRule} />
+          <Stat2 value="200" label="tokens for sale" />
+        </View>
+        {book.length ? (
+          <View style={a.book}>
+            {book.map((b) => (
+              <View key={b.owner} style={a.bidder}>
+                <Identicon seed={b.owner} size={22} />
+                <Text style={a.bidderName} numberOfLines={1}><Handle wallet={b.owner} /></Text>
+                <Text style={[a.bidderState, b.revealed ? a.bidderOpen : null]}>{b.revealed ? "Revealed" : "Sealed"}</Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <Text style={a.note}>No bids yet. Each bid is a hash with 1 NEAR escrowed, so nobody sees a price until the reveal.</Text>
+        )}
+      </View>
 
-      <View style={a.inset}>
+      {/* How it works, in one line, then the steps. */}
+      <View style={a.how}>
+        <SealGlyph size={18} />
+        <Text style={a.howText}>Bids stay hidden until the reveal, and every winner pays the same price.</Text>
+      </View>
+      <PhaseSteps at={stepNo - 1} dark={false} />
+
+      {/* The action for this step, with its states. */}
+      <View style={f.card}>
         {n.phase === "commit" ? (
-          mine ? (
-            <View style={{ gap: 4 }}>
-              <Text style={f.tileLabel}>Your sealed bid</Text>
-              <Text style={a.mineFig}>{mine.amount} tokens · up to {amountOf(Number(mine.maxPrice) / 1e24, "NEAR")} each</Text>
-              <Text style={f.body}>The price stays on this device until you reveal it.</Text>
-            </View>
+          sealedMine ? (
+            <Sealed
+              title="Your bid is sealed"
+              detail={`${mine!.amount} tokens at up to ${amountOf(Number(mine!.maxPrice) / 1e24, "NEAR")} each. Only a hash is on chain; the price stays on this device until you reveal.`}
+            />
+          ) : busy || done === "Bid" ? (
+            <Sealed title={busy ? "Sealing your bid…" : "Bid sealed"} detail={busy ? "Approve it in your wallet." : "Reading it back from NEAR testnet…"} pending={busy} />
+          ) : mineOnChain ? (
+            <Sealed title="You already bid here" detail="This account placed a sealed bid from another device." />
           ) : (
             <>
+              <Text style={f.title}>Place a sealed bid</Text>
+              <View style={a.quick}>
+                {[25, 50, 100, 200].map((q) => {
+                  const on = units === q;
+                  return (
+                    <Pressable key={q} onPress={() => setAmount(String(q))} style={[a.quickChip, on ? a.quickOn : null]} accessibilityRole="button" accessibilityLabel={`${q} tokens`}>
+                      <Text style={[a.quickText, on ? { color: c.lime } : null]}>{q}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
               <View style={f.inputs}>
                 <Field label="Tokens" value={amount} onChange={setAmount} />
                 <Field label="Max NEAR each" value={maxPrice} onChange={setMaxPrice} />
               </View>
-              <Text style={[f.body, !fits && units > 0 ? { color: c.neg } : null]}>
-                {fits ? `Pays at most ${amountOf(units * each, "NEAR")}. Everyone who clears pays one price; unused escrow comes back.` : "Tokens × max price must fit inside the 1 NEAR escrow."}
-              </Text>
-              <Button label="Place sealed bid · 1 NEAR escrow" variant="lime" tall disabled={!fits} onPress={() => void commit()} loading={busy} />
+              <View style={a.sum}>
+                <SumRow label="Escrow, the same for every bid" value="1 NEAR" />
+                <SumRow label="Most you can pay" value={spend > 0 ? amountOf(spend, "NEAR") : "—"} tone={spend > 1 ? "neg" : undefined} />
+                <SumRow label="Comes back to you" value={spend > 0 && spend <= 1 ? `at least ${amountOf(1 - spend, "NEAR")}` : "—"} />
+              </View>
+              {spend > 1 ? <Text style={[f.body, { color: c.neg }]}>Tokens × max price must fit inside the 1 NEAR escrow.</Text> : null}
+              <Button label="Place sealed bid" variant="lime" tall disabled={!fits} onPress={() => void commit()} loading={busy} />
             </>
           )
         ) : n.phase === "reveal" ? (
-          <>
-            {wallet.address && book.some((b) => b.owner === wallet.address && b.revealed) ? (
-              <View style={{ gap: 4 }}>
-                <Text style={f.tileLabel}>Your bid is revealed</Text>
-                <Text style={a.mineFig}>{mine ? `${mine.amount} tokens · up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")} each` : "Revealed on chain"}</Text>
-                <Text style={f.body}>Settlement opens when the reveal clock reaches zero.</Text>
-              </View>
-            ) : (
-              <>
-                <Text style={f.body}>{mine ? `Reveal ${mine.amount} tokens at up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. A bid left hidden is refunded minus 1%.` : "This device holds no sealed bid for this post."}</Text>
-                <Button label={mine ? "Reveal my bid" : "No bid from this device"} variant="lime" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
-              </>
-            )}
-          </>
+          mineOnChain?.revealed || done === "Reveal" ? (
+            <Sealed title="Bid revealed" detail="Settlement opens when the clock runs out. Anyone can settle." open />
+          ) : (
+            <>
+              <Text style={f.title}>{mine ? "Reveal your bid" : "Reveals are open"}</Text>
+              <Text style={f.body}>
+                {mine
+                  ? `Opens your ${mine.amount} tokens at up to ${amountOf(Number(mine.maxPrice) / 1e24, "NEAR")}. A bid never revealed is refunded minus 1%.`
+                  : mineOnChain
+                    ? "Your bid's secret is on another device; reveal it there."
+                    : "Bidders now reveal amount, max price and salt. This account has no bid here."}
+              </Text>
+              <Button label={mine ? "Reveal my bid" : "No bid to reveal"} variant="ink" tall disabled={!mine} onPress={() => void reveal()} loading={busy} />
+            </>
+          )
         ) : (
           <>
-            <Text style={f.body}>Anyone can settle. Revealed bids are ranked by max price; all 200 tokens clear at one price.</Text>
-            <Button label="Settle the auction" variant="lime" tall onPress={() => void settle()} loading={busy} />
+            <Text style={f.title}>{done === "Settle" ? "Settled" : "Settle the opening"}</Text>
+            <Text style={f.body}>
+              {done === "Settle"
+                ? "Winners got their tokens at one price. Opening the curve…"
+                : "Anyone can settle: revealed bids are ranked by max price, all winners pay one clearing price, half of it seeds the floor, and unused escrow is claimable."}
+            </Text>
+            <Button label={done === "Settle" ? "Settled · opening the curve…" : "Settle the auction"} variant="lime" tall disabled={done === "Settle"} onPress={() => void settle()} loading={busy} />
           </>
         )}
         {error ? <Text style={f.error}>{error}</Text> : null}
         {hash ? <TxLink hash={hash} /> : null}
+      </View>
+    </View>
+  );
+}
+
+function SumRow({ label, value, tone }: { label: string; value: string; tone?: "neg" }) {
+  return (
+    <View style={a.sumRow}>
+      <Text style={a.sumLabel}>{label}</Text>
+      <Text style={[a.sumValue, tone === "neg" ? { color: c.neg } : null]}>{value}</Text>
+    </View>
+  );
+}
+
+/** A bid's state, drawn as the envelope it is. */
+function Sealed({ title, detail, pending, open }: { title: string; detail: string; pending?: boolean; open?: boolean }) {
+  return (
+    <View style={a.sealed}>
+      <View style={[a.sealedDisc, open ? { backgroundColor: c.limeSoft } : null]}>
+        <Object3D art="envelope" alt="" size={54} float={pending} />
+      </View>
+      <View style={{ flex: 1, minWidth: 0, gap: 3 }}>
+        <Text style={a.sealedTitle}>{title}</Text>
+        <Text style={f.body}>{detail}</Text>
       </View>
     </View>
   );
@@ -585,20 +662,10 @@ function LiveDot() {
   return <View style={[{ width: 7, height: 7, borderRadius: 4, backgroundColor: c.lime }, style]} />;
 }
 
-function Ring({ pct }: { pct: number }) {
-  const r = 26, len = 2 * Math.PI * r, p = Math.max(0, Math.min(1, pct));
-  return (
-    <Svg width={64} height={64} viewBox="0 0 64 64">
-      <Circle cx={32} cy={32} r={r} stroke="rgba(243,247,238,0.14)" strokeWidth={6} fill="none" />
-      <Circle cx={32} cy={32} r={r} stroke={c.lime} strokeWidth={6} fill="none" strokeLinecap="round" strokeDasharray={`${len * p} ${len}`} transform="rotate(-90 32 32)" />
-    </Svg>
-  );
-}
-
-function Stat2({ value, label }: { value: string; label: string }) {
+function Stat2({ value, label, lit }: { value: string; label: string; lit?: boolean }) {
   return (
     <View style={{ flex: 1, minWidth: 0 }}>
-      <Text style={a.statValue} numberOfLines={1}>{value}</Text>
+      <Text style={[a.statValue, lit ? { color: c.lime } : null]} numberOfLines={1}>{value}</Text>
       <Text style={a.statLabel} numberOfLines={1}>{label}</Text>
     </View>
   );
@@ -812,15 +879,18 @@ const s = StyleSheet.create({
 });
 
 const a = StyleSheet.create({
-  card: { backgroundColor: c.ink, borderRadius: theme.radius.lg, padding: 18, gap: 16, alignSelf: "stretch", marginTop: 16 },
-  title: { color: c.onInk, fontSize: theme.type.title.size, fontWeight: "700", letterSpacing: -0.4 },
-  live: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.inkSoft },
-  liveText: { color: c.lime, fontSize: theme.type.caption.size, fontWeight: "800" },
-  clockRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  stage: { backgroundColor: c.ink, borderRadius: theme.radius.xl, padding: 20, gap: 12, alignSelf: "stretch", marginTop: 14, ...theme.shadow.raised },
+  stageHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  livePill: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.inkSoft },
+  liveText: { color: c.onInk, fontSize: theme.type.caption.size, fontWeight: "700" },
+  stageStep: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "700", ...tabular },
   clock: { color: c.lime, fontSize: 56, lineHeight: 60, fontWeight: "800", letterSpacing: -2, ...tabular },
-  clockLabel: { color: "#A9B3A2", fontSize: theme.type.label.size, fontWeight: "600" },
-  stats: { flexDirection: "row", gap: 12, paddingTop: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(243,247,238,0.16)" },
-  statValue: { color: c.onInk, fontSize: theme.type.title.size, fontWeight: "800", ...tabular },
+  clockLabel: { color: c.onInk, fontSize: theme.type.label.size, fontWeight: "600" },
+  bar: { height: 6, borderRadius: 3, backgroundColor: c.inkSoft, overflow: "hidden" },
+  fill: { height: 6, borderRadius: 3, backgroundColor: c.lime },
+  stats: { flexDirection: "row", paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(243,247,238,0.16)" },
+  statRule: { width: StyleSheet.hairlineWidth, backgroundColor: "rgba(243,247,238,0.16)", marginHorizontal: 12 },
+  statValue: { color: c.onInk, fontSize: theme.type.heading.size, fontWeight: "800", letterSpacing: -0.5, ...tabular },
   statLabel: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "600" },
   book: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   bidder: { flexDirection: "row", alignItems: "center", gap: 7, paddingLeft: 5, paddingRight: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.inkSoft },
@@ -828,8 +898,19 @@ const a = StyleSheet.create({
   bidderState: { color: "#A9B3A2", fontSize: theme.type.caption.size, fontWeight: "700" },
   bidderOpen: { color: c.lime },
   note: { color: "#A9B3A2", fontSize: theme.type.label.size, lineHeight: 20 },
-  inset: { backgroundColor: c.surface, borderRadius: theme.radius.md, padding: 14, gap: 12 },
-  mineFig: { color: c.text, fontSize: theme.type.lead.size, fontWeight: "800", ...tabular },
+  how: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 14, marginBottom: 12, paddingHorizontal: 14, paddingVertical: 12, borderRadius: theme.radius.md, backgroundColor: c.limeSoft },
+  howText: { flex: 1, color: c.text, fontSize: theme.type.label.size, fontWeight: "600", lineHeight: 19 },
+  quick: { flexDirection: "row", gap: 8 },
+  quickChip: { flex: 1, height: 38, borderRadius: 999, alignItems: "center", justifyContent: "center", backgroundColor: c.surfaceAlt },
+  quickOn: { backgroundColor: c.ink },
+  quickText: { color: c.text, fontSize: theme.type.label.size, fontWeight: "800", ...tabular },
+  sum: { gap: 8, padding: 12, borderRadius: theme.radius.md, backgroundColor: c.surfaceAlt },
+  sumRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
+  sumLabel: { flexShrink: 1, color: c.muted, fontSize: theme.type.caption.size, fontWeight: "600" },
+  sumValue: { color: c.text, fontSize: theme.type.label.size, fontWeight: "800", ...tabular },
+  sealed: { flexDirection: "row", alignItems: "center", gap: 14 },
+  sealedDisc: { width: 68, height: 68, borderRadius: 34, alignItems: "center", justifyContent: "center", backgroundColor: c.surfaceAlt },
+  sealedTitle: { color: c.text, fontSize: theme.type.title.size, fontWeight: "800", letterSpacing: -0.4 },
 });
 
 const f = StyleSheet.create({

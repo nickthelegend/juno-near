@@ -2,7 +2,7 @@
   "expo": {
     "name": "Juno",
     "slug": "juno-near",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "app.launch.junonear",
-      "versionCode": 300
+      "versionCode": 310
     },
     "web": {
       "favicon": "./assets/favicon.png"
