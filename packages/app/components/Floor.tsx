@@ -382,7 +382,7 @@ export function AuctionCard({ coin, onChanged, lifecycle }: { coin: Coin; onChan
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={f.tileLabel}>{n.sealedBids} sealed · {n.revealedBids} revealed</Text>
-            <Text style={f.tileLabel}>200 tokens allocated</Text>
+            <Text style={f.tileLabel}>{winners.length ? `${winners.reduce((n, b) => n + Number(b.allocated), 0)} of 200 tokens allocated` : "200 tokens for sale"}</Text>
           </View>
         </View>
         {winners.length ? (
