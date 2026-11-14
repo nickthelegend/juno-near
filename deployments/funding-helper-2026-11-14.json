@@ -1,0 +1,8 @@
+{
+  "approved_by": "Nick in chat, 2026-11-14 (\"k do it and please create helper near and gund it\")",
+  "method": "NEAR testnet account helper (helper.nearprotocol.com/account)",
+  "helper_account": "juno-fund-mwfwsh9t.testnet",
+  "transfer": { "to": "kai.juno-awkorp.testnet", "amount_near": "9.89818", "tx": "FtAe71KXV8DNKwthXYvQZtoCgN7KhMLFAUWUuPwJj3yG", "explorer": "https://testnet.nearblocks.io/txns/FtAe71KXV8DNKwthXYvQZtoCgN7KhMLFAUWUuPwJj3yG" },
+  "kai_balance_after_near": "10.0834",
+  "note": "Testnet only. Helper account key kept in gitignored .demo/, never printed."
+}
