@@ -74,6 +74,23 @@ The final film follows [`golden-hour.juno-awkorp.testnet`](https://testnet.nearb
 | finalize dare: proof accepted, bond returned | [oE2tXvJU…](https://testnet.nearblocks.io/txns/oE2tXvJUYxZiwux1qTwLuYGGT4Ba4nN3VRaRSZofMwX) |
 | buy last 135: graduated | [Dm7x5WW4…](https://testnet.nearblocks.io/txns/Dm7x5WW4yBniRtFuTbLbVw4qLBYZgipEgruTTZBNFpPp) |
 
+## Film v9 run on the iOS app (November 14, 2026)
+
+The film's phone is a Release build of this app on the iOS Simulator (`JUNO_QA=1 packages/app/scripts/build-ios-sim.sh`). Its test wallet is `kai.juno-awkorp.testnet`: every call shows an in-app **Approve** sheet first, then `scripts/qa-native-signer.ts` (127.0.0.1 only) signs it. The cat photo was chosen from the camera roll and stored on NEAR itself: the JPEG bytes are the arguments of one `fs_store` call to `media.juno-awkorp.testnet` (a locked account whose only method does nothing), and NEARFS serves them by CID. Evidence: [deployments/film-v9-lifecycle-2026-11-14.json](deployments/film-v9-lifecycle-2026-11-14.json).
+
+| Step (kai, in the app) | Transaction |
+| --- | --- |
+| store the photo (146 kB, `fs_store`) | [BNumdBHS…](https://testnet.nearblocks.io/txns/BNumdBHSGdCT52W6rnd98Kgn8czRH4s34vMbnqXya76B) |
+| launch dare post `cat-in-shades` (3 NEAR + 0.1 NEAR bond) | [Cc4TZuxQ…](https://testnet.nearblocks.io/txns/Cc4TZuxQY2T8ajqD1geptK62cnrDt5rwnXXk6MHUddUo) |
+| settle the opening (no bids) | [624577di…](https://testnet.nearblocks.io/txns/624577diYjYK9JfSEHVy9iBirSyCnS7NgLBYtZYfwH4k) |
+| buy 50 | [6J94sLYv…](https://testnet.nearblocks.io/txns/6J94sLYv7nNZ7JXQKVRY3tkSqygc34oiyw2x2QNwixpm) |
+| sell 10 | [BdKhJuu9…](https://testnet.nearblocks.io/txns/BdKhJuu9DCGbKur1RLTT5YvaSoa4sN4eeA8KEreswkPG) |
+| redeem 10 against the floor | [8FCK7kJF…](https://testnet.nearblocks.io/txns/8FCK7kJFhQJ49EggXA7AWNyFTtF3peoYPhTdLR2pYCUV) |
+| finalize the dare (no votes: bond split across holders) | [Cuk9yAqu…](https://testnet.nearblocks.io/txns/Cuk9yAqu6er7xTWyRATFzU1WazjZmJkKv2yymKn7FUJB) |
+| claim the bond share (0.1 NEAR) | [6fmSHzw6…](https://testnet.nearblocks.io/txns/6fmSHzw6bsYQ7v9NDxWBthKMA8tDRPcGWAo2h9bK8Vak) |
+
+The dare proof ([HHZj72sx…](https://testnet.nearblocks.io/txns/HHZj72sxurcMTAZKaEL4UQrqpMvwkE55Lst19YUv8CTs)) was sent by `scripts/film-players.ts` as kai, because the in-app approval sheet was hidden behind the proof sheet (fixed since). No sealed bids landed on this post: see BLOCKED.md item 14. The sealed-bid opening with three bidders is the November 13 Golden Hour run above.
+
 ## Verify it
 
 ```bash
