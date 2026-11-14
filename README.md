@@ -74,6 +74,26 @@ The final film follows [`golden-hour.juno-awkorp.testnet`](https://testnet.nearb
 | finalize dare: proof accepted, bond returned | [oE2tXvJU…](https://testnet.nearblocks.io/txns/oE2tXvJUYxZiwux1qTwLuYGGT4Ba4nN3VRaRSZofMwX) |
 | buy last 135: graduated | [Dm7x5WW4…](https://testnet.nearblocks.io/txns/Dm7x5WW4yBniRtFuTbLbVw4qLBYZgipEgruTTZBNFpPp) |
 
+## Film v10 live opening on the iOS app (November 14, 2026)
+
+The film's opening is one live run on [`cat-goes-viral.juno-awkorp.testnet`](https://testnet.nearblocks.io/address/cat-goes-viral.juno-awkorp.testnet): kai acts in the iOS app (every call on the Approve sheet), mira and oto bid from their own accounts. Evidence: [deployments/film-v10-lifecycle-2026-11-14.json](deployments/film-v10-lifecycle-2026-11-14.json).
+
+| Step | Transaction |
+| --- | --- |
+| kai stores the photo (175 kB, `fs_store`) | [GuU6qwim…](https://testnet.nearblocks.io/txns/GuU6qwimp6omjkG9VZrsYkmbteBMoaarwNWqLizhuMko) |
+| kai launches the dare post (3.2 NEAR) | [DeEk9bEP…](https://testnet.nearblocks.io/txns/DeEk9bEPBdNUwskyJK4fCzhUoNprEtAjuAcczzE1tubn) |
+| oto sealed bid | [Dm5yYreg…](https://testnet.nearblocks.io/txns/Dm5yYregc6tsLWanfQViWhMrG8tf1z47x9daAema6d6y) |
+| mira sealed bid | [JDXLuzjr…](https://testnet.nearblocks.io/txns/JDXLuzjrYhyLQyT2kS24411qqn9taKZo6WsvNzk8EzgJ) |
+| kai sealed bid | [JCf73az6…](https://testnet.nearblocks.io/txns/JCf73az6HHE2ceavF7cHTeT1hUB9K4a8LSyrQJeGHNCW) |
+| kai reveals | [A2aZBJRm…](https://testnet.nearblocks.io/txns/A2aZBJRmN4qyNnHF52pUExzBV7keTSNFYi7WC6qFBPZb) |
+| mira reveals (oto did not) | [Ejnnvy…](https://testnet.nearblocks.io/txns/EjnnvyYjouDqFTVqEBNUZsXWnEMhUEXKWvChNEbQfs5B) |
+| kai posts the dare proof | [2HqiadCA…](https://testnet.nearblocks.io/txns/2HqiadCA4aW8p44ULhzLvrCnQAa3rQGF6dJL8nvqC83v) |
+| kai settles: 150 tokens at 0.002 NEAR | [24Quoxwm…](https://testnet.nearblocks.io/txns/24QuoxwmUUetAj8LZyqJUSz8b2bNmJLFqCigPuxp8xY8) |
+| kai votes to accept / mira votes to accept | [5ywSrCjg…](https://testnet.nearblocks.io/txns/5ywSrCjgYYQjU5BrhH1Y43R1UsFu5iFE5Qo36e952tRy) / [4eVr4LHJ…](https://testnet.nearblocks.io/txns/4eVr4LHJdxyEhowSHzVAw4NUCHU2A8TdWmwLAj1WrwHp) |
+| kai claims the escrow refund | [3Qoaaw…](https://testnet.nearblocks.io/txns/3QoaawYCG4R9EmVGCV3H4NXDWgCDdTimHPSns5qC38ek) |
+| kai buys 10 / sells 5 / redeems 5 | [BPbtiZtf…](https://testnet.nearblocks.io/txns/BPbtiZtffYkZL1YFDaXP6utf8j4vCbqH7g2RsNc1TAda) / [2FFRJ6Wm…](https://testnet.nearblocks.io/txns/2FFRJ6WmPdnuo6EfgtYhu9S5GnRWgSwfVXmt5akAY1v9) / [BW9UXFjK…](https://testnet.nearblocks.io/txns/BW9UXFjKPeShCJu4uMvqLHETQ7ifrPbZs219wvxssT4F) |
+| kai finalizes the dare: proof accepted, bond returned | [Gt8Zxdkr…](https://testnet.nearblocks.io/txns/Gt8Zxdkr9DRwys61Roe4RKXr4mVuWh3JLczRJhGRePD4) |
+
 ## Film v9 run on the iOS app (November 14, 2026)
 
 The film's phone is a Release build of this app on the iOS Simulator (`JUNO_QA=1 packages/app/scripts/build-ios-sim.sh`). Its test wallet is `kai.juno-awkorp.testnet`: every call shows an in-app **Approve** sheet first, then `scripts/qa-native-signer.ts` (127.0.0.1 only) signs it. The cat photo was chosen from the camera roll and stored on NEAR itself: the JPEG bytes are the arguments of one `fs_store` call to `media.juno-awkorp.testnet` (a locked account whose only method does nothing), and NEARFS serves them by CID. Evidence: [deployments/film-v9-lifecycle-2026-11-14.json](deployments/film-v9-lifecycle-2026-11-14.json).
