@@ -14,7 +14,7 @@
  */
 import { appendFileSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { Account, JsonRpcProvider, KeyPair, KeyPairSigner, actions, type KeyPairString } from 'near-api-js';
+import { Account, JsonRpcProvider, KeyPair, KeyPairSigner, actions, baseEncode, type KeyPairString } from 'near-api-js';
 import { QA_BUDGET, reserveQaBudget, validateQaTransaction } from '../packages/app/lib/qa-signer-policy.ts';
 
 const PORT = Number(process.env.QA_SIGNER_PORT || 5351);
@@ -65,9 +65,10 @@ const server = createServer(async (req, res) => {
       actions: [actions.functionCall(call.methodName, call.args as Record<string, unknown> | Uint8Array, BigInt(call.gas), BigInt(call.deposit))],
       publicKey: await signer.getPublicKey(),
     });
-    const { signedTransaction } = await signer.signTransaction(tx);
-    const outcome = (await provider.sendTransactionUntil(signedTransaction, 'INCLUDED')) as { transaction: { hash: string } };
-    const hash = outcome.transaction.hash;
+    const { txHash, signedTransaction } = await signer.signTransaction(tx);
+    const hash = baseEncode(txHash);
+    // Broadcast only; the app follows the hash to final across the public RPCs (lib/tx-status.ts).
+    await provider.sendTransactionUntil(signedTransaction, 'NONE');
     appendFileSync(LEDGER, JSON.stringify({ at: new Date().toISOString(), signer: player.id, receiver: call.receiverId, method: call.methodName, depositYocto: call.deposit, hash }) + '\n');
     console.log(new Date().toISOString(), call.methodName, call.receiverId, hash);
     reply(200, { hash });

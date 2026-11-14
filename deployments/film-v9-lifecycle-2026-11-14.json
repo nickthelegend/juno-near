@@ -1,0 +1,19 @@
+{
+  "what": "Film v9 live run on the iOS Simulator build (QA test wallet = kai.juno-awkorp.testnet, every call approved on camera)",
+  "post": "cat-in-shades.juno-awkorp.testnet",
+  "photo": { "stored_with": "fs_store on media.juno-awkorp.testnet", "bytes": 146000, "served_at": "https://ipfs.web4.testnet.page/ipfs/<cid in the post's media_url>" },
+  "txs_in_app": [
+    { "step": "store photo (NEARFS)", "method": "fs_store", "hash": "BNumdBHSGdCT52W6rnd98Kgn8czRH4s34vMbnqXya76B" },
+    { "step": "create dare post (3 NEAR + 0.1 NEAR bond)", "method": "create_post", "hash": "Cc4TZuxQY2T8ajqD1geptK62cnrDt5rwnXXk6MHUddUo" },
+    { "step": "settle the opening (no fills)", "method": "settle", "hash": "624577diYjYK9JfSEHVy9iBirSyCnS7NgLBYtZYfwH4k" },
+    { "step": "buy 50", "method": "buy", "hash": "6J94sLYv7nNZ7JXQKVRY3tkSqygc34oiyw2x2QNwixpm" },
+    { "step": "sell 10", "method": "sell", "hash": "BdKhJuu9DCGbKur1RLTT5YvaSoa4sN4eeA8KEreswkPG" },
+    { "step": "redeem 10 against the floor", "method": "redeem", "hash": "8FCK7kJFhQJ49EggXA7AWNyFTtF3peoYPhTdLR2pYCUV" },
+    { "step": "finalize dare (no votes: bond split across holders)", "method": "finalize_dare", "hash": "Cuk9yAqu6er7xTWyRATFzU1WazjZmJkKv2yymKn7FUJB" },
+    { "step": "claim bond share (0.1 NEAR)", "method": "claim_dare", "hash": "6fmSHzw6bsYQ7v9NDxWBthKMA8tDRPcGWAo2h9bK8Vak" }
+  ],
+  "txs_off_camera": [
+    { "step": "dare proof, sent by scripts/film-players.ts as kai because the in-app approval sheet was hidden behind the proof sheet (fixed in 13d4b05)", "method": "submit_proof", "hash": "HHZj72sxurcMTAZKaEL4UQrqpMvwkE55Lst19YUv8CTs" }
+  ],
+  "not_done": "No sealed bids: kai's and mira's commits were refused before broadcast (NotEnoughBalance: 1 NEAR escrow + 120 Tgas prepaid needed ~1.12 NEAR; commit gas is now 20 Tgas). A second live opening needs a new post (3 NEAR) plus two 1 NEAR escrows; the film accounts hold about 2.2 NEAR in total."
+}
