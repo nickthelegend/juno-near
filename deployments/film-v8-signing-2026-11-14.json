@@ -1,0 +1,41 @@
+{
+ "purpose": "Film v8 signing pass, signer kai.juno-awkorp.testnet; first six on harbor-dawn.juno-awkorp.testnet, last three on sprout.juno-awkorp.testnet",
+ "txs": {
+  "create_post": {
+   "hash": "3cz2aZdNYyEr9z9K5m5hjusBTkdFS2fXRVXX2XvPZW1g",
+   "explorer": "https://nearvalidate.org/txns/3cz2aZdNYyEr9z9K5m5hjusBTkdFS2fXRVXX2XvPZW1g?network=testnet"
+  },
+  "commit": {
+   "hash": "BSmswVYA14k1SkiBaTnKhZ9XFds4wtrBBNmXtm9WqNq",
+   "explorer": "https://nearvalidate.org/txns/BSmswVYA14k1SkiBaTnKhZ9XFds4wtrBBNmXtm9WqNq?network=testnet"
+  },
+  "submit_proof": {
+   "hash": "AxrJVdnVagMFZ5Hx1PnrUUAbwKtsbw6vRWCVK8wW6BDG",
+   "explorer": "https://nearvalidate.org/txns/AxrJVdnVagMFZ5Hx1PnrUUAbwKtsbw6vRWCVK8wW6BDG?network=testnet"
+  },
+  "reveal": {
+   "hash": "CpcCRqCh5pUFJADnuu9rzdgpDv5bGPVXofvjf98rPY6F",
+   "explorer": "https://nearvalidate.org/txns/CpcCRqCh5pUFJADnuu9rzdgpDv5bGPVXofvjf98rPY6F?network=testnet"
+  },
+  "settle": {
+   "hash": "HoCVWTRBBTEhN2afwpiyLXf4tPQ1D2BJgrhcKPjGiUxi",
+   "explorer": "https://nearvalidate.org/txns/HoCVWTRBBTEhN2afwpiyLXf4tPQ1D2BJgrhcKPjGiUxi?network=testnet"
+  },
+  "vote_proof": {
+   "hash": "7pMFQ8A4ngEkhjbChoKs8A8m1V3d1qsfg6sVP6tkNZ7w",
+   "explorer": "https://nearvalidate.org/txns/7pMFQ8A4ngEkhjbChoKs8A8m1V3d1qsfg6sVP6tkNZ7w?network=testnet"
+  },
+  "buy": {
+   "hash": "DqT95ao6LboZsELioPSUSgSsYFpdPHJbKpH2vTnqu2Xd",
+   "explorer": "https://nearvalidate.org/txns/DqT95ao6LboZsELioPSUSgSsYFpdPHJbKpH2vTnqu2Xd?network=testnet"
+  },
+  "sell": {
+   "hash": "HuE9xxBsatwC1mW16CNY5i8vtxT6Fow7VnsgHcxaXdd4",
+   "explorer": "https://nearvalidate.org/txns/HuE9xxBsatwC1mW16CNY5i8vtxT6Fow7VnsgHcxaXdd4?network=testnet"
+  },
+  "redeem": {
+   "hash": "8E5fdycAjYyGh6fBpnW1oH6fwV5qL2M69sPa134amaAu",
+   "explorer": "https://nearvalidate.org/txns/8E5fdycAjYyGh6fBpnW1oH6fwV5qL2M69sPa134amaAu?network=testnet"
+  }
+ }
+}

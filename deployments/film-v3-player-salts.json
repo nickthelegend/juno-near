@@ -28,5 +28,15 @@
     "amount": "80",
     "maxPrice": "1500000000000000000000",
     "salt": "mwf9fgl9-xfco2iwz9nb"
+  },
+  "harbor-dawn.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "50",
+    "maxPrice": "2000000000000000000000",
+    "salt": "mwfwv22u-5ipyxdxb6h"
+  },
+  "harbor-dawn.juno-awkorp.testnet:oto.juno-awkorp.testnet": {
+    "amount": "50",
+    "maxPrice": "2000000000000000000000",
+    "salt": "mwfwv4xi-n9qu0u34lls"
   }
 }
