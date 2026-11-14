@@ -1,0 +1,8 @@
+{
+  "approved_by": "Nick in chat, 2026-11-14 (\"get those testnet tokens somehow… do it yourself\"; earlier \"create helper near and fund it\")",
+  "method": "NEAR testnet account helper (helper.nearprotocol.com/account)",
+  "helper_account": "juno-fund-mwgadyxk.testnet",
+  "transfer": { "to": "kai.juno-awkorp.testnet", "amount_near": "9.89818", "tx": "GiWSk7uVwTnMiitijZhogEoLp3vWnR79WMqDP5es2Ddo" },
+  "kai_balance_after_near": "11.04",
+  "note": "Testnet only. Key kept in gitignored .demo/, never printed."
+}
