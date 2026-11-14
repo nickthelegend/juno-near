@@ -43,5 +43,10 @@
     "amount": "150",
     "maxPrice": "2000000000000000000000",
     "salt": "mwg8x2gd-xndbjrxkqjl"
+  },
+  "cat-goes-viral.juno-awkorp.testnet:mira.juno-awkorp.testnet": {
+    "amount": "100",
+    "maxPrice": "2000000000000000000000",
+    "salt": "mwgajmxr-l2s3qanxk6"
   }
 }

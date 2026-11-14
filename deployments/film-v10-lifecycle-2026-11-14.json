@@ -1,0 +1,28 @@
+{
+  "what": "Film v10 live opening on the iOS Simulator build (test wallet kai.juno-awkorp.testnet, every kai call approved on camera); mira and oto act from their own accounts (scripts/film-players.ts)",
+  "funding": "deployments/funding-helper-2026-11-14b.json (9.9 NEAR to kai); kai sent 0.2 NEAR to mira (D3hsX13VSJGvHTQaS2Kb5TUgxwMqgrn6cf7BUMMPJMWd) and 1.2 NEAR to oto (C3M2muKAQeMFnbwJXqcQC98hk3JucsxKLKFnwLoznXW7)",
+  "post": "cat-goes-viral.juno-awkorp.testnet (dare: 'He keeps the shades on', bond 0.2 NEAR)",
+  "kai_in_app": [
+    { "step": "store photo (175 kB, fs_store)", "hash": "GuU6qwimp6omjkG9VZrsYkmbteBMoaarwNWqLizhuMko" },
+    { "step": "launch dare post (3.2 NEAR)", "hash": "DeEk9bEPBdNUwskyJK4fCzhUoNprEtAjuAcczzE1tubn" },
+    { "step": "sealed bid 50 at up to 0.004 NEAR", "hash": "JCf73az6HHE2ceavF7cHTeT1hUB9K4a8LSyrQJeGHNCW" },
+    { "step": "reveal", "hash": "A2aZBJRmN4qyNnHF52pUExzBV7keTSNFYi7WC6qFBPZb" },
+    { "step": "dare proof", "hash": "2HqiadCA4aW8p44ULhzLvrCnQAa3rQGF6dJL8nvqC83v" },
+    { "step": "settle: 150 tokens at 0.002 NEAR", "hash": "24QuoxwmUUetAj8LZyqJUSz8b2bNmJLFqCigPuxp8xY8" },
+    { "step": "vote: accept proof", "hash": "5ywSrCjgYYQjU5BrhH1Y43R1UsFu5iFE5Qo36e952tRy" },
+    { "step": "claim auction refund", "hash": "3QoaawYCG4R9EmVGCV3H4NXDWgCDdTimHPSns5qC38ek" },
+    { "step": "buy 10", "hash": "BPbtiZtffYkZL1YFDaXP6utf8j4vCbqH7g2RsNc1TAda" },
+    { "step": "sell 5", "hash": "2FFRJ6WmPdnuo6EfgtYhu9S5GnRWgSwfVXmt5akAY1v9" },
+    { "step": "redeem 5", "hash": "BW9UXFjKPeShCJu4uMvqLHETQ7ifrPbZs219wvxssT4F" },
+    { "step": "finalize dare: proof accepted, bond returned", "hash": "Gt8Zxdkr9DRwys61Roe4RKXr4mVuWh3JLczRJhGRePD4" }
+  ],
+  "players": [
+    { "who": "mira", "step": "sealed bid 100 at up to 0.002", "hash": "JDXLuzjrYhyLQyT2kS24411qqn9taKZo6WsvNzk8EzgJ" },
+    { "who": "oto", "step": "sealed bid 50 at up to 0.003", "hash": "Dm5yYregc6tsLWanfQViWhMrG8tf1z47x9daAema6d6y" },
+    { "who": "mira", "step": "reveal", "hash": "EjnnvyYjouDqFTVqEBNUZsXWnEMhUEXKWvChNEbQfs5B" },
+    { "who": "mira", "step": "vote: accept", "hash": "4eVr4LHJdxyEhowSHzVAw4NUCHU2A8TdWmwLAj1WrwHp" },
+    { "who": "oto", "step": "claim refund (unrevealed bid, 1% kept)", "hash": "7cZfWgQBWQLin735XLP9LKcuXU2YVojM2tMpW1hA5JNw" },
+    { "who": "mira", "step": "claim refund", "hash": "7Xcr8cXk3k6VCTbR8JHDk99syX1N85SgDNgKzaXnHjH5" }
+  ],
+  "note": "oto's bid was never revealed: the two players' commits wrote the shared salt file at the same moment and mira's write dropped oto's salt (fixed: the script now locks and merges). Settlement treated oto's bid as unrevealed, as the contract does for anyone who skips the reveal."
+}

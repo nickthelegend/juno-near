@@ -4,7 +4,7 @@
  * Keys are read from .near-credentials/seed.json in code only. Salts persist in deployments/film-v3-player-salts.json
  * so a reveal matches its commit. Every hash is appended to deployments/film-v3-players.jsonl.
  */
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmdirSync, writeFileSync } from 'node:fs';
 import { Account, JsonRpcProvider, KeyPair, KeyPairSigner, actions, type KeyPairString } from 'near-api-js';
 import { base64, commitment, YOCTO } from '@juno/sdk';
 const [cmd, post, who, a, b] = process.argv.slice(2);
@@ -20,8 +20,14 @@ let method = '', args: Record<string, unknown> = {}, deposit = 0n;
 if (cmd === 'commit') {
   const units = BigInt(a!); const price = BigInt(Math.round(Number(b) * 1e8)) * (YOCTO / 100_000_000n);
   const salt = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-  salts[`${post}:${player.id}`] = { amount: units.toString(), maxPrice: price.toString(), salt };
-  writeFileSync(saltsFile, JSON.stringify(salts, null, 2) + '\n');
+  // Two players can commit at once: take a lock, re-read and merge, so one write never drops the other's salt.
+  const lock = `${saltsFile}.lock`;
+  for (let i = 0; ; i++) { try { mkdirSync(lock); break; } catch { if (i > 200) throw Error('salt file lock busy'); await new Promise((r) => setTimeout(r, 50)); } }
+  try {
+    const fresh = existsSync(saltsFile) ? JSON.parse(readFileSync(saltsFile, 'utf8')) : {};
+    fresh[`${post}:${player.id}`] = { amount: units.toString(), maxPrice: price.toString(), salt };
+    writeFileSync(saltsFile, JSON.stringify(fresh, null, 2) + '\n');
+  } finally { rmdirSync(lock); }
   method = 'commit'; args = { commitment: base64(commitment(player.id, units, price, salt)) }; deposit = YOCTO;
 } else if (cmd === 'reveal') {
   const s = salts[`${post}:${player.id}`]; if (!s) throw Error('no saved salt');
